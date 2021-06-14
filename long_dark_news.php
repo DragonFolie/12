@@ -474,6 +474,160 @@ color: #757575;
      </style>
      
      <body>
+
+
+
+         <?php 
+            /*session_set_cookie_params(15,"/");
+            session_start();   // in top of PHP <file></file>
+
+
+
+
+
+
+
+
+
+
+
+
+            
+//INSERT INTO `testtable` (`TestColumn1`, `TestColumn2`) VALUES ('First note', '1');
+//INSERT INTO `testtable` ". "(`TestColumn1`, `TestColumn2`) ". "VALUES('Second note','2')
+
+            //Search
+
+            /*if ($result = mysqli_query($link, "SELECT * FROM testtable WHERE TestColumn1 LIKE '%Second%'"))  //Search
+            {
+
+                for ($i=0; $i < 4; $i++) 
+                { 
+                    $row = mysqli_fetch_row($result);
+
+                    if($row != null)
+                    {
+                        printf("". count($row));
+
+                        printf("". $row[0]);
+                    }
+
+                    
+
+                    //printf("". count($row) . "     " . $row[0] . "  " . $row[1] . "  ");
+
+                    
+                }
+
+                mysqli_free_result($result);
+                
+            }*/
+
+
+            //Sorting
+
+            /*if ($result = mysqli_query($link, "SELECT * FROM testtable ORDER BY TestColumn1 DESC"))  //Sorting
+            {
+                for ($i=0; $i < 4; $i++) 
+                { 
+                    $row = mysqli_fetch_row($result);
+
+                    if($row != null)
+                    {
+                        printf("". count($row));
+
+                        printf("". $row[0]);
+                    }
+
+                    
+
+                    //printf("". count($row) . "     " . $row[0] . "  " . $row[1] . "  ");
+
+                    
+                }
+
+                mysqli_free_result($result);
+                
+            }*/
+
+
+            
+
+/*
+            
+            if ($result = mysqli_query($link, "SELECT thelongdark.news.Id, thelongdark.news.Title, 
+            thelongdark.news.Date, thelongdark.news.ImagePath, thelongdark.news.PageFilePath FROM 
+            thelongdark.news INNER JOIN thelongdark.newscomments ON 
+            thelongdark.news.Id = thelongdark.newscomments.NewsID"))  //Search
+            {
+
+                for ($i=0; $i < 1; $i++) 
+                { 
+                    $row = mysqli_fetch_row($result);
+
+                    if($row != null)
+                    {
+                        printf("". count($row));
+
+                        echo "<br>";
+
+                        printf("". $row[0]);
+
+                        echo "<br>";
+
+                        printf("". $row[1]);
+
+                        echo "<br>";
+
+                        printf("". $row[2]);
+
+                        echo "<br>";
+                        
+                        printf("". $row[3]);
+
+                        echo "<br>";
+                        
+                        printf("". $row[4]);
+                        
+                    }
+
+                    
+
+                    //printf("". count($row));// . "     " . $row[0] . "  " . $row[1] . "  ");
+
+                    
+                }
+
+                mysqli_free_result($result);
+            }*/
+
+
+            
+            
+
+
+        ?>
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <nav class="header">
             <div class="header_container">
                 <div class="header_logo">
@@ -507,18 +661,37 @@ color: #757575;
                             <a href="https://hinterlandgames.zendesk.com/hc/en-us"  target="_blank"  >SUPPORT</a>
                         </li>
                         <li>
-                            <a >
-                                <button class="button_search_button" type="submit"> 
-                                    <span class="noselect">
-                                        <img src="img/loupe.png" alt=""> 
-                                    </span>
-                                    <div id="circle">
+                            <a>
 
-                                    </div> 
-                                </button>
+
+
+
+
+
+
+                                <form action="long_dark_news.php" method="post">
+                                    <button type="submit" name="searchButton" id="searchButton" class="button_search_button">
+                                        <span class="noselect">
+                                            <img src="img/loupe.png" alt=""> 
+                                        </span>
+                                        <div id="circle"></div> 
+                                    </button>
+                                </form>
+
+
+                                
+                                <form action="long_dark_news.php" method="get">
+                                    <input class="search_field" placeholder="Search text" type="text" size="15" name="searchField" id="searchField">
+                                </form>
                                 
                                 
-                                <input class="search_field" placeholder="Name of News" type="text" size="15"></a>
+                                
+                                
+
+
+
+                                
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -532,17 +705,254 @@ color: #757575;
         <h1 class="new_title_main">
             News &amp; Updates 
 
+            <!-- 
             <button class="sort_button">
                 <img class="sort_button" src="img/sort-down.png" alt="">
-            </button> 
+            </button>  -->
 
+
+
+
+
+            <!-- SORTING BUTTON -->
+
+
+            <form method="post">
+                <button type="submit" name="sortButton" id="test" class="sort_button">
+                    <img class="sort_button" src="img/sort-down.png" alt="">
+                </button>
+            </form>
         </h1>
         
 
-        <ul class="list_block_news">
+
+
+
+        <?php
+            
+
+
+            //SESSIONS and will be done
+            
+            
+
+
+            $newsDB = "thelongdark";
+            $newsTable = "news";
+            //echo "<br><br>";
+
+            $link = mysqli_connect("localhost", "root", "123mnbzzZ01p", $newsDB);
+
+            if (mysqli_connect_errno()) 
+            {
+                printf("Connect failed: %s\n", mysqli_connect_error());
+                exit();
+            }
+
+            $newsInfoQuerySortedByNewer = "SELECT `Title`, `Date`, 
+                `ImagePath`, `PageFilePath` FROM $newsTable ORDER BY `Date` DESC";
+
+            $newsInfoQuerySortedByOlder = "SELECT `Title`, `Date`, 
+                `ImagePath`, `PageFilePath` FROM $newsTable ORDER BY `Date` ASC";
+
+
+            
+
+            $isButtonSortClicked = false;
+
+            /*if($_SESSION["word"])
+            {
+                echo "1111111111111111111111111111111";
+            }*/
+
+            function OnButtonSortClick()
+            {
+                global $isButtonSortClicked;
+
+                if($isButtonSortClicked == true)
+                    echo "true";
+                else if($isButtonSortClicked == false)
+                    echo "false";
+
+                ChangeButtonState();
+                SortNewsByDate();
+            }
+
+            function ChangeButtonState()
+            {
+                /*global $isButtonSortClicked;
+                if($isButtonSortClicked == true)
+                    $_SESSION["word"] = false;
+                else if($isButtonSortClicked == false)
+                    $_SESSION["word"] = true;*/
+            }
+
+            function SortNewsByDate()
+            {
+                global $newsInfoQuerySortedByOlder;
+                CreateNewsBlock($newsInfoQuerySortedByOlder);
+            }
+
+            if(array_key_exists('sortButton', $_POST))
+            {
+                OnButtonSortClick();
+            }
+
+
+            if($isButtonSortClicked == false)
+            {
+                CreateNewsBlock($newsInfoQuerySortedByNewer);
+            }
+                
+
+
+
+            // Search 
+
+
+
+            function OnSearchClick()
+            {
+                PrintFindedNews();
+            }
+
+            function PrintFindedNews()
+            {
+                $newsInfoQuerySearch = "";
+                $searchText = "";  
+
+                if(isset($_GET['searchField'])) 
+                    $searchText = htmlentities($_GET['searchField']);
+
+                $newsInfoQuerySearch = GetSearchQuery($searchText);
+                    
+                CreateNewsBlock($newsInfoQuerySearch);
+            }
+
+            if(array_key_exists('searchField', $_GET))
+            {
+                OnSearchClick();
+            }
+
+            function GetSearchQuery(string $searchText)
+            {
+                global $newsTable;
+                $newsInfoQuerySearch = "SELECT `Title`, `Date`, `ImagePath`, `PageFilePath` 
+                FROM $newsTable WHERE Title LIKE '%" . $searchText . "%' ORDER BY `Date` DESC";
+
+                return $newsInfoQuerySearch;
+            }
+
+
+
+
+            function CreateNewsBlock(string $newsInfoQuery)
+            {
+                global $link;
+                if ($result = mysqli_query($link, $newsInfoQuery))  
+                {
+                    while ($row = mysqli_fetch_row($result)) 
+                    {
+                        //printf(count($row));
+
+                        $title = $row[0];
+                        $date = $row[1];
+                        $imagePath = $row[2];
+                        $pageFilePath = $row[3];
+
+                        PrintNewsBlock($title, $date, $imagePath, $pageFilePath);
+                    } 
+                }
+
+                mysqli_free_result($result);
+            }
+
+            
+
+            function PrintNewsBlock(string $title, string $date, string $imagePath, string $pageFilePath)
+            {
+                $newsBlockHTML = '
+                <ul class="list_block_news">
+                    <li class="block_news">
+
+                        <span class="time_block">' . "$date" . '</span>
+
+                        <a href="' . "$pageFilePath" . '" class="block_news_img_text">
+
+                            <div class="block_news_img_text">
+                                <img src="' . "$imagePath" . '" style="width: 329px; height: auto;"  alt="" srcset="">
+                            </div>
+
+                            <div class="block_news_text">
+                                <h2 href="#" class="block_news_text_inner">' . "$title" . '</h2>
+                            </div>
+                            
+                        </a>
+                    </li>
+                </ul>';
+
+                echo $newsBlockHTML;
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        ?>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+        <!-- <ul class="list_block_news">
             <li class="block_news">
                 <span class="time_block">30.01.2077</span>
-                <a href="long_dark_news_happy-holidays-from-hinterland.html" class="block_news_img_text">
+                <a href="long_dark_news_happy-holidays-from-hinterland.php" class="block_news_img_text">
                     <div class="block_news_img_text">
 
                         
@@ -565,11 +975,11 @@ color: #757575;
 
 
 
-        </ul>
+        </ul> --> 
 
         <!-- Блоки новин назив list_block_news  block_news_text-текст зліва  block_news_img_text - фото   content_inner_text_hr - полоска після новини --> 
 
-        <ul class="list_block_news">
+        <!-- <ul class="list_block_news">
             <li class="block_news">
                 <span class="time_block">28.05.2020.</span>
 
@@ -588,19 +998,21 @@ color: #757575;
                 </a>
                 
 
-            </li>
+            </li> -->
+            
+            
             <!-- Блоки новин назив list_block_news  block_news_text-текст зліва  block_news_img_text - фото   content_inner_text_hr - полоска після новини --> 
-            <div class="content_inner_text_hr">
+            <!-- <div class="content_inner_text_hr">
                 
             </div>
 
 
 
-        </ul>
+        </ul> -->
 
 
 <!-- Блоки новин назив list_block_news  block_news_text-текст зліва  block_news_img_text - фото   content_inner_text_hr - полоска після новини --> 
-        <ul class="list_block_news">
+        <!-- <ul class="list_block_news">
             <li class="block_news">
                 <span class="time_block">19.05.2020</span>
                 <a href="long_dark_news_fearless-navigator-update-now-live.html" class="block_news_img_text">
@@ -622,10 +1034,10 @@ color: #757575;
 
 
 
-        </ul>
+        </ul> -->
 
         <!-- Блоки новин назив list_block_news  block_news_text-текст зліва  block_news_img_text - фото   content_inner_text_hr - полоска після новини --> 
-        <ul class="list_block_news">
+        <!-- <ul class="list_block_news">
             <li class="block_news">
                 <span class="time_block">01.04.2020</span>
                 <a href="long_dark_news_will-you-survive-winters-embrace.html" class="block_news_img_text">
@@ -645,7 +1057,7 @@ color: #757575;
 
 
 
-        </ul>
+        </ul> -->
 
 
 
