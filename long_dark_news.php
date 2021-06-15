@@ -1,3 +1,102 @@
+
+
+<?php
+
+    //db connection
+
+    $newsDB = "thelongdark";
+    $newsTable = "news";
+
+    $link = mysqli_connect("localhost", "root", "123mnbzzZ01p", $newsDB);
+
+    if (mysqli_connect_errno()) 
+    {
+        printf("Connect failed: %s\n", mysqli_connect_error());
+        exit();
+    }
+
+    //queries to db 
+
+    $newsInfoQuerySortedByNewer = "SELECT `Title`, `Date`, 
+        `ImagePath`, `PageFilePath` FROM $newsTable ORDER BY `Date` DESC";
+
+    $newsInfoQuerySortedByOlder = "SELECT `Title`, `Date`, 
+        `ImagePath`, `PageFilePath` FROM $newsTable ORDER BY `Date` ASC";
+
+
+
+    $isNewsSortedByOlder = false;
+
+    //session_name("Private");
+
+    // server should keep session data for AT LEAST 1 hour
+    ini_set('session.gc_maxlifetime', 3600);
+
+    // each client should remember their session id for EXACTLY 1 hour
+    //session_set_cookie_params(3600); 
+
+
+
+
+    //is used to start a PHP session or resume the current one in the web page. It generates a unique session ID for the user.
+    session_start(); 
+
+    //We need to destroy the PHP session when a user logs out from the web site. To free all the session variable, the following command is used.
+    //session_unset(); 
+
+    //ession variables can be created for future use. It can be accessed throughout the application. You can create a session variable and store value in it with the following syntax:
+    //$_SESSION["Private"] = 1111; 
+
+    /*if($_SESSION["Private"]) 
+        echo $_SESSION["Private"];*/
+
+    //записує дані сесії і завершує її
+    //session_write_close();
+    
+    
+
+
+    
+
+    //To end the complete session, following command is used.
+    //session_destroy();
+
+
+        
+
+
+
+
+
+        /*session_set_cookie_params(15,"/");
+
+
+
+
+
+
+
+
+
+
+
+    //session_commit();
+    /*if($isButtonSortClicked == true)
+        $_SESSION["Private"] = false;
+    else if($isButtonSortClicked == false)
+        $_SESSION["Private"] = true;*/
+    
+
+
+    //session_id($private_id);
+
+    //$_SESSION['pr_key'] = $b;
+
+
+?>
+
+
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -7,490 +106,21 @@
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
         <link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap" rel="stylesheet">
+
+
+        <link rel="stylesheet" type="text/css" href="css/long_dark_news.css">
+
+
+        <link href="https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap" rel="stylesheet">
         
     </head>
-    <style>
-/* General */
-
-body {  width: 100%;
-            height: auto; }
-     *{
-        font-family: 'Yusei Magic', sans-serif;
-         padding: 0;
-         margin: 0;
-         list-style:none;
-         text-decoration: none;
-         
-
-     }
-     ul, ol {
-    list-style: none;
-}
-li {
-    list-style-type: none; /* Убираем маркеры */
-   }
-
-    .content_inner_text_hr{
-    margin: 50px auto;
-    width: 650px;
-    padding-left:auto ;
-    padding-right:auto ;
-    color: #666;
-
-
-
-}
-
-    /*Header */ /*Header */ /*Header */ /*Header */ /*Header */ /*Header */ /*Header */
-    
-    .header{
-            
-    
-        }
-        .header_container{
-            border-bottom: 1px solid #171717;
-           
-           width: 100%;
-           height: 62px;
-           background-color: black;
-           display: grid;
-           grid-template-columns: 30% 15% 55%;
-           
-   
-           
-   
-           
-          
-           
-   
-   
-        }
-        @media  (max-width:1100px){
-           .header_container_empty{
-               display: none;
-           }
-           .header_container{
-               display: grid;
-               grid-template-columns: 25%  75%;
-           }
-           
-   
-           }
-        .header_container>div.header_logo{
-            
-        }
-        .header_logo_image{
-            width: 186px;
-            height: 62px;
-            padding-left: 35% ;
-        }
-   
-        .header_container>div.header_container_empty{
-   
-        }
-        .header_container>div.header_nav{
-            padding-top: 15px;
-            text-align: center;
-            vertical-align: middle;
-          
-           
-          
-       
-       
-       }
-       .header_inner_ul{
-           vertical-align: middle;
-   
-           margin: 0; /* Обнуляем значение отступов */
-       padding: 4px; /* Значение полей */
-       }
-   
-       .header_inner_ul a{
-           color:#666;
-       }
-       .header_inner_ul a:hover{
-            color: white;
-            transition: 0.5s;
-        }
-   
-       .header_inner_ul li {
-       vertical-align: middle;
-       display: inline; /* Отображать как строчный элемент */
-       margin-right: 20px; /* Отступ слева */
-       color: #666;
-       padding: 3px; /* Поля вокруг текста */
-      }
-   
-   
-
-   /* NEWS */ /* NEWS */ /* NEWS */ /* NEWS */ /* NEWS */ /* NEWS */ /* NEWS */
-
-    .main{
-        background-color: #000000;
-        
-    }
-    .news{
-        
-    padding-right: 15px;
-    padding-left: 15px;
-    width: 1170px;
-    margin:0 auto;
-        
-    }
-    .new_title_main{
-        font-family: 'Yusei Magic', sans-serif;
-        padding-top: 104px;
-        padding-bottom: 42px;
-        letter-spacing: 0em;
-        color: white;
-        text-align: center;
-        font-size: 5.3em;
-
-    }
-    .list_block_news{
-        margin: 50px auto;
-        margin-top: 50px;
-        margin-bottom: 0;
-
-    }
-    .block_news{
-        padding: 45px 0 74px;
-    border-bottom: 1px solid #333;
-    max-width: 780px;
-    margin: 0 auto;
-    }
-    .time_block{
-        display: flex;
-    text-align: center;
-    align-items: center;
-    display: block;
-    font-size: 1.7em;
-    font-weight: 200;
-    color: #757575;
-    margin-bottom: 35px;
-
-        
-    }
-    .block_news_img_text{
-        
-        display: grid;
-        grid-template-columns: 50% 50%;
-
-
-    }
-    .block_news_text_inner{
-        font-family: 'Yusei Magic', sans-serif;
-        display: flex;
-    text-align: center;
-    align-items: center;
-    padding-top: 50px;
-    font-size: 20px;
-    font-weight: 200;
-    color: #fff;
-    display: inline-block;
-    vertical-align: top;
-    opacity: .6;
-
-    }
-
-    .block_news_text_inner:hover{
-        opacity: 1;
-        transition: 1s;
-    }
-
-    
-
-      /* Footer */ /* Footer */ /* Footer */ /* Footer */ /* Footer */ /* Footer */
-
-      .footer{
-
-border-top: 1px solid #333;
-background: #000;
-text-align: center;
-padding: 87px 0 282px;
-
-}
-
-.footer_inner{
-
-padding-right: 15px;
-padding-left: 15px;
-margin-right: auto;
-margin-left: auto;
-width: 1170px;
-text-align: center;
-color: white;
-
-
-
-}
-
-.footer_inner h2{
-
-margin-bottom: 100px;
-
-
-}
-
-
-/* Community */
-
-.list_photo{
-
-margin: 0; /* Обнуляем значение отступов */
-padding: 4px; /* Значение полей */
-}
-.list_photo li{
-display: inline; /* Отображать как строчный элемент */
-margin-right: 5px; /* Отступ слева */
-border: 1px solid #000; /* Рамка вокруг текста */
-padding: 3px; /* Поля вокруг текста **/
-}
-
-
-
-.footer-list-twitter{
-
-width: 44px;
-height: 36px;
-margin: 17px 10px;
-opacity: .6;
-}
-.footer-list-twitter:hover{
-
-transition: .8s;
-opacity: 1;
-}
-
-
-/* footer_list_text */ /* footer_list_text */ /* footer_list_text */ /* footer_list_text */
-
-.footer_list_text{
-text-align: center;
-margin-top: 100px;
-line-height: 2em;
-font-size: 20px;
-color: white;
-font-weight: 400;
-font-family: "TLD Headline Updated15";
-
-
-}
-.footer_list_text li .footer_list_text_li{
-color: white;
-opacity: .6;
-
-}
-
-.footer_list_text li:hover .footer_list_text_li:hover{
-transition: .5s;
-opacity: 1;
-
-}
-
-.footer_logo {
-opacity: 0.5;
-margin: 65px auto;
-max-width: 112px;
-max-height: 100px;
-text-align: center;
-display: flex;
-align-items: center;
-
-
-}
-.footer_logo:hover {
-opacity: 1;
-transition: .8s;
-
-
-
-}
-.footer_logo_text{
-
-color: white;
-}
-
-.copyright {
-font-family: 'Yusei Magic', sans-serif;
-margin: 42px auto 20px;
-font-size: 14px;
-font-weight: 200;
-line-height: 2em;
-max-width: 460px;
-color: #757575;
-letter-spacing: 0.03em;
-}
-.copyright_1{
-text-decoration: underline;
-color: #757575;
-}
-
-/* Email Sender */ /* Email Sender */ /* Email Sender */ /* Email Sender */ /* Email Sender */ /* Email Sender */ /* Email Sender */ 
-    
-.email_sender{
-        background: url(img/hesitant-prospect-newsletter-comp.png)  center no-repeat;
-        max-width: 880px;
-        margin-top: 50 auto;
-        
-        
-    
-    
-    }
-    .email_sender_text{
-        margin: 150px auto;
-        
-        color: white;
-        text-align: center;
-        
-        font-weight: 500;
-        font-size: 28px;
-        line-height: 1.3em;
-        vertical-align: middle;
-        display: flex;
-        text-align: center;
-        align-items: center;
-        opacity: 0.8;
-        padding: 75px;
-    
-    }
-    .email_sender_field{
-        display: block;
-        
-        border: 1px solid #ffffff66 !important;
-        margin: 20px auto 48px;
-        width: 100%;
-        max-width: 445px;
-        height: 74px;
-        position: relative;
-    
-    }
-    .email_sender_field_inner{
-        border-right: 1px solid #ffffff66 !important;
-        vertical-align: top;
-        padding: 24px 0 16px 27px;
-        background: transparent;
-        border: none;
-        border-right: 0px;
-        max-width: 322px;
-        width: 70%;
-        height: 74px;
-        font-size: 22px;
-        font-weight: 200;
-        letter-spacing: 0.03em;
-        border-radius: 0;
-        font-weight: 400;
-        box-sizing: border-box;
-        outline-width: 0;
-        color: white;
-    
-    }
-    
-    .email_sender_field_inner_submit{
-    
-    vertical-align: top;
-        padding-top: 26px ;
-        padding-left: 20px;
-        color: rgba(255,255,255,0.4);
-        background-color: transparent;
-        font-style: normal;
-        border: none;
-       
-        font-size: 20px; 
-        text-transform: uppercase;
-        box-sizing: border-box;
-        
-        
-    }
-    
-    .email_sender_field_inner_submit:hover{
-        color: white;
-        transition: 1s;
-        opacity: 1;
-    }
-
-    .search_field{
-        padding: 5px;
-        margin-left: 15px;
-        background-color: #171717;
-        border: 1px solid white;
-        color: white;
-        font-size: 14px;
-
-
-    }
-
-    .button_search_button{
-        background-color: none;
-        background: none;
-        border: none;
-        border-radius: none;
-        opacity: .6;
-        cursor: pointer;
-
-
-    }
-
-    .button_search_button:hover{
-       transition: 1s;
-        opacity:1;
-        
-
-    }
-
-    
-    .noselect {
-        border: none;
-  -webkit-touch-callout: none;
-    -webkit-user-select: none;
-     -khtml-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
-}
-.sort_button{
-    
-        margin-left: 20px;
-        opacity: .6;
-        cursor: pointer;
-        outline: none; /* Для синий ободки */
-        border: 0;
-        background: transparent;
-
-
-}
-
-.sort_button:hover{
-
-    transition: 1s;
-        opacity:1;
-
-    
-}
-
-
-
-     </style>
      
      <body>
 
-
+        
 
          <?php 
-            /*session_set_cookie_params(15,"/");
-            session_start();   // in top of PHP <file></file>
-
-
-
-
-
-
-
-
-
-
-
+            
 
             
 //INSERT INTO `testtable` (`TestColumn1`, `TestColumn2`) VALUES ('First note', '1');
@@ -609,12 +239,6 @@ color: #757575;
         ?>
 
 
-            
-
-
-
-
-
 
 
 
@@ -705,14 +329,6 @@ color: #757575;
         <h1 class="new_title_main">
             News &amp; Updates 
 
-            <!-- 
-            <button class="sort_button">
-                <img class="sort_button" src="img/sort-down.png" alt="">
-            </button>  -->
-
-
-
-
 
             <!-- SORTING BUTTON -->
 
@@ -728,146 +344,121 @@ color: #757575;
 
 
 
-        <?php
-            
+        
+
+            <?php
 
 
-            //SESSIONS and will be done
-            
-            
+                        //sortButton 
 
 
-            $newsDB = "thelongdark";
-            $newsTable = "news";
-            //echo "<br><br>";
-
-            $link = mysqli_connect("localhost", "root", "123mnbzzZ01p", $newsDB);
-
-            if (mysqli_connect_errno()) 
-            {
-                printf("Connect failed: %s\n", mysqli_connect_error());
-                exit();
-            }
-
-            $newsInfoQuerySortedByNewer = "SELECT `Title`, `Date`, 
-                `ImagePath`, `PageFilePath` FROM $newsTable ORDER BY `Date` DESC";
-
-            $newsInfoQuerySortedByOlder = "SELECT `Title`, `Date`, 
-                `ImagePath`, `PageFilePath` FROM $newsTable ORDER BY `Date` ASC";
-
-
-            
-
-            $isButtonSortClicked = false;
-
-            /*if($_SESSION["word"])
-            {
-                echo "1111111111111111111111111111111";
-            }*/
-
-            function OnButtonSortClick()
-            {
-                global $isButtonSortClicked;
-
-                if($isButtonSortClicked == true)
-                    echo "true";
-                else if($isButtonSortClicked == false)
-                    echo "false";
-
-                ChangeButtonState();
-                SortNewsByDate();
-            }
-
-            function ChangeButtonState()
-            {
-                /*global $isButtonSortClicked;
-                if($isButtonSortClicked == true)
-                    $_SESSION["word"] = false;
-                else if($isButtonSortClicked == false)
-                    $_SESSION["word"] = true;*/
-            }
-
-            function SortNewsByDate()
-            {
-                global $newsInfoQuerySortedByOlder;
-                CreateNewsBlock($newsInfoQuerySortedByOlder);
-            }
-
-            if(array_key_exists('sortButton', $_POST))
-            {
-                OnButtonSortClick();
-            }
-
-
-            if($isButtonSortClicked == false)
-            {
-                CreateNewsBlock($newsInfoQuerySortedByNewer);
-            }
-                
-
-
-
-            // Search 
-
-
-
-            function OnSearchClick()
-            {
-                PrintFindedNews();
-            }
-
-            function PrintFindedNews()
-            {
-                $newsInfoQuerySearch = "";
-                $searchText = "";  
-
-                if(isset($_GET['searchField'])) 
-                    $searchText = htmlentities($_GET['searchField']);
-
-                $newsInfoQuerySearch = GetSearchQuery($searchText);
-                    
-                CreateNewsBlock($newsInfoQuerySearch);
-            }
-
-            if(array_key_exists('searchField', $_GET))
-            {
-                OnSearchClick();
-            }
-
-            function GetSearchQuery(string $searchText)
-            {
-                global $newsTable;
-                $newsInfoQuerySearch = "SELECT `Title`, `Date`, `ImagePath`, `PageFilePath` 
-                FROM $newsTable WHERE Title LIKE '%" . $searchText . "%' ORDER BY `Date` DESC";
-
-                return $newsInfoQuerySearch;
-            }
-
-
-
-
-            function CreateNewsBlock(string $newsInfoQuery)
-            {
-                global $link;
-                if ($result = mysqli_query($link, $newsInfoQuery))  
+                function OnButtonSortClick()
                 {
-                    while ($row = mysqli_fetch_row($result)) 
-                    {
-                        //printf(count($row));
+                    global $isNewsSortedByOlder;
+                    
+                    if(!$_SESSION["isNewsSortedByOlder"])
+                        $isNewsSortedByOlder = $_SESSION["isNewsSortedByOlder"] = true;
+                    else
+                        ChangeButtonState();  
 
-                        $title = $row[0];
-                        $date = $row[1];
-                        $imagePath = $row[2];
-                        $pageFilePath = $row[3];
-
-                        PrintNewsBlock($title, $date, $imagePath, $pageFilePath);
-                    } 
+                    if($isNewsSortedByOlder == true)
+                        SortNewsByOlder();
                 }
 
-                mysqli_free_result($result);
-            }
+                function ChangeButtonState()
+                {
+                    global $isNewsSortedByOlder;
+                    $isNewsSortedByOlder = $_SESSION["isNewsSortedByOlder"] = !$_SESSION["isNewsSortedByOlder"];
+                }
 
-            
+                function SortNewsByOlder()
+                {
+                    global $newsInfoQuerySortedByOlder;
+                    CreateNewsBlock($newsInfoQuerySortedByOlder);
+                }
+
+                function SortNewsByNewer()
+                {
+                    global $newsInfoQuerySortedByNewer;
+                    CreateNewsBlock($newsInfoQuerySortedByNewer);
+                }
+
+                if(array_key_exists('sortButton', $_POST))
+                {
+                    OnButtonSortClick();
+                }
+
+
+                
+                    
+
+
+
+                // Search 
+
+
+                function OnSearchClick()
+                {
+                    PrintFindedNews();
+                }
+
+                function PrintFindedNews()
+                {
+                    $newsInfoQuerySearch = "";
+                    $searchText = "";  
+
+                    if(isset($_GET['searchField'])) 
+                        $searchText = htmlentities($_GET['searchField']);
+
+                    $newsInfoQuerySearch = GetSearchQuery($searchText);
+                        
+                    CreateNewsBlock($newsInfoQuerySearch);
+                }
+
+                if(array_key_exists('searchField', $_GET))
+                {
+                    OnSearchClick();
+                }
+
+                function GetSearchQuery(string $searchText)
+                {
+                    global $newsTable;
+                    $newsInfoQuerySearch = "SELECT `Title`, `Date`, `ImagePath`, `PageFilePath` 
+                    FROM $newsTable WHERE Title LIKE '%" . $searchText . "%' ORDER BY `Date` DESC";
+
+                    return $newsInfoQuerySearch;
+                }
+
+
+                //Generating news blocks
+
+
+                function CreateNewsBlock(string $newsInfoQuery)
+                {
+                    global $link;
+                    if ($result = mysqli_query($link, $newsInfoQuery))  
+                    {
+                        while ($row = mysqli_fetch_row($result)) 
+                        {
+                            //printf(count($row));
+
+                            $title = $row[0];
+                            $date = $row[1];
+                            $imagePath = $row[2];
+                            $pageFilePath = $row[3];
+
+                            PrintNewsBlock($title, $date, $imagePath, $pageFilePath);
+                        } 
+                    }
+
+                    mysqli_free_result($result);
+                }
+
+
+            if($isNewsSortedByOlder == false)
+            {
+                SortNewsByNewer();
+            }
 
             function PrintNewsBlock(string $title, string $date, string $imagePath, string $pageFilePath)
             {
@@ -893,45 +484,6 @@ color: #757575;
 
                 echo $newsBlockHTML;
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         ?>
 
 
@@ -1053,10 +605,6 @@ color: #757575;
                 
 
             </li>
-            
-
-
-
         </ul> -->
 
 
