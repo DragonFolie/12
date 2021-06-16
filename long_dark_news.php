@@ -2,9 +2,21 @@
 
 <?php
 
+
+
+
+
+
+
+        
+
+
+
     //db connection
 
-    $newsDB = "thelongdark";
+use function PHPSTORM_META\type;
+
+$newsDB = "thelongdark";
     $newsTable = "news";
 
     $link = mysqli_connect("localhost", "root", "123mnbzzZ01p", $newsDB);
@@ -25,8 +37,9 @@
 
 
 
-    $isNewsSortedByOlder = false;
-
+    
+    
+    
     //session_name("Private");
 
     // server should keep session data for AT LEAST 1 hour
@@ -34,12 +47,77 @@
 
     // each client should remember their session id for EXACTLY 1 hour
     //session_set_cookie_params(3600); 
+    
+
+
+
+
 
 
 
 
     //is used to start a PHP session or resume the current one in the web page. It generates a unique session ID for the user.
-    session_start(); 
+    //session_start(); 
+
+    if(session_id() == '' || !isset($_SESSION)) { // session isn't started
+        session_start();
+    }
+
+
+    $isNewsSortedByOlder;
+    $isSearchPerformed;
+
+
+    if(isset($_SESSION["isNewsSortedByOlder"])) 
+    {
+        $isNewsSortedByOlder = $_SESSION["isNewsSortedByOlder"];
+        //echo " isNewsSortedByOlder exists and = " . var_dump($_SESSION["isNewsSortedByOlder"]) . "<br>";
+    }
+    else
+    {
+        $_SESSION["isNewsSortedByOlder"] = false;
+    }
+
+
+    if(isset($_SESSION["isSearchPerformed"]))
+    {
+        $isSearchPerformed = $_SESSION["isSearchPerformed"];
+        //echo "isSearchPerformed exists and = " . var_dump($_SESSION["isSearchPerformed"]);
+    }
+    else 
+    {
+        $_SESSION["isSearchPerformed"] = false;
+    }
+
+    
+    //$_SESSION["isSearchPerformed"] = true;
+    
+    $searchQuery = "";
+
+
+    
+    //session_unset();
+
+
+
+
+
+
+
+
+    /*if($_SESSION["isNewsSortedByOlder"] == null) $_SESSION["isNewsSortedByOlder"] = false;
+    if($_SESSION["isSearchPerformed"] == null) $_SESSION["isSearchPerformed"] = false;
+
+    $isNewsSortedByOlder = false;
+    $isSearchPerformed = false;
+
+    if($_SESSION["isNewsSortedByOlder"] != null) echo "isNewsSortedByOlder exists";
+    if($_SESSION["isSearchPerformed"] != null) echo "isSearchPerformed exists";
+
+    if($_SESSION["isNewsSortedByOlder"] != null) $isNewsSortedByOlder = $_SESSION["isNewsSortedByOlder"];
+    if($_SESSION["isSearchPerformed"] != null) $isSearchPerformed = $_SESSION["isSearchPerformed"];*/
+
+    //session_unset();
 
     //We need to destroy the PHP session when a user logs out from the web site. To free all the session variable, the following command is used.
     //session_unset(); 
@@ -54,7 +132,14 @@
     //session_write_close();
     
     
-
+    /*$pageRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) &&
+        ($_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0' ||  $_SERVER['HTTP_CACHE_CONTROL'] == 'no-cache'); 
+    if($pageRefreshed == 1){
+        echo "Yes";
+    }else{
+        //enter code here
+        echo "No";
+    }*/
 
     
 
@@ -92,7 +177,6 @@
 
     //$_SESSION['pr_key'] = $b;
 
-
 ?>
 
 
@@ -118,139 +202,12 @@
      <body>
 
         
-
-         <?php 
             
+<!-- INSERT INTO `testtable` (`TestColumn1`, `TestColumn2`) VALUES ('First note', '1');
+INSERT INTO `testtable` ". "(`TestColumn1`, `TestColumn2`) ". "VALUES('Second note','2') -->
 
-            
-//INSERT INTO `testtable` (`TestColumn1`, `TestColumn2`) VALUES ('First note', '1');
-//INSERT INTO `testtable` ". "(`TestColumn1`, `TestColumn2`) ". "VALUES('Second note','2')
-
-            //Search
-
-            /*if ($result = mysqli_query($link, "SELECT * FROM testtable WHERE TestColumn1 LIKE '%Second%'"))  //Search
-            {
-
-                for ($i=0; $i < 4; $i++) 
-                { 
-                    $row = mysqli_fetch_row($result);
-
-                    if($row != null)
-                    {
-                        printf("". count($row));
-
-                        printf("". $row[0]);
-                    }
-
-                    
-
-                    //printf("". count($row) . "     " . $row[0] . "  " . $row[1] . "  ");
-
-                    
-                }
-
-                mysqli_free_result($result);
-                
-            }*/
-
-
-            //Sorting
-
-            /*if ($result = mysqli_query($link, "SELECT * FROM testtable ORDER BY TestColumn1 DESC"))  //Sorting
-            {
-                for ($i=0; $i < 4; $i++) 
-                { 
-                    $row = mysqli_fetch_row($result);
-
-                    if($row != null)
-                    {
-                        printf("". count($row));
-
-                        printf("". $row[0]);
-                    }
-
-                    
-
-                    //printf("". count($row) . "     " . $row[0] . "  " . $row[1] . "  ");
-
-                    
-                }
-
-                mysqli_free_result($result);
-                
-            }*/
-
-
-            
-
-/*
-            
-            if ($result = mysqli_query($link, "SELECT thelongdark.news.Id, thelongdark.news.Title, 
-            thelongdark.news.Date, thelongdark.news.ImagePath, thelongdark.news.PageFilePath FROM 
-            thelongdark.news INNER JOIN thelongdark.newscomments ON 
-            thelongdark.news.Id = thelongdark.newscomments.NewsID"))  //Search
-            {
-
-                for ($i=0; $i < 1; $i++) 
-                { 
-                    $row = mysqli_fetch_row($result);
-
-                    if($row != null)
-                    {
-                        printf("". count($row));
-
-                        echo "<br>";
-
-                        printf("". $row[0]);
-
-                        echo "<br>";
-
-                        printf("". $row[1]);
-
-                        echo "<br>";
-
-                        printf("". $row[2]);
-
-                        echo "<br>";
-                        
-                        printf("". $row[3]);
-
-                        echo "<br>";
-                        
-                        printf("". $row[4]);
-                        
-                    }
-
-                    
-
-                    //printf("". count($row));// . "     " . $row[0] . "  " . $row[1] . "  ");
-
-                    
-                }
-
-                mysqli_free_result($result);
-            }*/
-
-
-            
-            
-
-
-        ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+          
+        
 
         <nav class="header">
             <div class="header_container">
@@ -289,11 +246,11 @@
 
 
 
+                                <!-- Search field -->
 
 
 
-
-                                <form action="long_dark_news.php" method="post">
+                                <form action="long_dark_news.php" method="get" target="_blank">
                                     <button type="submit" name="searchButton" id="searchButton" class="button_search_button">
                                         <span class="noselect">
                                             <img src="img/loupe.png" alt=""> 
@@ -304,7 +261,7 @@
 
 
                                 
-                                <form action="long_dark_news.php" method="get">
+                                <form action="long_dark_news.php" method="post" target="_blank">
                                     <input class="search_field" placeholder="Search text" type="text" size="15" name="searchField" id="searchField">
                                 </form>
                                 
@@ -331,22 +288,33 @@
 
 
             <!-- SORTING BUTTON -->
+    
 
-
-            <form method="post">
+            <form method="post" target="_blank">
                 <button type="submit" name="sortButton" id="test" class="sort_button">
                     <img class="sort_button" src="img/sort-down.png" alt="">
+                </button>
+                <button type="submit" name="showAllNews" id="test" class="sort_button">
+                    <img class="sort_button" src="img/loupe.png" alt="">
                 </button>
             </form>
         </h1>
         
 
-
-
-
+        <!-- <script type="text/javascript">
+  window.onbeforeunload = confirmExit;
+  function confirmExit()
+  {
+    return "You have attempted to leave this page.  If you have made any changes to the fields without clicking the Save button, your changes will be lost.  Are you sure you want to exit this page?";
+  }
+</script> -->
         
 
             <?php
+
+
+  
+
 
 
                         //sortButton 
@@ -354,21 +322,16 @@
 
                 function OnButtonSortClick()
                 {
-                    global $isNewsSortedByOlder;
-                    
                     if(!$_SESSION["isNewsSortedByOlder"])
-                        $isNewsSortedByOlder = $_SESSION["isNewsSortedByOlder"] = true;
-                    else
-                        ChangeButtonState();  
+                        $_SESSION["isNewsSortedByOlder"] = true;
+                    else if($_SESSION["isNewsSortedByOlder"])
+                        $_SESSION["isNewsSortedByOlder"] = false;
 
-                    if($isNewsSortedByOlder == true)
-                        SortNewsByOlder();
-                }
-
-                function ChangeButtonState()
-                {
-                    global $isNewsSortedByOlder;
-                    $isNewsSortedByOlder = $_SESSION["isNewsSortedByOlder"] = !$_SESSION["isNewsSortedByOlder"];
+                    //echo "isNewsSortedByOlder <br>";
+                    //var_dump($_SESSION["isNewsSortedByOlder"]);
+                    
+                    
+                        
                 }
 
                 function SortNewsByOlder()
@@ -394,7 +357,33 @@
 
 
 
+
+
+                //Show all button
+
+
+
+
+                function OnButtonShowAllNewsClick()
+                {
+                    $_SESSION["isNewsSortedByOlder"] = $_SESSION["isSearchPerformed"] = false;
+
+                }
+
+                if(array_key_exists('showAllNews', $_POST))
+                {
+                    OnButtonShowAllNewsClick();
+                }
+
+
+
+
+
+
+
+
                 // Search 
+
 
 
                 function OnSearchClick()
@@ -404,18 +393,27 @@
 
                 function PrintFindedNews()
                 {
-                    $newsInfoQuerySearch = "";
-                    $searchText = "";  
+                    //if(!$_SESSION["isSearchPerformed"])
+                        $_SESSION["isSearchPerformed"] = true;
+                    //else if($_SESSION["isSearchPerformed"])
+                        //$_SESSION["isSearchPerformed"] = false;
 
-                    if(isset($_GET['searchField'])) 
-                        $searchText = htmlentities($_GET['searchField']);
+                    /*echo "<br><br><br>!!!!  ";
+                    var_dump($_SESSION["isSearchPerformed"]);
+                    echo "<br><br><br>";*/
 
-                    $newsInfoQuerySearch = GetSearchQuery($searchText);
-                        
-                    CreateNewsBlock($newsInfoQuerySearch);
+                    if(isset($_POST['searchField'])) 
+                        $searchText = htmlentities($_POST['searchField']);
+
+                    $query = GetSearchQuery($searchText);
+                    global $searchQuery;
+                    $searchQuery = $query;
+
+
+                    $_SESSION["isNewsSortedByOlder"] = false;
                 }
 
-                if(array_key_exists('searchField', $_GET))
+                if(array_key_exists('searchField', $_POST))
                 {
                     OnSearchClick();
                 }
@@ -428,6 +426,10 @@
 
                     return $newsInfoQuerySearch;
                 }
+
+
+
+
 
 
                 //Generating news blocks
@@ -455,10 +457,56 @@
                 }
 
 
-            if($isNewsSortedByOlder == false)
+
+
+
+
+
+
+
+
+
+
+
+            if($_SESSION["isNewsSortedByOlder"])
             {
+                //echo "isNewsSortedByOlder <br><br><br><br><br><br><br>";
+                SortNewsByOlder();
+            }
+            
+            else if($_SESSION["isSearchPerformed"])
+            {   
+                //echo "isSearchPerformed <br><br><br><br><br><br><br>";
+                CreateNewsBlock($searchQuery);
+            }
+                
+            else
+            {
+                //echo "SortNewsByNewer <br><br><br><br><br><br><br>";
                 SortNewsByNewer();
             }
+                
+
+
+
+
+
+            //Reset sessions
+
+
+            //$_SESSION["isNewsSortedByOlder"] = false;
+            $_SESSION["isSearchPerformed"] = false;
+
+
+
+            //Reset after leave / change page
+
+
+
+
+
+
+
 
             function PrintNewsBlock(string $title, string $date, string $imagePath, string $pageFilePath)
             {
