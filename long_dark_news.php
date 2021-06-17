@@ -2,21 +2,11 @@
 
 <?php
 
-
-
-
-
-
-
-        
-
-
-
     //db connection
 
-use function PHPSTORM_META\type;
+//use function PHPSTORM_META\type;
 
-$newsDB = "thelongdark";
+    $newsDB = "thelongdark";
     $newsTable = "news";
 
     $link = mysqli_connect("localhost", "root", "123mnbzzZ01p", $newsDB);

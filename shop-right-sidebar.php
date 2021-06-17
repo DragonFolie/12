@@ -1,3 +1,29 @@
+<?php
+        if(array_key_exists('sortButton', $_POST))
+        {
+            header("Location: shop-right-sidebar.php");
+        }
+    
+    
+        /*unset($_COOKIE["name"]); 
+        setcookie('name', null, -1, '/');*/
+        
+        //echo $_COOKIE["showAllProductsLike"];
+        
+
+
+
+        //unset($_COOKIE["showAllProductsLike"]); 
+        //setcookie('showAllProductsLike', null, -1, '/');
+        
+        echo $_COOKIE["showAllProductsLike"];
+
+        
+?>
+
+
+
+
 <!doctype html>
 <html class="no-js" lang="">
     <head>
@@ -24,11 +50,18 @@
         <link rel="stylesheet" href="css/default.css">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/responsive.css">
+
+
+
+        
+
+
+
     </head>
     <body>
 
 
-        <!-- <!-- preloader  
+        <!-- preloader  
         <div id="preloader">
             <div id="ctn-preloader" class="ctn-preloader">
                 <div class="animation-preloader">
@@ -295,6 +328,13 @@
 
 
                             <!-- Mobile Menu  -->
+
+
+
+
+
+
+
                             <div class="mobile-menu">
                                 <div class="menu-backdrop"></div>
                                 <div class="close-btn"><i class="fas fa-times"></i></div>
@@ -346,7 +386,31 @@
             </section>
             <!-- breadcrumb-area-end -->
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <!-- shop-area -->
+
+
+
+
+
+
+
+
+
+            
             <section class="shop-area gray-bg pt-100 pb-100">
                 <div class="custom-container-two">
                     <div class="row justify-content-center">
@@ -366,8 +430,183 @@
                                     </form>
                                 </div>
                             </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             <div class="row">
-                                <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
+
+
+
+
+
+
+                                <?php   //Products blocks generationg from bd
+
+                                    $shopDB = "thelongdark";
+                                    $shopTable = "shop";
+                                    $shopDiscountsTable = "shopdiscounts";
+
+                                    $link = mysqli_connect("localhost", "root", "123mnbzzZ01p", $shopDB);
+
+                                    if (mysqli_connect_errno()) 
+                                    {
+                                        printf("Connect failed: %s\n", mysqli_connect_error());
+                                        exit();
+                                    }
+
+                                    //queries to db 
+
+                                    
+                                    $getAllProductsInfoQueryAND = isset($_COOKIE["showAllProductsLike"]) ? " AND Title LIKE '%" . $_COOKIE["showAllProductsLike"] . "%'" : '';
+                                    
+                                    $getAllProductsInfoQuery = "SELECT `Id`, `Title`, /*`Description`,*/ 
+                                        `Price`, /*`Amount`,*/ `Rating`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 $getAllProductsInfoQueryAND";
+
+                                    // echo $_COOKIE["showAllProductsLike"];
+                                
+
+                                    PrintAllAvailableProducts();
+
+
+
+                                    function PrintAllAvailableProducts()
+                                    {
+                                        global $link;
+                                        global $getAllProductsInfoQuery;
+
+                                
+                                        
+                                        if ($result = mysqli_query($link, $getAllProductsInfoQuery))  
+                                        {
+                                            while ($row = mysqli_fetch_row($result)) 
+                                            {
+                                                $id = $row[0];
+                                                $title = $row[1];
+                                                $price = $row[2]; 
+                                                $rating= $row[3];
+                                                $imagePath = $row[4];
+
+                                                $discountPrice = GetCurrentProductDiscount($id, $price);
+
+                                                PrintNewsBlock($title, $price, $discountPrice, $rating, $imagePath);
+                                            } 
+
+                                            mysqli_free_result($result);
+                                        }
+                                    }
+
+                                    function GetCurrentProductDiscount(int $id, float $price)
+                                    {
+                                        global $shopDiscountsTable;
+                                        global $shopTable;
+                                        $getAllProductsDiscountInfoQuery = "SELECT `Discount` FROM $shopDiscountsTable
+                                        INNER JOIN $shopTable ON $shopDiscountsTable.ShopProductID = $id";
+
+                                        global $link;
+                                        if ($result = mysqli_query($link, $getAllProductsDiscountInfoQuery))  
+                                        {
+                                            if($row = mysqli_fetch_row($result))
+                                            {
+                                                //echo "StartIf ";
+
+                                                return GetCalculatedDiscount($price, $row[0]);
+                                            } 
+
+                                            mysqli_free_result($result);
+                                        }
+
+                                        return 0.0;
+                                    }
+
+                                    function GetCalculatedDiscount(float $price, float $discount)
+                                    {
+                                        return $price - (($discount * $price) / 100.0);
+                                    } 
+
+
+                                    function PrintNewsBlock(string $title, float $price, float $discountPrice, float $rating, string $imagePath)
+                                    {
+                                        $discountPriceHTML = $discountPrice == 0.0 ? '<span class="new-price"></span>' : '<span class="new-price">$'. $discountPrice .'</span>';
+                                        $pricericeHTML = $discountPrice == 0.0 ? '<div class="old-price">$' . $price . '</div>' : '<del class="old-price">$' . $price . '</del>';
+                                        $ratingHTML = GetRatingHTML($rating);
+
+                                        $productBlockHTML = '
+                                            <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
+                                                <div class="exclusive-item exclusive-item-three text-center mb-50">
+                                                    <div class="exclusive-item-thumb">
+                                                        <a href="shop-details.html">
+                                                            <img src="' . $imagePath . '" alt="">
+                                                            <img class="overlay-product-thumb" src="' . $imagePath . '" alt="">
+                                                        </a>
+                                                        <ul class="action">
+                                                            
+                                                            <li><a href="#"><i class="flaticon-supermarket"></i></a></li>
+                                                        
+                                                        </ul>
+                                                    </div>
+                                                    <div class="exclusive-item-content">
+                                                        <h5><a href="shop-details.html">' . $title . '</a></h5>
+                                                        <div class="exclusive--item--price">
+                                                            ' . $pricericeHTML . '
+                                                            ' . $discountPriceHTML . '
+                                                        </div>
+                                                        <div class="rating">
+                                                            ' . $ratingHTML . '
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>';
+
+                                        echo $productBlockHTML;
+                                    }
+
+
+                                    function GetRatingHTML(int $rating)
+                                    {
+                                        $ratingHTML = "";
+                                        for ($i = 0; $i < $rating; $i++) { 
+                                            $ratingHTML .= "<i class='fas fa-star'></i>";
+                                        }
+                                        
+                                        return $ratingHTML; 
+                                    }
+
+
+
+
+
+
+
+
+
+                                    if(isset($_COOKIE["showAllProductsLike"]))
+                                    {
+                                        //echo "<br><br><br><br><br><br><br><br>" . $_COOKIE["showAllProductsLike"];
+                                        unset($_COOKIE["showAllProductsLike"]); 
+                                        //setcookie('showAllProductsLike', null, -1, '/');
+                                    }
+                                ?>
+
+                                    
+
+
+                                
+                                    
+
+
+
+                                <!-- <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
                                     <div class="exclusive-item exclusive-item-three text-center mb-50">
                                         <div class="exclusive-item-thumb">
                                             <a href="shop-details.html">
@@ -395,8 +634,23 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
+                                </div> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                <!-- <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
                                     <div class="exclusive-item exclusive-item-three text-center mb-50">
                                         <div class="exclusive-item-thumb">
                                             <a href="shop-details.html">
@@ -425,6 +679,17 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+
+
+
+
+
+
+
+
+
                                 <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
                                     <div class="exclusive-item exclusive-item-three text-center mb-50">
                                         <div class="exclusive-item-thumb">
@@ -454,6 +719,15 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+
+
+
+
+
+
+
                                 <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
                                     <div class="exclusive-item exclusive-item-three text-center mb-50">
                                         <div class="exclusive-item-thumb">
@@ -483,6 +757,14 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+
+
+
+
+
+
                                 <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
                                     <div class="exclusive-item exclusive-item-three text-center mb-50">
                                         <div class="exclusive-item-thumb">
@@ -512,6 +794,15 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+
+
+
+
+
+
+
                                 <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
                                     <div class="exclusive-item exclusive-item-three text-center mb-50">
                                         <div class="exclusive-item-thumb">
@@ -541,6 +832,16 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+
+
+
+
+
+
+
+
                                 <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
                                     <div class="exclusive-item exclusive-item-three text-center mb-50">
                                         <div class="exclusive-item-thumb">
@@ -570,6 +871,18 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+
+
+
+
+
+
+
+
+
+
                                 <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
                                     <div class="exclusive-item exclusive-item-three text-center mb-50">
                                         <div class="exclusive-item-thumb">
@@ -599,6 +912,19 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
                                     <div class="exclusive-item exclusive-item-three text-center mb-50">
                                         <div class="exclusive-item-thumb">
@@ -628,6 +954,16 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+
+
+
+
+
+
+
+
                                 <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
                                     <div class="exclusive-item exclusive-item-three text-center mb-50">
                                         <div class="exclusive-item-thumb">
@@ -657,6 +993,16 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+
+
+
+
+
+
+
+
                                 <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
                                     <div class="exclusive-item exclusive-item-three text-center mb-50">
                                         <div class="exclusive-item-thumb">
@@ -686,6 +1032,14 @@
                                         </div>
                                     </div>
                                 </div>
+
+
+
+
+
+
+
+
                                 <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
                                     <div class="exclusive-item exclusive-item-three text-center mb-50">
                                         <div class="exclusive-item-thumb">
@@ -714,7 +1068,19 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
+
+
+
+
+
+
+
+
+
+
+
+
                             </div>
                             
                             <!-- breadcrumb-area-end 
@@ -738,16 +1104,92 @@
                                     <div class="shop-widget-title">
                                         <h6 class="title">Product Categories</h6>
                                     </div>
+
+
+
+
+                                     <!-- <form method="post" target="_blank">
+                <button type="submit" name="sortButton" id="test" class="sort_button">
+                    <img class="sort_button" src="img/sort-down.png" alt="">
+                </button>
+                <button type="submit" name="showAllNews" id="test" class="sort_button">
+                    <img class="sort_button" src="img/loupe.png" alt="">
+                </button>
+            </form> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                     <div class="shop-cat-list">
                                         <ul>
-                                            <li><a href="#">Accessories</a><span>27</span></li>
-                                            <li><a href="#">Leather Jacket</a><span>12</span></li>
+
+
+                                            <form method="POST">
+
+                                            <li><a><button type="submit" name="sortButton" id="test" class="sort_button" onclick="setCookie_ShowAllProductsLike(this.innerHTML)"> Hoodie </button></a></li>
+                                            <li><a><button type="submit" name="sortButton" id="test" class="sort_button" onclick="setCookie_ShowAllProductsLike(this.innerHTML)"> Short Sleeve T-Shirt </button></a></li>
+                                            <li><a><button type="submit" name="sortButton" id="test" class="sort_button" onclick="setCookie_ShowAllProductsLike(this.innerHTML)"> Long Sleeve T-Shirt </button></a></li>
+                                            <li><a><button type="submit" name="sortButton" id="test" class="sort_button" onclick="setCookie_ShowAllProductsLike(this.innerHTML)"> Accessorie </button></a></li>
+                                            
+
+                                            <!-- <li><a href="#">Accessories</a><span>27</span></li> 
+                                            <li><a type="submit" href="#">Leather Jacket</a><span>12</span></li>
                                             <li><a href="#">Woman Hoodies</a><span>6</span></li>
                                             <li><a href="#">Man Shoes</a><span>7</span></li>
                                             <li><a href="#">Baby Troys</a><span>9</span></li>
-                                            <li><a href="#">Kitchen Accessories</a><span>16</span></li>
+                                            <li><a href="#">Kitchen Accessories</a><span>16</span></li>-->
+
+
+
+
+                                            </form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                         </ul>
                                     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+                                    
                                 </div>
                                 <div class="widget shop-widget mb-30">
                                     <div class="shop-widget-title">
@@ -1041,9 +1483,116 @@
 
 
 
+                                   
+
+ 
+                                    
+
+
+        <script> 
+
+
+
+                
+                function setCookie_ShowAllProductsLike(buttonText)
+                {
+                    document.cookie = "showAllProductsLike=" + buttonText;
+                    alert(document.cookie);
+                }
+
+                // Creating a cookie after the document is ready
+                /*$(document).ready(function () {
+                    createCookie("gfg", "GeeksforGeeks", "10");
+                });
+                
+                // Function to create the cookie
+                function createCookie(name, value, days) {
+                    var expires;
+                    
+                    if (days) {
+                        var date = new Date();
+                        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                        expires = "; expires=" + date.toGMTString();
+                    }
+                    else {
+                        expires = "";
+                    }
+                    
+                    document.cookie = escape(name) + "=" + 
+                        escape(value) + expires + "; path=/";
+                }*/
+
+
+                //document.cookie = "name=Alex";
+                //document.cookie = "favorite_food=tripe";
+                
+                
+
+
+
+
+           /*  
+
+            document.body.onload = addElement;
+            var my_div = newDiv = null;*/
+
+            /*function addElement() {
+
+
+
+
+
+                
+                //alert(document.cookie);
+
+                // Создаём новый элемент div
+                // и добавляем в него немного контента
+
+                //var newDiv = document.createElement("div");
+                    //newDiv.innerHTML = "<h1>"+javaScriptVar+"</h1>";
+
+                // Добавляем только что созданный элемент в дерево DOM
+
+                //my_div = document.getElementById("org_div1");
+                //document.body.insertBefore(newDiv, my_div);
+            }*/
+
+
+            
+
+
+
+
+            /*var songlist = ['song1', 'song2', 'song3'];
+
+            var sendData = function() {
+            $.post('shop-right-sidebar.php', {
+                data: songlist
+            }, function(response) {
+                console.log(response);
+            });
+            }
+            sendData();*/
+
+
+        </script> 
+
+
+
+
 
 
 		<!-- JS here -->
+
+
+
+
+
+
+
+
+
+
         <script src="js/vendor/jquery-3.5.0.min.js"></script>
         <script src="js/popper.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
@@ -1061,4 +1610,7 @@
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
     </body>
+
+
+
 </html>
