@@ -1,22 +1,70 @@
 <?php
+    $showAllProductsLike = "";
+
         if(array_key_exists('sortButton', $_POST))
         {
+            
+
             header("Location: shop-right-sidebar.php");
         }
-    
+            
+        
+//echo $_COOKIE["showAllProductsLike"];
+if(session_id() == '' || !isset($_SESSION)) { // session isn't started
+    session_start();
+}
+
+if(isset($_SESSION["showAllProductsLike"]) && $_SESSION["showAllProductsLike"] != "") 
+{
+    $showAllProductsLike = $_SESSION["showAllProductsLike"];
+    //echo " isNewsSortedByOlder exists and = " . var_dump($_SESSION["isNewsSortedByOlder"]) . "<br>";
+}
+else
+{
+    $_SESSION["showAllProductsLike"] = $_COOKIE["showAllProductsLike"];
+    $showAllProductsLike = $_SESSION["showAllProductsLike"];
+}
+
+//setcookie("showAllProductsLike", '', time()-1000);
+
+        
+        //$showAllProductsLike = $_COOKIE["showAllProductsLike"];
+        //echo "<br><br><br><br><br><br><br><br><br><br>" . $showAllProductsLike;
+
+
+        //setcookie("showAllProductsLike", '', time()-1000);
+
+
+
+        /*if(isset($_COOKIE["showAllProductsLike"]))
+        {
+            $showAllProductsLike = $_COOKIE["showAllProductsLike"];
+            setcookie("showAllProductsLike", '', time()-1000);
+
+            
+            echo "<br><br><br><br><br><br><br><br><br><br>" . $showAllProductsLike;
+            
+            //setcookie('showAllProductsLike', null, -1, '/');
+        }*/
+
+
+
+
+
+
+
+
     
         /*unset($_COOKIE["name"]); 
         setcookie('name', null, -1, '/');*/
         
-        //echo $_COOKIE["showAllProductsLike"];
-        
-
-
 
         //unset($_COOKIE["showAllProductsLike"]); 
         //setcookie('showAllProductsLike', null, -1, '/');
         
-        echo $_COOKIE["showAllProductsLike"];
+        //setcookie($name, '', time()-1000, '/');
+        
+        //echo $_COOKIE["showAllProductsLike"];
 
         
 ?>
@@ -468,7 +516,7 @@
                                     //queries to db 
 
                                     
-                                    $getAllProductsInfoQueryAND = isset($_COOKIE["showAllProductsLike"]) ? " AND Title LIKE '%" . $_COOKIE["showAllProductsLike"] . "%'" : '';
+                                    $getAllProductsInfoQueryAND = $showAllProductsLike != "" ? " AND Title LIKE '%" . $showAllProductsLike . "%'" : "";
                                     
                                     $getAllProductsInfoQuery = "SELECT `Id`, `Title`, /*`Description`,*/ 
                                         `Price`, /*`Amount`,*/ `Rating`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 $getAllProductsInfoQueryAND";
@@ -584,18 +632,13 @@
 
 
 
+                                    
+                                    $_SESSION["showAllProductsLike"] = "";
+                                    
 
 
-
-
-
-
-                                    if(isset($_COOKIE["showAllProductsLike"]))
-                                    {
-                                        //echo "<br><br><br><br><br><br><br><br>" . $_COOKIE["showAllProductsLike"];
-                                        unset($_COOKIE["showAllProductsLike"]); 
-                                        //setcookie('showAllProductsLike', null, -1, '/');
-                                    }
+                                    
+                                    
                                 ?>
 
                                     
@@ -634,7 +677,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div> -->
+                                </div> 
 
 
 
@@ -650,7 +693,7 @@
 
 
 
-                                <!-- <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
+                                 <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
                                     <div class="exclusive-item exclusive-item-three text-center mb-50">
                                         <div class="exclusive-item-thumb">
                                             <a href="shop-details.html">
@@ -1491,14 +1534,37 @@
 
         <script> 
 
+//window.onload
 
 
+
+
+
+                document.onloadeddata = a();
+
+                function a()
+                {
+                    document.cookie = "showAllProductsLike= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+                    //setcookie("showAllProductsLike", '', time()-1000);
+                    //alert(document.cookie);
+                    element = document.querySelector('.ui-slider-handle ui-state-default ui-corner-all')
+
+                    fontSize = element.tabindex;
+
+                    var elm = document.getElementByClassName("ui-slider-handle ui-state-default ui-corner-all").tabindex;
+                    alert(fontSize);
+                }
                 
                 function setCookie_ShowAllProductsLike(buttonText)
                 {
+                    var elm = document.getElementsByClassName("ui-slider-handle ui-state-default ui-corner-all")[0].style;
+                    alert(elm);
                     document.cookie = "showAllProductsLike=" + buttonText;
                     alert(document.cookie);
                 }
+
+
+                
 
                 // Creating a cookie after the document is ready
                 /*$(document).ready(function () {
