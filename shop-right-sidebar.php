@@ -1,20 +1,52 @@
 <?php
-    $showAllProductsLike = "";
+    $ShowAllProductsLike = "";
+    $SortAllProductsBy = "";
 
         if(array_key_exists('sortButton', $_POST))
         {
-            
-
             header("Location: shop-right-sidebar.php");
         }
             
         
-//echo $_COOKIE["showAllProductsLike"];
 if(session_id() == '' || !isset($_SESSION)) { // session isn't started
     session_start();
 }
 
-if(isset($_SESSION["showAllProductsLike"]) && $_SESSION["showAllProductsLike"] != "") 
+if(isset($_COOKIE["showAllProductsLike"]))
+{
+    $showAllProductsLikeCookie = $_COOKIE["showAllProductsLike"];
+    $_SESSION["showAllProductsLike"] = $showAllProductsLikeCookie;
+    $ShowAllProductsLike = $showAllProductsLikeCookie;
+        
+    echo "showAllProductsLike setted <br>";
+}
+else 
+{
+    $ShowAllProductsLike = "";
+    echo "showAllProductsLike not setted <br>";
+}
+
+
+if(isset($_COOKIE["sortAllProductsBy"]))
+{
+    $sortAllProductsByCookie = $_COOKIE["sortAllProductsBy"];
+    $_SESSION["sortAllProductsBy"] = $sortAllProductsByCookie;
+    $SortAllProductsBy = $sortAllProductsByCookie;
+        
+    echo "sortAllProductsBy setted <br>";
+}
+else 
+{
+    $SortAllProductsBy = "";
+    echo "sortAllProductsBy not setted <br>";
+}
+
+
+//$_SESSION["showAllProductsLike"] = $_COOKIE["showAllProductsLike"];
+//$showAllProductsLike = $_SESSION["showAllProductsLike"];
+
+
+/*if(isset($_SESSION["showAllProductsLike"]) && $_SESSION["showAllProductsLike"] != "") 
 {
     $showAllProductsLike = $_SESSION["showAllProductsLike"];
     //echo " isNewsSortedByOlder exists and = " . var_dump($_SESSION["isNewsSortedByOlder"]) . "<br>";
@@ -23,7 +55,11 @@ else
 {
     $_SESSION["showAllProductsLike"] = $_COOKIE["showAllProductsLike"];
     $showAllProductsLike = $_SESSION["showAllProductsLike"];
-}
+}*/
+
+
+
+
 
 //setcookie("showAllProductsLike", '', time()-1000);
 
@@ -464,18 +500,14 @@ else
                     <div class="row justify-content-center">
                         <div class="col-xl-9 col-lg-8">
                             <div class="shop-top-meta mb-40">
-                                <p class="show-result">Showing Products 1-12 Of 10 Result</p>
+                                <!-- <p class="show-result">Showing Products 1-12 Of 10 Result</p> -->
                                 <div class="shop-meta-right">
-                                    
-                                    <form action="#">
-                                        <select class="custom-select">
-                                            <option selected="">Default Sorting</option>
-                                            <option>Free Shipping</option>
-                                            <option>Best Match</option>
-                                            <option>Newest Item</option>
-                                            <option>Size A - Z</option>
-                                        </select>
-                                    </form>
+                                    <select class="custom-select" onchange="SetSelectedSortingType(this.value)"> 
+                                        <option selected="">Select</option>
+                                        <option value="Best Match">Best Match</option>
+                                        <option value="Newest Item">Newest Item</option>
+                                        <option value="A - Z">A - Z</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -516,7 +548,16 @@ else
                                     //queries to db 
 
                                     
-                                    $getAllProductsInfoQueryAND = $showAllProductsLike != "" ? " AND Title LIKE '%" . $showAllProductsLike . "%'" : "";
+                                    $getAllProductsInfoQueryAND = "";
+                                    $getAllProductsInfoQueryOREDERBY = ""; //ORDER BY `Date` DESC
+                                    if($ShowAllProductsLike != "")
+                                    {
+                                        $getAllProductsInfoQueryAND = $ShowAllProductsLike != "" ? " AND Title LIKE '%" . $ShowAllProductsLike . "%'" : "";
+                                    }
+                                    else if($SortAllProductsBy != "")
+                                    {
+                                        
+                                    }
                                     
                                     $getAllProductsInfoQuery = "SELECT `Id`, `Title`, /*`Description`,*/ 
                                         `Price`, /*`Amount`,*/ `Rating`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 $getAllProductsInfoQueryAND";
@@ -1178,14 +1219,10 @@ else
 
                                     <div class="shop-cat-list">
                                         <ul>
-
-
-                                            <form method="POST">
-
-                                            <li><a><button type="submit" name="sortButton" id="test" class="sort_button" onclick="setCookie_ShowAllProductsLike(this.innerHTML)"> Hoodie </button></a></li>
-                                            <li><a><button type="submit" name="sortButton" id="test" class="sort_button" onclick="setCookie_ShowAllProductsLike(this.innerHTML)"> Short Sleeve T-Shirt </button></a></li>
-                                            <li><a><button type="submit" name="sortButton" id="test" class="sort_button" onclick="setCookie_ShowAllProductsLike(this.innerHTML)"> Long Sleeve T-Shirt </button></a></li>
-                                            <li><a><button type="submit" name="sortButton" id="test" class="sort_button" onclick="setCookie_ShowAllProductsLike(this.innerHTML)"> Accessorie </button></a></li>
+                                            <li><a><button class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML)"> Hoodie </button></a></li>
+                                            <li><a><button class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML)"> Short Sleeve T-Shirt </button></a></li>
+                                            <li><a><button class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML)"> Long Sleeve T-Shirt </button></a></li>
+                                            <li><a><button class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML)"> Accessorie </button></a></li>
                                             
 
                                             <!-- <li><a href="#">Accessories</a><span>27</span></li> 
@@ -1196,9 +1233,6 @@ else
                                             <li><a href="#">Kitchen Accessories</a><span>16</span></li>-->
 
 
-
-
-                                            </form>
 
 
 
@@ -1234,6 +1268,13 @@ else
 
                                     
                                 </div>
+
+
+
+
+
+
+
                                 <div class="widget shop-widget mb-30">
                                     <div class="shop-widget-title">
                                         <h6 class="title">Filter By Price</h6>
@@ -1245,7 +1286,17 @@ else
                                             <input type="text" id="amount" name="price" placeholder="Add Your Price" />
                                         </div>
                                     </div>
+
+
+
                                 </div>
+
+
+
+
+
+
+
                                 <div class="widget shop-widget mb-30">
                                     <div class="shop-widget-title">
                                         <h6 class="title">NEW PRODUCT</h6>
@@ -1358,7 +1409,7 @@ else
                                         </div>
                                     </div>
                                 </div>
-                                <div class="widget shop-widget mb-30">
+                                <!-- <div class="widget shop-widget mb-30">
                                     <div class="shop-widget-title">
                                         <h6 class="title">Product Brand</h6>
                                     </div>
@@ -1397,7 +1448,7 @@ else
                                             </ul>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                                 
                             </aside>
                         </div>
@@ -1536,35 +1587,59 @@ else
 
 //window.onload
 
+                function SetDefinesSortingCostRange()
+                {
+                    costRangeValuesString = document.getElementById('amount').value;
+                    costRangeValuesNumber = costRangeValuesString.match(/^\d+|\d+\b|\d+(?=\w)/g);
+
+                    minCost = costRangeValuesNumber[0];
+                    maxCost = costRangeValuesNumber[1];
+                }
 
 
+                function SetSelectedSortingType(sortingType)
+                {
+                    //alert(sortingType);
+                    document.cookie = "sortAllProductsBy=" + sortingType;
+                    document.location.reload(true);
+                }
 
+                document.onloadeddata = DeleteSortingCookie();
 
-                document.onloadeddata = a();
-
-                function a()
+                function DeleteSortingCookie()
                 {
                     document.cookie = "showAllProductsLike= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+                    document.cookie = "sortAllProductsBy= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
                     //setcookie("showAllProductsLike", '', time()-1000);
                     //alert(document.cookie);
-                    element = document.querySelector('.ui-slider-handle ui-state-default ui-corner-all')
+                    /*element = document.querySelector('.ui-slider-handle ui-state-default ui-corner-all')
 
-                    fontSize = element.tabindex;
+                    fontSize = element.tabindex;*/
 
-                    var elm = document.getElementByClassName("ui-slider-handle ui-state-default ui-corner-all").tabindex;
-                    alert(fontSize);
+                    /*var elm = document.getElementByClassName("ui-slider-handle ui-state-default ui-corner-all").tabindex;
+                    alert(fontSize);*/
+
+                    
                 }
                 
-                function setCookie_ShowAllProductsLike(buttonText)
+                function SetCookie_ShowAllProductsLike(buttonText)
                 {
-                    var elm = document.getElementsByClassName("ui-slider-handle ui-state-default ui-corner-all")[0].style;
-                    alert(elm);
+                    /*var elm = document.getElementsByClassName("custom-select");
+                    alert(elm);*/
                     document.cookie = "showAllProductsLike=" + buttonText;
-                    alert(document.cookie);
+                    document.location.reload(true);
+                    //var elm = document.getElementsByClassName("custom-select")[0].textContent;
+                    //alert(elm);
+                    //alert(document.cookie);
                 }
 
 
-                
+                /*function getElementByXpath(path) 
+                {
+                    return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                }*/
+
+                //alert( getElementByXpath("//html/body/main/section[2]/div/div/div[2]/aside/div[2]/div[2]/div[1]/div/@style").item(1));
 
                 // Creating a cookie after the document is ready
                 /*$(document).ready(function () {
