@@ -1,116 +1,4 @@
-<script>
-
-/*ShowAllProductsLike_Current = "<?php echo $ShowAllProductsLike; ?>";
-                SortAllProductsBy_Current =  "<?php echo $SortAllProductsBy; ?>";
-                SortAllProductsByColor_Current =  "<?php echo $SortAllProductsByColor; ?>";
-
-                ShowAllProductsLike_New = "";
-                SortAllProductsBy_New = "";
-                SortAllProductsByColor_New = "";
-
-                document.onloadstart = SetElementsData();
-
-                function SetElementsData()
-                {
-                    //alert(ShowAllProductsLike_Current + " " + SortAllProductsBy_Current + " " + SortAllProductsByColor_Current);
-
-                    document.getElementById("sortingTypeOption_1").setAttribute("selected", "'';");
-                    document.getElementById("sortingButton_1").setAttribute("style", "background-color: black;");
-                    document.getElementById("sortingColor_1").setAttribute("style", "background-color: black;");
-                }
-
-
-
-                document.onloadeddata = DeleteSortingCookie();
-
-                function DeleteSortingCookie()
-                {
-                    document.cookie = "showAllProductsLike= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
-                    document.cookie = "sortAllProductsBy= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
-                    document.cookie = "sortAllProductsByColor= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
-                }
-
-
-                //window.onbeforeunload = alert("1");
-                //location.onbeforeunload = alert("2");
-
-                function IsSortingParametersChanged()
-                {
-                    if(ShowAllProductsLike_Current != ShowAllProductsLike_New)
-                    {
-                        alert(ShowAllProductsLike_Current);
-                    }
-                    else if(SortAllProductsBy_Current != SortAllProductsBy_New)
-                    {
-                        alert(SortAllProductsBy_Current);
-                    }
-                    else if(SortAllProductsByColor_Current != SortAllProductsByColor_New)
-                    {
-                        alert(SortAllProductsByColor_Current);
-                    }
-                    else
-                    {
-                        DeleteSortingCookie();
-                    }
-                }
-
-
-                //SORTING TYPE
-
-                function SetSelectedSortingType(sortingType)
-                {
-                    SortAllProductsBy_New = sortingType;
-                    document.cookie = "sortAllProductsBy=" + sortingType;
-                    document.location.reload(true);
-                }
-
-
-
-
-
-                //PRODUCT CATEGORIES
-
-                function SetCookie_ShowAllProductsLike(buttonText)
-                {
-                    ShowAllProductsLike_New = buttonText;
-                    document.cookie = "showAllProductsLike=" + buttonText;
-                    document.location.reload(true);
-                }
-
-
-
-
-                //FILTER BY PRICE
-
-                function SetDefinesSortingCostRange()
-                {
-                    costRangeValuesString = document.getElementById('amount').value;
-                    costRangeValuesNumber = costRangeValuesString.match(/^\d+|\d+\b|\d+(?=\w)/g);
-
-                    minCost = costRangeValuesNumber[0];
-                    maxCost = costRangeValuesNumber[1];
-                }
-
-                
-
-                
-
-                //FILTER COLOR
-
-                function SetSelectedFilterColor(color)
-                {
-                    SortAllProductsByColor_New = color;
-                    document.cookie = "sortAllProductsByColor=" + color;
-                    document.location.reload(true);
-                }*/
-</script>
-
 <?php
-
-    //db connection
-
-//use function PHPSTORM_META\type;
-
     $newsDB = "thelongdark";
     $newsTable = "news";
 
@@ -129,13 +17,6 @@
 
     $newsInfoQuerySortedByOlder = "SELECT `Title`, `Date`, 
         `ImagePath`, `PageFilePath` FROM $newsTable ORDER BY `Date` ASC";
-
-
-
-    
-    
-    
-    //session_name("Private");
 
     // server should keep session data for AT LEAST 1 hour
     ini_set('session.gc_maxlifetime', 3600);
@@ -199,6 +80,43 @@
 
 
 
+
+
+
+
+
+
+
+
+    $IsAllNewsSortedByOlder = false;
+
+    if(isset($_COOKIE["IsAllNewsSortedByOlder"]))
+    {
+        $IsAllNewsSortedByOlder = $_COOKIE["IsAllNewsSortedByOlder"];
+        //echo "IsAllNewsSortedByOlder setted <br>";
+    }
+    else 
+    {
+        $IsAllNewsSortedByOlder = false;
+        //echo "IsAllNewsSortedByOlder not setted <br>";
+    }
+
+
+
+
+
+    $SearchedText = "";
+
+    if(isset($_COOKIE["SearchedText"]))
+    {
+        $SearchedText = $_COOKIE["SearchedText"];
+        //echo "SearchedText setted <br>";
+    }
+    else 
+    {
+        $SearchedText = "";
+        //echo "SearchedText not setted <br>";
+    }
 
     /*if($_SESSION["isNewsSortedByOlder"] == null) $_SESSION["isNewsSortedByOlder"] = false;
     if($_SESSION["isSearchPerformed"] == null) $_SESSION["isSearchPerformed"] = false;
@@ -345,20 +263,17 @@ INSERT INTO `testtable` ". "(`TestColumn1`, `TestColumn2`) ". "VALUES('Second no
 
 
 
-                                <form action="long_dark_news.php" method="get" target="_blank">
-                                    <button type="submit" name="searchButton" id="searchButton" class="button_search_button">
+                                    <button id="searchButton" class="button_search_button" onclick="OnSearchButtonClick()">
                                         <span class="noselect">
                                             <img src="img/loupe.png" alt=""> 
                                         </span>
                                         <div id="circle"></div> 
                                     </button>
-                                </form>
 
 
                                 
-                                <form action="long_dark_news.php" method="post" target="_blank">
-                                    <input class="search_field" placeholder="Search text" type="text" size="15" name="searchField" id="searchField">
-                                </form>
+                                    <input class="search_field" placeholder="Search text" type="text" size="15" id="searchField" onkeydown="OnSearchSubmit(this, this.value)">
+                             
                                 
                                 
                                 
@@ -385,15 +300,25 @@ INSERT INTO `testtable` ". "(`TestColumn1`, `TestColumn2`) ". "VALUES('Second no
             <!-- SORTING BUTTON -->
     
 
-            <form method="post" target="_blank">
-                <button type="submit" name="sortButton" id="test" class="sort_button">
+
+
+
+
+
+
+                <button name="sortButton" id="test" class="sort_button" onclick="OnSortButtonClick()">
                     <img class="sort_button" src="img/sort-down.png" alt="">
                 </button>
-                <button type="submit" name="showAllNews" id="test" class="sort_button">
+                <!-- <button name="showAllNews" id="test" class="sort_button">
                     <img class="sort_button" src="img/loupe.png" alt="">
-                </button>
-            </form>
+                </button> -->
         </h1>
+
+
+
+
+
+
         
 
         <!-- <script type="text/javascript">
@@ -407,28 +332,6 @@ INSERT INTO `testtable` ". "(`TestColumn1`, `TestColumn2`) ". "VALUES('Second no
 
             <?php
 
-
-  
-
-
-
-                        //sortButton 
-
-
-                function OnButtonSortClick()
-                {
-                    if(!$_SESSION["isNewsSortedByOlder"])
-                        $_SESSION["isNewsSortedByOlder"] = true;
-                    else if($_SESSION["isNewsSortedByOlder"])
-                        $_SESSION["isNewsSortedByOlder"] = false;
-
-                    //echo "isNewsSortedByOlder <br>";
-                    //var_dump($_SESSION["isNewsSortedByOlder"]);
-                    
-                    
-                        
-                }
-
                 function SortNewsByOlder()
                 {
                     global $newsInfoQuerySortedByOlder;
@@ -441,10 +344,10 @@ INSERT INTO `testtable` ". "(`TestColumn1`, `TestColumn2`) ". "VALUES('Second no
                     CreateNewsBlock($newsInfoQuerySortedByNewer);
                 }
 
-                if(array_key_exists('sortButton', $_POST))
+                /*if(array_key_exists('sortButton', $_POST))
                 {
                     OnButtonSortClick();
-                }
+                }*/
 
 
                 
@@ -459,7 +362,7 @@ INSERT INTO `testtable` ". "(`TestColumn1`, `TestColumn2`) ". "VALUES('Second no
 
 
 
-                function OnButtonShowAllNewsClick()
+                /*function OnButtonShowAllNewsClick()
                 {
                     $_SESSION["isNewsSortedByOlder"] = $_SESSION["isSearchPerformed"] = false;
 
@@ -468,7 +371,7 @@ INSERT INTO `testtable` ". "(`TestColumn1`, `TestColumn2`) ". "VALUES('Second no
                 if(array_key_exists('showAllNews', $_POST))
                 {
                     OnButtonShowAllNewsClick();
-                }
+                }*/
 
 
 
@@ -481,10 +384,10 @@ INSERT INTO `testtable` ". "(`TestColumn1`, `TestColumn2`) ". "VALUES('Second no
 
 
 
-                function OnSearchClick()
+                /*function OnSearchClick()
                 {
                     PrintFindedNews();
-                }
+                }*/
 
                 function PrintFindedNews()
                 {
@@ -508,10 +411,10 @@ INSERT INTO `testtable` ". "(`TestColumn1`, `TestColumn2`) ". "VALUES('Second no
                     $_SESSION["isNewsSortedByOlder"] = false;
                 }
 
-                if(array_key_exists('searchField', $_POST))
+                /*if(array_key_exists('searchField', $_POST))
                 {
                     OnSearchClick();
-                }
+                }*/
 
                 function GetSearchQuery(string $searchText)
                 {
@@ -521,6 +424,10 @@ INSERT INTO `testtable` ". "(`TestColumn1`, `TestColumn2`) ". "VALUES('Second no
 
                     return $newsInfoQuerySearch;
                 }
+
+
+
+
 
 
 
@@ -558,12 +465,24 @@ INSERT INTO `testtable` ". "(`TestColumn1`, `TestColumn2`) ". "VALUES('Second no
 
 
 
+            if($SearchedText != "")
+            {
+                $searchQuery = GetSearchQuery($SearchedText);
+                CreateNewsBlock($searchQuery);
+            }
+            else if($IsAllNewsSortedByOlder == true)
+            {
+                SortNewsByOlder();
+            }
+            else
+            {
+                SortNewsByNewer();
+            }
+            
 
 
 
-
-
-            if($_SESSION["isNewsSortedByOlder"])
+            /*if($_SESSION["isNewsSortedByOlder"])
             {
                 //echo "isNewsSortedByOlder <br><br><br><br><br><br><br>";
                 SortNewsByOlder();
@@ -579,7 +498,7 @@ INSERT INTO `testtable` ". "(`TestColumn1`, `TestColumn2`) ". "VALUES('Second no
             {
                 //echo "SortNewsByNewer <br><br><br><br><br><br><br>";
                 SortNewsByNewer();
-            }
+            }*/
                 
 
 
@@ -864,10 +783,74 @@ INSERT INTO `testtable` ". "(`TestColumn1`, `TestColumn2`) ". "VALUES('Second no
 
 
 </footer>
-
-
-
-
-
     </body>
+
+
+
+
+
+
+
+
+    <script> 
+
+        IsAllNewsSortedByOlder = "<?php echo $IsAllNewsSortedByOlder; ?>";
+
+        document.onloadeddata = deleteAllCookies();
+
+        function OnSortButtonClick()
+        {
+            if(IsAllNewsSortedByOlder == true)
+            {   
+                document.cookie = "IsAllNewsSortedByOlder=" + "false"
+            }
+            else if(IsAllNewsSortedByOlder == false)
+            {   
+                document.cookie = "IsAllNewsSortedByOlder=" + "true"
+            }
+
+            document.location.reload(true);
+        }
+
+        function OnSearchSubmit(pressedKey, searchFieldText) 
+        {
+            if(event.key === 'Enter') 
+            {
+                document.cookie = "SearchedText=" + searchFieldText;
+                document.location.reload(true);
+            }
+        }
+
+        function OnSearchButtonClick()
+        {
+            var searchFieldText = document.getElementById("searchField").value;
+            if(searchFieldText != "")
+            {
+                document.cookie = "SearchedText=" + searchFieldText;   
+                document.location.reload(true);      
+            }
+        }   
+
+        function deleteAllCookies() 
+        {
+            var cookies = document.cookie.split(";");
+
+            for (var i = 0; i < cookies.length; i++) 
+            {
+                var cookie = cookies[i];
+                var eqPos = cookie.indexOf("=");
+                var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            }
+        }
+
+    </script>
+
+
+
+
+
+
+
+
     </html>
