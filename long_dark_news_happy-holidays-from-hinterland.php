@@ -1005,7 +1005,7 @@ transition: 1s;
         <div class="header_nav">
             <ul class="header_inner_ul">
                 <li >
-                    <a href="http://localhost:8080/site/long_dark_news.php">NEWS</a>
+                    <a href="long_dark_news.html">NEWS</a>
                 </li>
 
                 <li >
@@ -1379,7 +1379,7 @@ transition: 1s;
 
         <ul class="footer_list_text">
             <li >
-                <a href="http://localhost:8080/site/long_dark_news.php" class="footer_list_text_li">NEWS</a>
+                <a href="long_dark_news.html" class="footer_list_text_li">NEWS</a>
             </li>
 
             <li >
