@@ -548,10 +548,10 @@ else
                                 <!-- <p class="show-result">Showing Products 1-12 Of 10 Result</p> -->
                                 <div class="shop-meta-right">
                                     <select class="custom-select" onchange="SetSelectedSortingType(this.value)"> 
-                                        <option selected="" value="">Select</option>
-                                        <option value="Best Match">Best Match</option>
-                                        <option value="Newest Item">Newest Item</option>
-                                        <option value="A - Z">A - Z</option>
+                                        <option id="sortingType_1" value="">Select</option>
+                                        <option id="sortingType_2" value="Best Match">Best Match</option>
+                                        <option id="sortingType_3" value="Newest Item">Newest Item</option>
+                                        <option id="sortingType_4" value="A - Z">A - Z</option>
                                     </select>
                                 </div>
                             </div>
@@ -1279,7 +1279,7 @@ else
                             
                             
                             
-                            
+                                    <!-- PRODUCT CATEGORY (TYPE) -->
                             
                             
                                 <div class="shop-widget-title">
@@ -1287,10 +1287,10 @@ else
                                 </div>
                                 <div class="shop-cat-list">
                                     <ul>
-                                        <li><a><button class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML)"> Hoodie </button></a></li>
-                                        <li><a><button class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML)"> Short Sleeve T-Shirt </button></a></li>
-                                        <li><a><button class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML)"> Long Sleeve T-Shirt </button></a></li>
-                                        <li><a><button class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML)"> Accessorie </button></a></li>
+                                        <li><a><button id="productCategoriesButton_1" class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML, this.id)"> Hoodie </button></a></li>
+                                        <li><a><button id="productCategoriesButton_2" class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML, this.id)"> Short Sleeve T-Shirt </button></a></li>
+                                        <li><a><button id="productCategoriesButton_3" class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML, this.id)"> Long Sleeve T-Shirt </button></a></li>
+                                        <li><a><button id="productCategoriesButton_4" class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML, this.id)"> Accessorie </button></a></li>
                                         
 
                                         <!-- <li><a href="#">Accessories</a><span>27</span></li> 
@@ -1329,11 +1329,11 @@ else
                                         </div>
                                         <div class="shop-size-list">
                                             <ul>
-                                                <li onclick="SetSelectedFilterColor('Orange')"></li>
-                                                <li onclick="SetSelectedFilterColor('Yellow')"></li>
-                                                <li onclick="SetSelectedFilterColor('Green')"></li>
-                                                <li onclick="SetSelectedFilterColor('Blue')"></li>
-                                                <li onclick="SetSelectedFilterColor('Black')"></li>
+                                                <li id="filterColor_1" onclick="SetSelectedFilterColor('Orange', this.id)"></li>
+                                                <li id="filterColor_2" onclick="SetSelectedFilterColor('Yellow', this.id)"></li>
+                                                <li id="filterColor_3" onclick="SetSelectedFilterColor('Green', this.id)"></li>
+                                                <li id="filterColor_4" onclick="SetSelectedFilterColor('Blue', this.id)"></li>
+                                                <li id="filterColor_5" onclick="SetSelectedFilterColor('Black', this.id)"></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -1655,6 +1655,37 @@ else
 
                 
 
+                
+                SortingBySelectedId = "<?php if(isset($_COOKIE["sortAllProductsBySelectedId"])) echo $_COOKIE["sortAllProductsBySelectedId"]; else echo ""; ?>"
+                SortingByTypeId = "<?php if(isset($_COOKIE["showAllProductsByTypeId"])) echo $_COOKIE["showAllProductsByTypeId"]; else echo ""; ?>"
+                SortingByColorId = "<?php if(isset($_COOKIE["sortAllProductsByColorId"])) echo $_COOKIE["sortAllProductsByColorId"]; else echo ""; ?>"
+
+
+                if(SortingBySelectedId != "")
+                {
+                    //alert(SortingBySelectedId);
+                    var selectedOption = document.getElementById(SortingBySelectedId);
+                    selectedOption.setAttribute('selected', '""');
+                }
+                if(SortingByTypeId != "")
+                {
+                    var pressedButton = document.getElementById(SortingByTypeId);
+                    pressedButton.setAttribute('style', 'background-color: black');
+                }
+                if(SortingByColorId != "")
+                {
+                    var pressedColor = document.getElementById(SortingByColorId);
+                    pressedColor.setAttribute('style', 'background-color: black');
+                }
+
+                
+                
+                
+
+
+
+
+
                 document.onloadeddata = DeleteSortingCookie();
 
                 function DeleteSortingCookie()
@@ -1707,6 +1738,13 @@ else
                     document.cookie = "sortAllProductsByColor2=" + SortAllProductsByColor_Current;
                 }
 
+                function SaveSelectedParametersID()
+                {
+                    document.cookie = "sortAllProductsBySelectedId=" + SortingBySelectedId;
+                    document.cookie = "showAllProductsByTypeId=" + SortingByTypeId;
+                    document.cookie = "sortAllProductsByColorId=" + SortingByColorId;
+                }
+
                 
 
                 //SORTING TYPE (--select--)
@@ -1715,8 +1753,41 @@ else
                 {
                     if(sortingType != SortAllProductsBy_Current)
                         SortAllProductsBy_Current = sortingType;
+
+
+                    /*var selectedOption = document.getElementById(id);
+                    selectedOption.setAttribute('selected', '""');*/
+
+                    //SortingBySelectedId = id;
+                    //alert(id);
+
+
+                    //alert(sortingType);
+                    if(sortingType == "")
+                    {
+                        SortingBySelectedId = "sortingType_1";
+                    }
+                    else if(sortingType == "Best Match")
+                    {
+                        SortingBySelectedId = "sortingType_2";
+                    }
+                    else if(sortingType == "Newest Item")
+                    {
+                        SortingBySelectedId = "sortingType_3";
+                    }
+                    else if(sortingType == "A - Z")
+                    {
+                        SortingBySelectedId = "sortingType_4";
+                    }
+
+                    
+
+
+
+
                     
                     SaveCookies();
+                    SaveSelectedParametersID();
                     //document.cookie = "sortAllProductsBy=" + sortingType;
                     document.location.reload(true);
                 }
@@ -1725,15 +1796,18 @@ else
 
                 //PRODUCT CATEGORIES (types)
 
-                function SetCookie_ShowAllProductsLike(buttonText)
+                function SetCookie_ShowAllProductsLike(buttonText, id)
                 {
                     if(buttonText != ShowAllProductsLike_Current)
                         ShowAllProductsLike_Current = buttonText;
-                        
+                    
+                    var pressedButton = document.getElementById(id);
+                    pressedButton.setAttribute('style', 'background-color: black');
 
-                    //ShowAllProductsLike_New = buttonText;
+                    SortingByTypeId = id;
                     
                     SaveCookies();
+                    SaveSelectedParametersID();
                     //document.cookie = "showAllProductsLike=" + buttonText;
                     document.location.reload(true);
                 }
@@ -1758,7 +1832,7 @@ else
 
                 //FILTER COLOR
 
-                function SetSelectedFilterColor(color)
+                function SetSelectedFilterColor(color, id)
                 {
                     if(color != SortAllProductsByColor_Current)
                     SortAllProductsByColor_Current = color;
@@ -1766,8 +1840,13 @@ else
                     //SortAllProductsByColor_New = color;
                     //document.cookie = "sortAllProductsByColor2=" + color;
 
-                    
+                    var pressedColor = document.getElementById(id);
+                    pressedColor.setAttribute('style', 'background-color: black');
+
+                    SortingByColorId = id;
+
                     SaveCookies();
+                    SaveSelectedParametersID();
                     document.location.reload(true);
                 }
 
@@ -1874,14 +1953,6 @@ else
 
 
 		<!-- JS here -->
-
-
-
-
-
-
-
-
 
 
         <script src="js/vendor/jquery-3.5.0.min.js"></script>
