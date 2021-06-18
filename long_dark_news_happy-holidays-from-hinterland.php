@@ -1005,7 +1005,7 @@ transition: 1s;
         <div class="header_nav">
             <ul class="header_inner_ul">
                 <li >
-                    <a href="long_dark_news.html">NEWS</a>
+                    <a href="long_dark_news.php">NEWS</a>
                 </li>
 
                 <li >
@@ -1020,7 +1020,7 @@ transition: 1s;
                     <a href="https://hinterlandforums.com/forums/"  target="_blank" >COMMUNITY</a>
                 </li>
                 <li>
-                    <a href="shop-right-sidebar.html"   >SHOP</a>
+                    <a href="shop-right-sidebar.php"   >SHOP</a>
                 </li>
                 <li>
                     <a href="https://hinterlandgames.zendesk.com/hc/en-us"  target="_blank"  >SUPPORT</a>
@@ -1379,7 +1379,7 @@ transition: 1s;
 
         <ul class="footer_list_text">
             <li >
-                <a href="long_dark_news.html" class="footer_list_text_li">NEWS</a>
+                <a href="long_dark_news.php" class="footer_list_text_li">NEWS</a>
             </li>
 
             <li >
@@ -1394,7 +1394,7 @@ transition: 1s;
                 <a href="https://hinterlandforums.com/forums/" class="footer_list_text_li" target="_blank" >COMMUNITY</a>
             </li>
             <li>
-                <a href="shop-right-sidebar.html"  class="footer_list_text_li" >SHOP</a>
+                <a href="shop-right-sidebar.php"  class="footer_list_text_li" >SHOP</a>
             </li>
             <li>
                 <a href="https://hinterlandgames.zendesk.com/hc/en-us"class="footer_list_text_li"  target="_blank"  >SUPPORT</a>

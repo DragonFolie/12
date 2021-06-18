@@ -1,89 +1,82 @@
 <?php
-        
 
-        if(array_key_exists('sortButton', $_POST))
-        {
-            header("Location: shop-right-sidebar.php");
-        }
-            
-        
-        if(session_id() == '' || !isset($_SESSION)) { // session isn't started
-            session_start();
-        }
 
+if (array_key_exists('sortButton', $_POST)) {
+    header("Location: shop-right-sidebar.php");
+}
+
+
+if (session_id() == '' || !isset($_SESSION)) { // session isn't started
+    session_start();
+}
 
 
 
 
 
-        $ShowAllProductsLike = "";
-        $SortAllProductsBy = "";
-        $SortAllProductsByColor = "";
-        $SortAllProductsByPrice = array(
-            "min" => "",
-            "max" => "",
-        ); 
 
-        //(Base Type)
+$ShowAllProductsLike = "";
+$SortAllProductsBy = "";
+$SortAllProductsByColor = "";
+$SortAllProductsByPrice = array(
+    "min" => "",
+    "max" => "",
+);
 
-
-        if(isset($_COOKIE["showAllProductsLike"]))
-        {
-            $showAllProductsLikeCookie = $_COOKIE["showAllProductsLike"];
-            $_SESSION["showAllProductsLike"] = $showAllProductsLikeCookie;
-            $ShowAllProductsLike = $showAllProductsLikeCookie;
-                
-            //echo "showAllProductsLike setted = " . $ShowAllProductsLike . "<br>";
-        }
-        else 
-        {
-            $ShowAllProductsLike = "";
-            //echo "showAllProductsLike not setted <br>";
-        }
+//(Base Type)
 
 
+if (isset($_COOKIE["showAllProductsLike"])) {
+    $showAllProductsLikeCookie = $_COOKIE["showAllProductsLike"];
+    $_SESSION["showAllProductsLike"] = $showAllProductsLikeCookie;
+    $ShowAllProductsLike = $showAllProductsLikeCookie;
 
-
-
-        //(--Select--)
-
-
-
-
-        if(isset($_COOKIE["sortAllProductsBy"]))
-        {
-            $sortAllProductsByCookie = $_COOKIE["sortAllProductsBy"];
-            $_SESSION["sortAllProductsBy"] = $sortAllProductsByCookie;
-            $SortAllProductsBy = $sortAllProductsByCookie;
-                
-            //echo "sortAllProductsBy setted = " . $SortAllProductsBy . "<br>";
-        }
-        else 
-        {
-            $SortAllProductsBy = "";
-            //echo "sortAllProductsBy not setted <br>";
-        }
+//echo "showAllProductsLike setted = " . $ShowAllProductsLike . "<br>";
+}
+else {
+    $ShowAllProductsLike = "";
+//echo "showAllProductsLike not setted <br>";
+}
 
 
 
 
 
-        //Color
+//(--Select--)
 
 
-        if(isset($_COOKIE["sortAllProductsByColor2"]))
-        {
-            $sortAllProductsByColorCookie = $_COOKIE["sortAllProductsByColor2"];
-            $_SESSION["sortAllProductsByColor2"] = $sortAllProductsByColorCookie;
-            $SortAllProductsByColor = $sortAllProductsByColorCookie;
-                
-            //echo "sortAllProductsByColor2 setted = " . $SortAllProductsByColor . "<br>";
-        }
-        else 
-        {
-            $SortAllProductsByColor = "";
-            //echo "sortAllProductsByColor2 not setted <br>";
-        }
+
+
+if (isset($_COOKIE["sortAllProductsBy"])) {
+    $sortAllProductsByCookie = $_COOKIE["sortAllProductsBy"];
+    $_SESSION["sortAllProductsBy"] = $sortAllProductsByCookie;
+    $SortAllProductsBy = $sortAllProductsByCookie;
+
+//echo "sortAllProductsBy setted = " . $SortAllProductsBy . "<br>";
+}
+else {
+    $SortAllProductsBy = "";
+//echo "sortAllProductsBy not setted <br>";
+}
+
+
+
+
+
+//Color
+
+
+if (isset($_COOKIE["sortAllProductsByColor2"])) {
+    $sortAllProductsByColorCookie = $_COOKIE["sortAllProductsByColor2"];
+    $_SESSION["sortAllProductsByColor2"] = $sortAllProductsByColorCookie;
+    $SortAllProductsByColor = $sortAllProductsByColorCookie;
+
+//echo "sortAllProductsByColor2 setted = " . $SortAllProductsByColor . "<br>";
+}
+else {
+    $SortAllProductsByColor = "";
+//echo "sortAllProductsByColor2 not setted <br>";
+}
 
 
 
@@ -93,46 +86,40 @@
 
 
 
-        //Price
+//Price
 
 
-        if(isset($_COOKIE["sortAllProductsByPriceMin"]) && isset($_COOKIE["sortAllProductsByPriceMax"]))
-        {
-            
+if (isset($_COOKIE["sortAllProductsByPriceMin"]) && isset($_COOKIE["sortAllProductsByPriceMax"])) {
 
-            $SortAllProductsByPrice["min"] = $_COOKIE["sortAllProductsByPriceMin"];
-            $SortAllProductsByPrice["max"] = $_COOKIE["sortAllProductsByPriceMax"];
 
-            //echo $SortAllProductsByPrice["min"]. "  And  " . $SortAllProductsByPrice["max"];
-                
-            //echo "sortAllProductsByPriceMin and sortAllProductsByPriceMax setted = " . $SortAllProductsByColor . "<br>";
-        }
-        else 
-        {
-            $SortAllProductsByPrice["min"] = "";
-            $SortAllProductsByPrice["max"] = "";
-            //echo "sortAllProductsByPriceMin and Max not setted <br>";
-        }
+    $SortAllProductsByPrice["min"] = $_COOKIE["sortAllProductsByPriceMin"];
+    $SortAllProductsByPrice["max"] = $_COOKIE["sortAllProductsByPriceMax"];
+
+//echo $SortAllProductsByPrice["min"]. "  And  " . $SortAllProductsByPrice["max"];
+
+//echo "sortAllProductsByPriceMin and sortAllProductsByPriceMax setted = " . $SortAllProductsByColor . "<br>";
+}
+else {
+    $SortAllProductsByPrice["min"] = "";
+    $SortAllProductsByPrice["max"] = "";
+//echo "sortAllProductsByPriceMin and Max not setted <br>";
+}
 
 
 
-        //unset($_COOKIE['sortAllProductsByColor']); 
-        
+//unset($_COOKIE['sortAllProductsByColor']); 
+
+
 
 //$_SESSION["showAllProductsLike"] = $_COOKIE["showAllProductsLike"];
 //$showAllProductsLike = $_SESSION["showAllProductsLike"];
 
 
-/*if(isset($_SESSION["showAllProductsLike"]) && $_SESSION["showAllProductsLike"] != "") 
-{
-    $showAllProductsLike = $_SESSION["showAllProductsLike"];
-    //echo " isNewsSortedByOlder exists and = " . var_dump($_SESSION["isNewsSortedByOlder"]) . "<br>";
-}
-else
-{
-    $_SESSION["showAllProductsLike"] = $_COOKIE["showAllProductsLike"];
-    $showAllProductsLike = $_SESSION["showAllProductsLike"];
-}*/
+/*if(isset($_SESSION["showAllProductsLike"]) && $_SESSION["showAllProductsLike"] != "")  {
+ $showAllProductsLike = $_SESSION["showAllProductsLike"];
+ //echo " isNewsSortedByOlder exists and = " . var_dump($_SESSION["isNewsSortedByOlder"]) . "<br>"; } else {
+ $_SESSION["showAllProductsLike"] = $_COOKIE["showAllProductsLike"];
+ $showAllProductsLike = $_SESSION["showAllProductsLike"]; }*/
 
 
 
@@ -140,46 +127,46 @@ else
 
 //setcookie("showAllProductsLike", '', time()-1000);
 
-        
-        //$showAllProductsLike = $_COOKIE["showAllProductsLike"];
-        //echo "<br><br><br><br><br><br><br><br><br><br>" . $showAllProductsLike;
+
+//$showAllProductsLike = $_COOKIE["showAllProductsLike"];
+//echo "<br><br><br><br><br><br><br><br><br><br>" . $showAllProductsLike;
 
 
-        //setcookie("showAllProductsLike", '', time()-1000);
+//setcookie("showAllProductsLike", '', time()-1000);
 
 
 
-        /*if(isset($_COOKIE["showAllProductsLike"]))
-        {
-            $showAllProductsLike = $_COOKIE["showAllProductsLike"];
-            setcookie("showAllProductsLike", '', time()-1000);
-
-            
-            echo "<br><br><br><br><br><br><br><br><br><br>" . $showAllProductsLike;
-            
-            //setcookie('showAllProductsLike', null, -1, '/');
-        }*/
-
-
+/*if(isset($_COOKIE["showAllProductsLike"]))
+ {
+ $showAllProductsLike = $_COOKIE["showAllProductsLike"];
+ setcookie("showAllProductsLike", '', time()-1000);
+ 
+ echo "<br><br><br><br><br><br><br><br><br><br>" . $showAllProductsLike;
+ 
+ //setcookie('showAllProductsLike', null, -1, '/');
+ }*/
 
 
 
 
 
 
-    
-        /*unset($_COOKIE["name"]); 
-        setcookie('name', null, -1, '/');*/
-        
 
-        //unset($_COOKIE["showAllProductsLike"]); 
-        //setcookie('showAllProductsLike', null, -1, '/');
-        
-        //setcookie($name, '', time()-1000, '/');
-        
-        //echo $_COOKIE["showAllProductsLike"];
 
-        
+
+/*unset($_COOKIE["name"]); 
+ setcookie('name', null, -1, '/');*/
+
+
+//unset($_COOKIE["showAllProductsLike"]); 
+//setcookie('showAllProductsLike', null, -1, '/');
+
+//setcookie($name, '', time()-1000, '/');
+
+//echo $_COOKIE["showAllProductsLike"];
+
+
+
 ?>
 
 
@@ -347,7 +334,7 @@ else
                                     </div>
                                     <div class="navbar-wrap main-menu d-none d-lg-flex">
                                         <ul class="navigation">
-                                            <li ><a href="long_dark_news.html">NEWS</a></li>
+                                            <li ><a href="long_dark_news.php">NEWS</a></li>
 
                                             <li><a href="long_dark_survival_mode.html">SURVIVAL MODE </a></li>
 
@@ -355,7 +342,7 @@ else
 
                                             <li ><a href="https://hinterlandforums.com/forums/" target="_blank">COMMUNITY</a></li>
 
-                                            <li class="dropdown active"><a href="shop-right-sidebar.html">SHOP</a></li>
+                                            <li class="dropdown active"><a href="shop-right-sidebar.php">SHOP</a></li>
 
                                             <li><a href="https://hinterlandgames.zendesk.com/hc/en-us" target="_blank">SUPPORT</a></li>
                                             
@@ -392,8 +379,8 @@ else
                                     <div class="header-action d-none d-md-block">
                                         <ul>
                                             <li><a href="#"><i class="flaticon-two-arrows"></i></a></li>
-                                            <li><a href="wishlist.html"><i class="flaticon-heart"></i></a></li>
-                                            <li class="header-shop-cart"><a href="wishlist.html"><i class="flaticon-shopping-bag"></i><span class="cart-count">2</span></a>
+                                            <li><a href="wishlist.php"><i class="flaticon-heart"></i></a></li>
+                                            <li class="header-shop-cart"><a href="wishlist.php"><i class="flaticon-shopping-bag"></i><span class="cart-count">2</span></a>
                                                 <span class="cart-total-price">$ 128.00</span>
                                                 <ul class="minicart">
                                                     <li class="d-flex align-items-start">
@@ -450,7 +437,7 @@ else
                                                     </li>
                                                     <li>
                                                         <div class="checkout-link">
-                                                            <a href="wishlist.html">Shopping Cart</a>
+                                                            <a href="wishlist.php">Shopping Cart</a>
                                                             <a class="red-color" href="#">Checkout</a>
                                                         </div>
                                                     </li>
@@ -608,149 +595,140 @@ else
 
 
 
-                                <?php   //Products blocks generationg from bd
+                                <?php //Products blocks generationg from bd
 
-                                    $shopDB = "thelongdark";
-                                    $shopTable = "shop";
-                                    $shopDiscountsTable = "shopdiscounts";
+$shopDB = "thelongdark";
+$shopTable = "shop";
+$shopDiscountsTable = "shopdiscounts";
 
-                                    $link = mysqli_connect("localhost", "root", "123mnbzzZ01p", $shopDB);
+$link = mysqli_connect("localhost", "DragonFolie", "nair6455", $shopDB);
 
-                                    if (mysqli_connect_errno()) 
-                                    {
-                                        printf("Connect failed: %s\n", mysqli_connect_error());
-                                        exit();
-                                    }
+if (mysqli_connect_errno()) {
+    printf("Connect failed: %s\n", mysqli_connect_error());
+    exit();
+}
 
-                                    //queries to db 
+//queries to db 
 
-                                    
-                                    $getAllProductsInfoQueryAND = "";
-                                    $getAllProductsInfoQueryOREDERBY = ""; 
-                                    
-                                    
-                                    
-                                    
-                                    if($ShowAllProductsLike != "")
-                                    {
-                                        $getAllProductsInfoQueryAND = " AND Title LIKE '%" . $ShowAllProductsLike . "%'";
-                                    }
+
+$getAllProductsInfoQueryAND = "";
+$getAllProductsInfoQueryOREDERBY = "";
 
 
 
 
-                                    if($SortAllProductsBy != "")
-                                    {
-                                        $sortQuery = "";
-
-                                        if($SortAllProductsBy == "Best Match")
-                                            $sortQuery = "ORDER BY $shopTable.Rating DESC";
-
-                                        else if($SortAllProductsBy == "Newest Item")
-                                            $sortQuery = "ORDER BY $shopTable.AddedDate DESC";
-
-                                        else if($SortAllProductsBy == "A - Z")
-                                            $sortQuery = "ORDER BY $shopTable.Title DESC";
-
-                                        $getAllProductsInfoQueryOREDERBY = $sortQuery;
-                                    }
+if ($ShowAllProductsLike != "") {
+    $getAllProductsInfoQueryAND = " AND Title LIKE '%" . $ShowAllProductsLike . "%'";
+}
 
 
 
 
-                                    if($SortAllProductsByColor != "")
-                                    {
-                                        $sortQuery = " AND $shopTable.Color LIKE '%$SortAllProductsByColor%'";
-                                        
-                                        $getAllProductsInfoQueryAND .= $sortQuery;
-                                    }
-                                    
+if ($SortAllProductsBy != "") {
+    $sortQuery = "";
 
+    if ($SortAllProductsBy == "Best Match")
+        $sortQuery = "ORDER BY $shopTable.Rating DESC";
 
-                                    
+    else if ($SortAllProductsBy == "Newest Item")
+        $sortQuery = "ORDER BY $shopTable.AddedDate DESC";
 
+    else if ($SortAllProductsBy == "A - Z")
+        $sortQuery = "ORDER BY $shopTable.Title DESC";
 
-                                    if($SortAllProductsByPrice["min"] != "" && $SortAllProductsByPrice["max"] != "")
-                                    {
-                                        $min = $SortAllProductsByPrice["min"];
-                                        $max = $SortAllProductsByPrice["max"];
-                                        $sortQuery = " AND $shopTable.Price BETWEEN $min AND $max";
-                                        
-                                        $getAllProductsInfoQueryAND .= $sortQuery;
-                                    }
+    $getAllProductsInfoQueryOREDERBY = $sortQuery;
+}
 
 
 
 
-                                    $getAllProductsInfoQuery = "SELECT `Id`, `Title`,
+if ($SortAllProductsByColor != "") {
+    $sortQuery = " AND $shopTable.Color LIKE '%$SortAllProductsByColor%'";
+
+    $getAllProductsInfoQueryAND .= $sortQuery;
+}
+
+
+
+
+
+
+if ($SortAllProductsByPrice["min"] != "" && $SortAllProductsByPrice["max"] != "") {
+    $min = $SortAllProductsByPrice["min"];
+    $max = $SortAllProductsByPrice["max"];
+    $sortQuery = " AND $shopTable.Price BETWEEN $min AND $max";
+
+    $getAllProductsInfoQueryAND .= $sortQuery;
+}
+
+
+
+
+$getAllProductsInfoQuery = "SELECT `Id`, `Title`,
                                         `Price`, `Rating`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 $getAllProductsInfoQueryAND $getAllProductsInfoQueryOREDERBY";
 
 
-                                    PrintAllAvailableProducts();
+PrintAllAvailableProducts();
 
 
-                                    function PrintAllAvailableProducts()
-                                    {
-                                        global $link;
-                                        global $getAllProductsInfoQuery;
+function PrintAllAvailableProducts()
+{
+    global $link;
+    global $getAllProductsInfoQuery;
 
-                                
-                                        
-                                        if ($result = mysqli_query($link, $getAllProductsInfoQuery))  
-                                        {
-                                            while ($row = mysqli_fetch_row($result)) 
-                                            {
-                                                $id = $row[0];
-                                                $title = $row[1];
-                                                $price = $row[2]; 
-                                                $rating= $row[3];
-                                                $imagePath = $row[4];
 
-                                                $discountPrice = GetCurrentProductDiscount($id, $price);
 
-                                                PrintNewsBlock($title, $price, $discountPrice, $rating, $imagePath);
-                                            } 
+    if ($result = mysqli_query($link, $getAllProductsInfoQuery)) {
+        while ($row = mysqli_fetch_row($result)) {
+            $id = $row[0];
+            $title = $row[1];
+            $price = $row[2];
+            $rating = $row[3];
+            $imagePath = $row[4];
 
-                                            mysqli_free_result($result);
-                                        }
-                                    }
+            $discountPrice = GetCurrentProductDiscount($id, $price);
 
-                                    function GetCurrentProductDiscount(int $id, float $price)
-                                    {
-                                        global $shopDiscountsTable;
-                                        global $shopTable;
-                                        $getAllProductsDiscountInfoQuery = "SELECT `Discount` FROM $shopDiscountsTable
+            PrintNewsBlock($title, $price, $discountPrice, $rating, $imagePath);
+        }
+
+        mysqli_free_result($result);
+    }
+}
+
+function GetCurrentProductDiscount(int $id, float $price)
+{
+    global $shopDiscountsTable;
+    global $shopTable;
+    $getAllProductsDiscountInfoQuery = "SELECT `Discount` FROM $shopDiscountsTable
                                         INNER JOIN $shopTable ON $shopDiscountsTable.ShopProductID = $id";
 
-                                        global $link;
-                                        if ($result = mysqli_query($link, $getAllProductsDiscountInfoQuery))  
-                                        {
-                                            if($row = mysqli_fetch_row($result))
-                                            {
-                                                //echo "StartIf ";
+    global $link;
+    if ($result = mysqli_query($link, $getAllProductsDiscountInfoQuery)) {
+        if ($row = mysqli_fetch_row($result)) {
+            //echo "StartIf ";
 
-                                                return GetCalculatedDiscount($price, $row[0]);
-                                            } 
+            return GetCalculatedDiscount($price, $row[0]);
+        }
 
-                                            mysqli_free_result($result);
-                                        }
+        mysqli_free_result($result);
+    }
 
-                                        return 0.0;
-                                    }
+    return 0.0;
+}
 
-                                    function GetCalculatedDiscount(float $price, float $discount)
-                                    {
-                                        return $price - (($discount * $price) / 100.0);
-                                    } 
+function GetCalculatedDiscount(float $price, float $discount)
+{
+    return $price - (($discount * $price) / 100.0);
+}
 
 
-                                    function PrintNewsBlock(string $title, float $price, float $discountPrice, float $rating, string $imagePath)
-                                    {
-                                        $discountPriceHTML = $discountPrice == 0.0 ? '<span class="new-price"></span>' : '<span class="new-price">$'. $discountPrice .'</span>';
-                                        $pricericeHTML = $discountPrice == 0.0 ? '<div class="old-price">$' . $price . '</div>' : '<del class="old-price">$' . $price . '</del>';
-                                        $ratingHTML = GetRatingHTML($rating);
+function PrintNewsBlock(string $title, float $price, float $discountPrice, float $rating, string $imagePath)
+{
+    $discountPriceHTML = $discountPrice == 0.0 ? '<span class="new-price"></span>' : '<span class="new-price">$' . $discountPrice . '</span>';
+    $pricericeHTML = $discountPrice == 0.0 ? '<div class="old-price">$' . $price . '</div>' : '<del class="old-price">$' . $price . '</del>';
+    $ratingHTML = GetRatingHTML($rating);
 
-                                        $productBlockHTML = '
+    $productBlockHTML = '
                                             <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
                                                 <div class="exclusive-item exclusive-item-three text-center mb-50">
                                                     <div class="exclusive-item-thumb">
@@ -761,6 +739,7 @@ else
                                                         <ul class="action">
                                                             
                                                             <li><a href="#"><i class="flaticon-supermarket"></i></a></li>
+                                                            <li><a href="#">BUY</a></li>
                                                         
                                                         </ul>
                                                     </div>
@@ -777,30 +756,30 @@ else
                                                 </div>
                                             </div>';
 
-                                        echo $productBlockHTML;
-                                    }
+    echo $productBlockHTML;
+}
 
 
-                                    function GetRatingHTML(int $rating)
-                                    {
-                                        $ratingHTML = "";
-                                        for ($i = 0; $i < $rating; $i++) { 
-                                            $ratingHTML .= "<i class='fas fa-star'></i>";
-                                        }
-                                        
-                                        return $ratingHTML; 
-                                    }
+function GetRatingHTML(int $rating)
+{
+    $ratingHTML = "";
+    for ($i = 0; $i < $rating; $i++) {
+        $ratingHTML .= "<i class='fas fa-star'></i>";
+    }
+
+    return $ratingHTML;
+}
 
 
 
-                                    
-                                    $_SESSION["showAllProductsLike"] = "";
-                                    
+
+$_SESSION["showAllProductsLike"] = "";
 
 
-                                    
-                                    
-                                ?>
+
+
+
+?>
 
                                     
 
@@ -1706,9 +1685,18 @@ else
                 
 
                 
-                SortingBySelectedId = "<?php if(isset($_COOKIE["sortAllProductsBySelectedId"])) echo $_COOKIE["sortAllProductsBySelectedId"]; else echo ""; ?>"
-                SortingByTypeId = "<?php if(isset($_COOKIE["showAllProductsByTypeId"])) echo $_COOKIE["showAllProductsByTypeId"]; else echo ""; ?>"
-                SortingByColorId = "<?php if(isset($_COOKIE["sortAllProductsByColorId"])) echo $_COOKIE["sortAllProductsByColorId"]; else echo ""; ?>"
+                SortingBySelectedId = "<?php if (isset($_COOKIE["sortAllProductsBySelectedId"]))
+    echo $_COOKIE["sortAllProductsBySelectedId"];
+else
+    echo ""; ?>"
+                SortingByTypeId = "<?php if (isset($_COOKIE["showAllProductsByTypeId"]))
+    echo $_COOKIE["showAllProductsByTypeId"];
+else
+    echo ""; ?>"
+                SortingByColorId = "<?php if (isset($_COOKIE["sortAllProductsByColorId"]))
+    echo $_COOKIE["sortAllProductsByColorId"];
+else
+    echo ""; ?>"
 
 
                 if(SortingBySelectedId != "")
