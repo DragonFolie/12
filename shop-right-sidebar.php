@@ -1,6 +1,5 @@
 <?php
-    $ShowAllProductsLike = "";
-    $SortAllProductsBy = "";
+        
 
         if(array_key_exists('sortButton', $_POST))
         {
@@ -8,39 +7,85 @@
         }
             
         
-if(session_id() == '' || !isset($_SESSION)) { // session isn't started
-    session_start();
-}
+        if(session_id() == '' || !isset($_SESSION)) { // session isn't started
+            session_start();
+        }
 
-if(isset($_COOKIE["showAllProductsLike"]))
-{
-    $showAllProductsLikeCookie = $_COOKIE["showAllProductsLike"];
-    $_SESSION["showAllProductsLike"] = $showAllProductsLikeCookie;
-    $ShowAllProductsLike = $showAllProductsLikeCookie;
+
+
+
+
+
+        $ShowAllProductsLike = "";
+        $SortAllProductsBy = "";
+        $SortAllProductsByColor = "";
+
+
+        //(Base Type)
+
+
+        if(isset($_COOKIE["showAllProductsLike"]))
+        {
+            $showAllProductsLikeCookie = $_COOKIE["showAllProductsLike"];
+            $_SESSION["showAllProductsLike"] = $showAllProductsLikeCookie;
+            $ShowAllProductsLike = $showAllProductsLikeCookie;
+                
+            echo "showAllProductsLike setted = " . $ShowAllProductsLike . "<br>";
+        }
+        else 
+        {
+            $ShowAllProductsLike = "";
+            echo "showAllProductsLike not setted <br>";
+        }
+
+
+
+
+
+        //(--Select--)
+
+
+
+
+        if(isset($_COOKIE["sortAllProductsBy"]))
+        {
+            $sortAllProductsByCookie = $_COOKIE["sortAllProductsBy"];
+            $_SESSION["sortAllProductsBy"] = $sortAllProductsByCookie;
+            $SortAllProductsBy = $sortAllProductsByCookie;
+                
+            echo "sortAllProductsBy setted = " . $SortAllProductsBy . "<br>";
+        }
+        else 
+        {
+            $SortAllProductsBy = "";
+            echo "sortAllProductsBy not setted <br>";
+        }
+
+
+
+
+
+        //Color
+
+
+        if(isset($_COOKIE["sortAllProductsByColor2"]))
+        {
+            $sortAllProductsByColorCookie = $_COOKIE["sortAllProductsByColor2"];
+            $_SESSION["sortAllProductsByColor2"] = $sortAllProductsByColorCookie;
+            $SortAllProductsByColor = $sortAllProductsByColorCookie;
+                
+            echo "sortAllProductsByColor2 setted = " . $SortAllProductsByColor . "<br>";
+        }
+        else 
+        {
+            $SortAllProductsByColor = "";
+            echo "sortAllProductsByColor2 not setted <br>";
+        }
+
+
+
+        //unset($_COOKIE['sortAllProductsByColor']); 
         
-    echo "showAllProductsLike setted <br>";
-}
-else 
-{
-    $ShowAllProductsLike = "";
-    echo "showAllProductsLike not setted <br>";
-}
-
-
-if(isset($_COOKIE["sortAllProductsBy"]))
-{
-    $sortAllProductsByCookie = $_COOKIE["sortAllProductsBy"];
-    $_SESSION["sortAllProductsBy"] = $sortAllProductsByCookie;
-    $SortAllProductsBy = $sortAllProductsByCookie;
-        
-    echo "sortAllProductsBy setted <br>";
-}
-else 
-{
-    $SortAllProductsBy = "";
-    echo "sortAllProductsBy not setted <br>";
-}
-
 
 //$_SESSION["showAllProductsLike"] = $_COOKIE["showAllProductsLike"];
 //$showAllProductsLike = $_SESSION["showAllProductsLike"];
@@ -503,7 +548,7 @@ else
                                 <!-- <p class="show-result">Showing Products 1-12 Of 10 Result</p> -->
                                 <div class="shop-meta-right">
                                     <select class="custom-select" onchange="SetSelectedSortingType(this.value)"> 
-                                        <option selected="">Select</option>
+                                        <option selected="" value="">Select</option>
                                         <option value="Best Match">Best Match</option>
                                         <option value="Newest Item">Newest Item</option>
                                         <option value="A - Z">A - Z</option>
@@ -549,20 +594,54 @@ else
 
                                     
                                     $getAllProductsInfoQueryAND = "";
-                                    $getAllProductsInfoQueryOREDERBY = ""; //ORDER BY `Date` DESC
+                                    $getAllProductsInfoQueryOREDERBY = ""; 
+                                    
+                                    
+                                    
+                                    
                                     if($ShowAllProductsLike != "")
                                     {
-                                        $getAllProductsInfoQueryAND = $ShowAllProductsLike != "" ? " AND Title LIKE '%" . $ShowAllProductsLike . "%'" : "";
+                                        $getAllProductsInfoQueryAND = " AND Title LIKE '%" . $ShowAllProductsLike . "%'";
                                     }
-                                    else if($SortAllProductsBy != "")
+
+
+
+
+                                    if($SortAllProductsBy != "")
                                     {
+                                        $sortQuery = "";
+
+                                        if($SortAllProductsBy == "Best Match")
+                                            $sortQuery = "ORDER BY $shopTable.Rating DESC";
+
+                                        else if($SortAllProductsBy == "Newest Item")
+                                            $sortQuery = "ORDER BY $shopTable.AddedDate DESC";
+
+                                        else if($SortAllProductsBy == "A - Z")
+                                            $sortQuery = "ORDER BY $shopTable.Title DESC";
+
+                                        $getAllProductsInfoQueryOREDERBY = $sortQuery;
+                                    }
+
+
+
+
+                                    if($SortAllProductsByColor != "")
+                                    {
+                                        $sortQuery = " AND $shopTable.Color LIKE '%$SortAllProductsByColor%'";
                                         
+                                        $getAllProductsInfoQueryAND .= $sortQuery;
                                     }
                                     
-                                    $getAllProductsInfoQuery = "SELECT `Id`, `Title`, /*`Description`,*/ 
-                                        `Price`, /*`Amount`,*/ `Rating`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 $getAllProductsInfoQueryAND";
 
-                                    // echo $_COOKIE["showAllProductsLike"];
+
+
+
+                                    $getAllProductsInfoQuery = "SELECT `Id`, `Title`,
+                                        `Price`, `Rating`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 $getAllProductsInfoQueryAND $getAllProductsInfoQueryOREDERBY";
+
+                                    
+                                    echo $getAllProductsInfoQuery;
                                 
 
                                     PrintAllAvailableProducts();
@@ -1184,99 +1263,49 @@ else
                         </div>
                         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8">
                             <aside class="shop-sidebar shop-right-sidebar">
-                                <div class="widget shop-widget mb-30">
-                                    <div class="shop-widget-title">
-                                        <h6 class="title">Product Categories</h6>
-                                    </div>
-
-
-
-
-                                     <!-- <form method="post" target="_blank">
-                <button type="submit" name="sortButton" id="test" class="sort_button">
-                    <img class="sort_button" src="img/sort-down.png" alt="">
-                </button>
-                <button type="submit" name="showAllNews" id="test" class="sort_button">
-                    <img class="sort_button" src="img/loupe.png" alt="">
-                </button>
-            </form> -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                    <div class="shop-cat-list">
-                                        <ul>
-                                            <li><a><button class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML)"> Hoodie </button></a></li>
-                                            <li><a><button class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML)"> Short Sleeve T-Shirt </button></a></li>
-                                            <li><a><button class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML)"> Long Sleeve T-Shirt </button></a></li>
-                                            <li><a><button class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML)"> Accessorie </button></a></li>
-                                            
-
-                                            <!-- <li><a href="#">Accessories</a><span>27</span></li> 
-                                            <li><a type="submit" href="#">Leather Jacket</a><span>12</span></li>
-                                            <li><a href="#">Woman Hoodies</a><span>6</span></li>
-                                            <li><a href="#">Man Shoes</a><span>7</span></li>
-                                            <li><a href="#">Baby Troys</a><span>9</span></li>
-                                            <li><a href="#">Kitchen Accessories</a><span>16</span></li>-->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                        </ul>
-                                    </div>
-
-
-
-
-
-
-
-
-
-
-
-
+                                
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            <div class="widget shop-widget mb-30">
                                     
+                            
+                            
+                            
+                            
+                            
+                            
+                                <div class="shop-widget-title">
+                                    <h6 class="title">Product Categories</h6>
+                                </div>
+                                <div class="shop-cat-list">
+                                    <ul>
+                                        <li><a><button class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML)"> Hoodie </button></a></li>
+                                        <li><a><button class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML)"> Short Sleeve T-Shirt </button></a></li>
+                                        <li><a><button class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML)"> Long Sleeve T-Shirt </button></a></li>
+                                        <li><a><button class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML)"> Accessorie </button></a></li>
+                                        
+
+                                        <!-- <li><a href="#">Accessories</a><span>27</span></li> 
+                                        <li><a type="submit" href="#">Leather Jacket</a><span>12</span></li>
+                                        <li><a href="#">Woman Hoodies</a><span>6</span></li>
+                                        <li><a href="#">Man Shoes</a><span>7</span></li>
+                                        <li><a href="#">Baby Troys</a><span>9</span></li>
+                                        <li><a href="#">Kitchen Accessories</a><span>16</span></li>-->
+                                    </ul>
                                 </div>
 
+                                    <br><br><br><br>
 
 
-
-
-
-
-                                <div class="widget shop-widget mb-30">
-                                    <div class="shop-widget-title">
+                                <div class="shop-widget-title">
                                         <h6 class="title">Filter By Price</h6>
                                     </div>
                                     <div class="price_filter">
@@ -1289,15 +1318,30 @@ else
 
 
 
-                                </div>
 
 
 
 
 
+                                    <div class="shop-sidebar-color">
+                                        <div class="shop-widget-title">
+                                            <h6 class="title">Filter Color</h6>
+                                        </div>
+                                        <div class="shop-size-list">
+                                            <ul>
+                                                <li onclick="SetSelectedFilterColor('Orange')"></li>
+                                                <li onclick="SetSelectedFilterColor('Yellow')"></li>
+                                                <li onclick="SetSelectedFilterColor('Green')"></li>
+                                                <li onclick="SetSelectedFilterColor('Blue')"></li>
+                                                <li onclick="SetSelectedFilterColor('Black')"></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <br><br><br><br>
 
 
-                                <div class="widget shop-widget mb-30">
+
                                     <div class="shop-widget-title">
                                         <h6 class="title">NEW PRODUCT</h6>
                                         <div class="slider-nav"></div>
@@ -1408,12 +1452,27 @@ else
                                             </ul>
                                         </div>
                                     </div>
+
+
+                            </div>
+
+
+
+
+
+
+
+
+                                <div class="widget shop-widget mb-30">
+                                    
                                 </div>
-                                <!-- <div class="widget shop-widget mb-30">
-                                    <div class="shop-widget-title">
+
+
+                                 <!-- <div class="widget shop-widget mb-30"> -->
+                                    <!-- <div class="shop-widget-title">
                                         <h6 class="title">Product Brand</h6>
-                                    </div>
-                                    <div class="sidebar-brand-list">
+                                    </div> -->
+                                    <!-- <div class="sidebar-brand-list">
                                         <ul>
                                             <li><a href="#">New Arrivals</a></li>
                                             <li><a href="#">Clothing & Accessories</a></li>
@@ -1421,7 +1480,7 @@ else
                                             <li><a href="#">Home Electronics</a></li>
                                         </ul>
                                     </div>
-                                    <div class="shop-sidebar-size">
+                                     <div class="shop-sidebar-size">
                                         <div class="shop-widget-title">
                                             <h6 class="title">Size</h6>
                                         </div>
@@ -1433,7 +1492,7 @@ else
                                                 <li><a href="#">XL</a></li>
                                             </ul>
                                         </div>
-                                    </div>
+                                    </div> 
                                     <div class="shop-sidebar-color">
                                         <div class="shop-widget-title">
                                             <h6 class="title">Filter Color</h6>
@@ -1448,7 +1507,7 @@ else
                                             </ul>
                                         </div>
                                     </div>
-                                </div> -->
+                                </div>  -->
                                 
                             </aside>
                         </div>
@@ -1584,54 +1643,145 @@ else
 
 
         <script> 
+                ShowAllProductsLike_Current = "<?php echo $ShowAllProductsLike; ?>";
+                SortAllProductsBy_Current =  "<?php echo $SortAllProductsBy; ?>";
+                SortAllProductsByColor_Current =  "<?php echo $SortAllProductsByColor; ?>";
 
-//window.onload
+                /*ShowAllProductsLike_New = "";
+                SortAllProductsBy_New = "";
+                SortAllProductsByColor_New = "";*/
+                
+                isParametersChanged = false;
 
-                function SetDefinesSortingCostRange()
+                
+
+                document.onloadeddata = DeleteSortingCookie();
+
+                function DeleteSortingCookie()
+                {
+                    //alert(document.cookie);
+
+                    deleteAllCookies();
+
+                    /*document.cookie = "showAllProductsLike+= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+                    document.cookie = "sortAllProductsBy= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+                    document.cookie = "sortAllProductsByColor= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";*/
+
+                    //alert(document.cookie);
+                }
+
+                function deleteAllCookies() 
+                {
+                    var cookies = document.cookie.split(";");
+
+                    for (var i = 0; i < cookies.length; i++) 
+                    {
+                        var cookie = cookies[i];
+                        var eqPos = cookie.indexOf("=");
+                        var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    }
+                }
+
+                //window.onbeforeunload = IsSortingParametersChanged();
+
+                /*function IsSortingParametersChanged()
+                {
+                    if(isParametersChanged == true) 
+                        alert("Was changes");
+                    else
+                    {
+                        alert("deleted");
+                        deleteAllCookies();
+                    }
+                }*/
+
+
+                function SaveCookies()
+                {
+                    if(SortAllProductsBy_Current != "")
+                        document.cookie = "sortAllProductsBy=" + SortAllProductsBy_Current;
+                    if(ShowAllProductsLike_Current != "")
+                        document.cookie = "showAllProductsLike=" + ShowAllProductsLike_Current;
+                    if(SortAllProductsByColor_Current != "")
+                    document.cookie = "sortAllProductsByColor2=" + SortAllProductsByColor_Current;
+                }
+
+                
+
+                //SORTING TYPE (--select--)
+
+                function SetSelectedSortingType(sortingType)
+                {
+                    if(sortingType != SortAllProductsBy_Current)
+                        SortAllProductsBy_Current = sortingType;
+                    
+                    SaveCookies();
+                    //document.cookie = "sortAllProductsBy=" + sortingType;
+                    document.location.reload(true);
+                }
+
+
+
+                //PRODUCT CATEGORIES (types)
+
+                function SetCookie_ShowAllProductsLike(buttonText)
+                {
+                    if(buttonText != ShowAllProductsLike_Current)
+                        ShowAllProductsLike_Current = buttonText;
+                        
+
+                    //ShowAllProductsLike_New = buttonText;
+                    
+                    SaveCookies();
+                    //document.cookie = "showAllProductsLike=" + buttonText;
+                    document.location.reload(true);
+                }
+
+
+
+
+                //FILTER BY PRICE
+
+                /*function SetDefinesSortingCostRange()
                 {
                     costRangeValuesString = document.getElementById('amount').value;
                     costRangeValuesNumber = costRangeValuesString.match(/^\d+|\d+\b|\d+(?=\w)/g);
 
                     minCost = costRangeValuesNumber[0];
                     maxCost = costRangeValuesNumber[1];
-                }
+                }*/
 
+                
 
-                function SetSelectedSortingType(sortingType)
+                
+
+                //FILTER COLOR
+
+                function SetSelectedFilterColor(color)
                 {
-                    //alert(sortingType);
-                    document.cookie = "sortAllProductsBy=" + sortingType;
-                    document.location.reload(true);
-                }
+                    if(color != SortAllProductsByColor_Current)
+                    SortAllProductsByColor_Current = color;
 
-                document.onloadeddata = DeleteSortingCookie();
-
-                function DeleteSortingCookie()
-                {
-                    document.cookie = "showAllProductsLike= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
-                    document.cookie = "sortAllProductsBy= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
-                    //setcookie("showAllProductsLike", '', time()-1000);
-                    //alert(document.cookie);
-                    /*element = document.querySelector('.ui-slider-handle ui-state-default ui-corner-all')
-
-                    fontSize = element.tabindex;*/
-
-                    /*var elm = document.getElementByClassName("ui-slider-handle ui-state-default ui-corner-all").tabindex;
-                    alert(fontSize);*/
+                    //SortAllProductsByColor_New = color;
+                    //document.cookie = "sortAllProductsByColor2=" + color;
 
                     
-                }
-                
-                function SetCookie_ShowAllProductsLike(buttonText)
-                {
-                    /*var elm = document.getElementsByClassName("custom-select");
-                    alert(elm);*/
-                    document.cookie = "showAllProductsLike=" + buttonText;
+                    SaveCookies();
                     document.location.reload(true);
-                    //var elm = document.getElementsByClassName("custom-select")[0].textContent;
-                    //alert(elm);
-                    //alert(document.cookie);
                 }
+
+                
+  
+
+
+
+
+
+
+
+
+
 
 
                 /*function getElementByXpath(path) 

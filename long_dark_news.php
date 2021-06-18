@@ -1,4 +1,109 @@
+<script>
 
+/*ShowAllProductsLike_Current = "<?php echo $ShowAllProductsLike; ?>";
+                SortAllProductsBy_Current =  "<?php echo $SortAllProductsBy; ?>";
+                SortAllProductsByColor_Current =  "<?php echo $SortAllProductsByColor; ?>";
+
+                ShowAllProductsLike_New = "";
+                SortAllProductsBy_New = "";
+                SortAllProductsByColor_New = "";
+
+                document.onloadstart = SetElementsData();
+
+                function SetElementsData()
+                {
+                    //alert(ShowAllProductsLike_Current + " " + SortAllProductsBy_Current + " " + SortAllProductsByColor_Current);
+
+                    document.getElementById("sortingTypeOption_1").setAttribute("selected", "'';");
+                    document.getElementById("sortingButton_1").setAttribute("style", "background-color: black;");
+                    document.getElementById("sortingColor_1").setAttribute("style", "background-color: black;");
+                }
+
+
+
+                document.onloadeddata = DeleteSortingCookie();
+
+                function DeleteSortingCookie()
+                {
+                    document.cookie = "showAllProductsLike= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+                    document.cookie = "sortAllProductsBy= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+                    document.cookie = "sortAllProductsByColor= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
+                }
+
+
+                //window.onbeforeunload = alert("1");
+                //location.onbeforeunload = alert("2");
+
+                function IsSortingParametersChanged()
+                {
+                    if(ShowAllProductsLike_Current != ShowAllProductsLike_New)
+                    {
+                        alert(ShowAllProductsLike_Current);
+                    }
+                    else if(SortAllProductsBy_Current != SortAllProductsBy_New)
+                    {
+                        alert(SortAllProductsBy_Current);
+                    }
+                    else if(SortAllProductsByColor_Current != SortAllProductsByColor_New)
+                    {
+                        alert(SortAllProductsByColor_Current);
+                    }
+                    else
+                    {
+                        DeleteSortingCookie();
+                    }
+                }
+
+
+                //SORTING TYPE
+
+                function SetSelectedSortingType(sortingType)
+                {
+                    SortAllProductsBy_New = sortingType;
+                    document.cookie = "sortAllProductsBy=" + sortingType;
+                    document.location.reload(true);
+                }
+
+
+
+
+
+                //PRODUCT CATEGORIES
+
+                function SetCookie_ShowAllProductsLike(buttonText)
+                {
+                    ShowAllProductsLike_New = buttonText;
+                    document.cookie = "showAllProductsLike=" + buttonText;
+                    document.location.reload(true);
+                }
+
+
+
+
+                //FILTER BY PRICE
+
+                function SetDefinesSortingCostRange()
+                {
+                    costRangeValuesString = document.getElementById('amount').value;
+                    costRangeValuesNumber = costRangeValuesString.match(/^\d+|\d+\b|\d+(?=\w)/g);
+
+                    minCost = costRangeValuesNumber[0];
+                    maxCost = costRangeValuesNumber[1];
+                }
+
+                
+
+                
+
+                //FILTER COLOR
+
+                function SetSelectedFilterColor(color)
+                {
+                    SortAllProductsByColor_New = color;
+                    document.cookie = "sortAllProductsByColor=" + color;
+                    document.location.reload(true);
+                }*/
+</script>
 
 <?php
 
