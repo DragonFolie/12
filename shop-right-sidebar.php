@@ -19,7 +19,10 @@
         $ShowAllProductsLike = "";
         $SortAllProductsBy = "";
         $SortAllProductsByColor = "";
-
+        $SortAllProductsByPrice = array(
+            "min" => "",
+            "max" => "",
+        ); 
 
         //(Base Type)
 
@@ -30,12 +33,12 @@
             $_SESSION["showAllProductsLike"] = $showAllProductsLikeCookie;
             $ShowAllProductsLike = $showAllProductsLikeCookie;
                 
-            echo "showAllProductsLike setted = " . $ShowAllProductsLike . "<br>";
+            //echo "showAllProductsLike setted = " . $ShowAllProductsLike . "<br>";
         }
         else 
         {
             $ShowAllProductsLike = "";
-            echo "showAllProductsLike not setted <br>";
+            //echo "showAllProductsLike not setted <br>";
         }
 
 
@@ -53,12 +56,12 @@
             $_SESSION["sortAllProductsBy"] = $sortAllProductsByCookie;
             $SortAllProductsBy = $sortAllProductsByCookie;
                 
-            echo "sortAllProductsBy setted = " . $SortAllProductsBy . "<br>";
+            //echo "sortAllProductsBy setted = " . $SortAllProductsBy . "<br>";
         }
         else 
         {
             $SortAllProductsBy = "";
-            echo "sortAllProductsBy not setted <br>";
+            //echo "sortAllProductsBy not setted <br>";
         }
 
 
@@ -74,12 +77,41 @@
             $_SESSION["sortAllProductsByColor2"] = $sortAllProductsByColorCookie;
             $SortAllProductsByColor = $sortAllProductsByColorCookie;
                 
-            echo "sortAllProductsByColor2 setted = " . $SortAllProductsByColor . "<br>";
+            //echo "sortAllProductsByColor2 setted = " . $SortAllProductsByColor . "<br>";
         }
         else 
         {
             $SortAllProductsByColor = "";
-            echo "sortAllProductsByColor2 not setted <br>";
+            //echo "sortAllProductsByColor2 not setted <br>";
+        }
+
+
+
+
+
+
+
+
+
+        //Price
+
+
+        if(isset($_COOKIE["sortAllProductsByPriceMin"]) && isset($_COOKIE["sortAllProductsByPriceMax"]))
+        {
+            
+
+            $SortAllProductsByPrice["min"] = $_COOKIE["sortAllProductsByPriceMin"];
+            $SortAllProductsByPrice["max"] = $_COOKIE["sortAllProductsByPriceMax"];
+
+            //echo $SortAllProductsByPrice["min"]. "  And  " . $SortAllProductsByPrice["max"];
+                
+            //echo "sortAllProductsByPriceMin and sortAllProductsByPriceMax setted = " . $SortAllProductsByColor . "<br>";
+        }
+        else 
+        {
+            $SortAllProductsByPrice["min"] = "";
+            $SortAllProductsByPrice["max"] = "";
+            //echo "sortAllProductsByPriceMin and Max not setted <br>";
         }
 
 
@@ -635,17 +667,26 @@ else
                                     
 
 
+                                    
+
+
+                                    if($SortAllProductsByPrice["min"] != "" && $SortAllProductsByPrice["max"] != "")
+                                    {
+                                        $min = $SortAllProductsByPrice["min"];
+                                        $max = $SortAllProductsByPrice["max"];
+                                        $sortQuery = " AND $shopTable.Price BETWEEN $min AND $max";
+                                        
+                                        $getAllProductsInfoQueryAND .= $sortQuery;
+                                    }
+
+
 
 
                                     $getAllProductsInfoQuery = "SELECT `Id`, `Title`,
                                         `Price`, `Rating`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 $getAllProductsInfoQueryAND $getAllProductsInfoQueryOREDERBY";
 
-                                    
-                                    echo $getAllProductsInfoQuery;
-                                
 
                                     PrintAllAvailableProducts();
-
 
 
                                     function PrintAllAvailableProducts()
@@ -1307,13 +1348,16 @@ else
 
                                 <div class="shop-widget-title">
                                         <h6 class="title">Filter By Price</h6>
-                                    </div>
+                                </div>
                                     <div class="price_filter">
                                         <div id="slider-range"></div>
                                         <div class="price_slider_amount">
                                             <span>Price :</span>
                                             <input type="text" id="amount" name="price" placeholder="Add Your Price" />
                                         </div>
+                                        <p id="currentPriceRange"></p>
+                                        <button id="priceFilterButton" style="margin-left: 75%;" onclick="SetDefinedSortingCostRange()">Enter</button>
+
                                     </div>
 
 
@@ -1647,6 +1691,12 @@ else
                 SortAllProductsBy_Current =  "<?php echo $SortAllProductsBy; ?>";
                 SortAllProductsByColor_Current =  "<?php echo $SortAllProductsByColor; ?>";
 
+                SortAllProductsByPriceMin_Current =  "<?php echo $SortAllProductsByPrice["min"]; ?>";
+                SortAllProductsByPriceMax_Current =  "<?php echo $SortAllProductsByPrice["max"]; ?>";
+
+                
+
+
                 /*ShowAllProductsLike_New = "";
                 SortAllProductsBy_New = "";
                 SortAllProductsByColor_New = "";*/
@@ -1677,7 +1727,11 @@ else
                     var pressedColor = document.getElementById(SortingByColorId);
                     pressedColor.setAttribute('style', 'background-color: black');
                 }
-
+                if(SortAllProductsByPriceMin_Current != "" && SortAllProductsByPriceMax_Current != "")
+                {
+                    var currentPriceRange = document.getElementById("currentPriceRange");
+                    currentPriceRange.innerText = "PRICE: $" + SortAllProductsByPriceMin_Current + " - $" + SortAllProductsByPriceMax_Current;
+                }
                 
                 
                 
@@ -1736,6 +1790,12 @@ else
                         document.cookie = "showAllProductsLike=" + ShowAllProductsLike_Current;
                     if(SortAllProductsByColor_Current != "")
                     document.cookie = "sortAllProductsByColor2=" + SortAllProductsByColor_Current;
+
+                    if(SortAllProductsByPriceMin_Current != "" && SortAllProductsByPriceMax_Current != "")
+                    {
+                        document.cookie = "sortAllProductsByPriceMin=" + SortAllProductsByPriceMin_Current;
+                        document.cookie = "sortAllProductsByPriceMax=" + SortAllProductsByPriceMax_Current;
+                    }
                 }
 
                 function SaveSelectedParametersID()
@@ -1817,14 +1877,24 @@ else
 
                 //FILTER BY PRICE
 
-                /*function SetDefinesSortingCostRange()
+                function SetDefinedSortingCostRange()
                 {
                     costRangeValuesString = document.getElementById('amount').value;
                     costRangeValuesNumber = costRangeValuesString.match(/^\d+|\d+\b|\d+(?=\w)/g);
 
                     minCost = costRangeValuesNumber[0];
                     maxCost = costRangeValuesNumber[1];
-                }*/
+
+                    SortAllProductsByPriceMin_Current = minCost;
+                    SortAllProductsByPriceMax_Current = maxCost;
+
+                    document.cookie = "sortAllProductsByPriceMin=" + minCost;
+                    document.cookie = "sortAllProductsByPriceMax=" + maxCost;
+                    
+                    SaveCookies();
+                    SaveSelectedParametersID();
+                    document.location.reload(true);
+                }
 
                 
 
@@ -1835,7 +1905,7 @@ else
                 function SetSelectedFilterColor(color, id)
                 {
                     if(color != SortAllProductsByColor_Current)
-                    SortAllProductsByColor_Current = color;
+                        SortAllProductsByColor_Current = color;
 
                     //SortAllProductsByColor_New = color;
                     //document.cookie = "sortAllProductsByColor2=" + color;
