@@ -372,19 +372,25 @@ else {
 
 
 
-                                    <!-- With list dynamic -->
+                                    <!-- WISH LIST (DYNAMIC) -->
 
 
 
                                     <div class="header-action d-none d-md-block">
                                         <ul>
-                                            <li><a href="#"><i class="flaticon-two-arrows"></i></a></li>
+                                            <!-- <li><a href="#"><i class="flaticon-two-arrows"></i></a></li> -->
                                             <li><a href="wishlist.php"><i class="flaticon-heart"></i></a></li>
-                                            <li class="header-shop-cart"><a href="wishlist.php"><i class="flaticon-shopping-bag"></i><span class="cart-count">2</span></a>
-                                                <span class="cart-total-price">$ 128.00</span>
+                                             <li class="header-shop-cart"><a href="wishlist.php"><i class="flaticon-shopping-bag"></i><!--<span class="cart-count">1</span>--></a> 
+                                                <span class="cart-total-price">$ 0.00</span>
+                                                
+                                                
+                                                
+                                                
+                                                <!-- Products Buscket -->
+                                                
                                                 <ul class="minicart">
-                                                    <li class="d-flex align-items-start">
-                                                        <div class="cart-img">
+                                                   <li class="d-flex align-items-start">
+                                                         <div class="cart-img">
                                                             <a href="#">
                                                                 <img src="img/product/cart_p01.jpg" alt="">
                                                             </a>
@@ -404,44 +410,40 @@ else {
                                                             <a href="#">
                                                                 <i class="far fa-trash-alt"></i>
                                                             </a>
-                                                        </div>
-                                                    </li>
-                                                    <li class="d-flex align-items-start">
-                                                        <div class="cart-img">
-                                                            <a href="#">
-                                                                <img src="img/product/cart_p02.jpg" alt="">
-                                                            </a>
-                                                        </div>
-                                                        <div class="cart-content">
-                                                            <h4>
-                                                                <a href="#">BackPack For School Student</a>
-                                                            </h4>
-                                                            <div class="cart-price">
-                                                                <span class="new">$229.9</span>
-                                                                <span>
-                                                                    <del>$229.9</del>
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="del-icon">
-                                                            <a href="#">
-                                                                <i class="far fa-trash-alt"></i>
-                                                            </a>
-                                                        </div>
-                                                    </li>
+                                                        </div> 
+                                                    </li> 
+
+
+
+
+
+                                                    <!-- Total Price -->
+
                                                     <li>
                                                         <div class="total-price">
                                                             <span class="f-left">Total:</span>
-                                                            <span class="f-right">$239.9</span>
+                                                            <span class="f-right">$0.00</span>
                                                         </div>
                                                     </li>
+
+
+
+                                                    <!-- Buy Buttons -->
+
                                                     <li>
                                                         <div class="checkout-link">
                                                             <a href="wishlist.php">Shopping Cart</a>
-                                                            <a class="red-color" href="#">Checkout</a>
+                                                            <!-- <a class="red-color" href="#">Checkout</a> -->
                                                         </div>
                                                     </li>
                                                 </ul>
+
+
+
+
+
+
+
                                             </li>
                                         </ul>
                                     </div>
@@ -601,7 +603,7 @@ $shopDB = "thelongdark";
 $shopTable = "shop";
 $shopDiscountsTable = "shopdiscounts";
 
-$link = mysqli_connect("localhost", "DragonFolie", "nair6455", $shopDB);
+$link = mysqli_connect("localhost", "root", "123mnbzzZ01p", $shopDB);
 
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
@@ -738,8 +740,8 @@ function PrintNewsBlock(string $title, float $price, float $discountPrice, float
                                                         </a>
                                                         <ul class="action">
                                                             
-                                                            <li><a href="#"><i class="flaticon-supermarket"></i></a></li>
-                                                            <li><a href="#">BUY</a></li>
+                                                        <li><a style="background-color: lightblue; cursor: default;">BUY</a></li>
+                                                        <li><a><i class="flaticon-supermarket"></i></a></li>
                                                         
                                                         </ul>
                                                     </div>
