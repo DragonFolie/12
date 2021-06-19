@@ -1,4 +1,34 @@
 <?php
+    $shopDB = "thelongdark";
+    $shopTable = "shop";
+    $shopDiscountsTable = "shopdiscounts";
+
+    $link = mysqli_connect("localhost", "root", "123mnbzzZ01p", $shopDB);
+    
+    if (mysqli_connect_errno()) {
+        printf("Connect failed: %s\n", mysqli_connect_error());
+        exit();
+    }
+
+    
+
+                    // $info  = array(
+                    //     "key"  => "value",
+                    //     "key2" => "value2",
+                    //     "key3" => "value3",
+                    // );
+
+                    // setcookie("cookie", serialize($info), time()+3600);
+                    
+
+                    // $data = unserialize($_COOKIE["cookie"], ["allowed_classes" => false]);
+                    // echo $data["key"];
+                    // echo $data["key2"];
+                
+
+
+
+
 
 
 if (array_key_exists('sortButton', $_POST)) {
@@ -22,6 +52,8 @@ $SortAllProductsByPrice = array(
     "min" => "",
     "max" => "",
 );
+
+$BucketProductsIdNums = [];
 
 //(Base Type)
 
@@ -104,6 +136,51 @@ else {
     $SortAllProductsByPrice["max"] = "";
 //echo "sortAllProductsByPriceMin and Max not setted <br>";
 }
+
+
+
+
+
+
+
+// BucketProductsId
+    
+
+if (isset($_COOKIE["bucketProductsId"])) 
+{
+    /*$str = array_values($_COOKIE["bucketProductsId"]);*/ 
+    $BucketProductsId = $_COOKIE["bucketProductsId"];
+    
+    
+    $numString = "";
+
+    for ($i = 0; $i < strlen($BucketProductsId); $i++) 
+    { 
+        if(is_numeric($BucketProductsId[$i]) == true && is_numeric($BucketProductsId[$i + 1]) == false) 
+        {   
+            $numString .= $BucketProductsId[$i];
+            array_push($BucketProductsIdNums, $numString);
+            $numString = "";
+            //$BucketProductsIdNums .= $BucketProductsId[$i] . ",";
+        } 
+        else if(is_numeric($BucketProductsId[$i]) == false) 
+        {
+            continue;
+        } 
+        else
+        {
+            $numString .= $BucketProductsId[$i];
+        }
+    }
+    /*echo $BucketProductsIdNums[0];
+    echo $BucketProductsIdNums[1];
+    echo $BucketProductsIdNums[2];*/
+}
+else 
+{
+    $BucketProductsIdNums = [];
+}
+
 
 
 
@@ -380,63 +457,251 @@ else {
                                         <ul>
                                             <!-- <li><a href="#"><i class="flaticon-two-arrows"></i></a></li> -->
                                             <li><a href="wishlist.php"><i class="flaticon-heart"></i></a></li>
-                                             <li class="header-shop-cart"><a href="wishlist.php"><i class="flaticon-shopping-bag"></i><!--<span class="cart-count">1</span>--></a> 
-                                                <span class="cart-total-price">$ 0.00</span>
+                                             <li class="header-shop-cart"><a href="wishlist.php"><i class="flaticon-shopping-bag"></i>
                                                 
                                                 
                                                 
                                                 
+                                                
+                                                
+                                                
+                                                   
+                                                   
+                                                   
+                                                   
+                                                
+                                                   
+                                                   
                                                 <!-- Products Buscket -->
-                                                
-                                                <ul class="minicart">
-                                                   <li class="d-flex align-items-start">
-                                                         <div class="cart-img">
-                                                            <a href="#">
-                                                                <img src="img/product/cart_p01.jpg" alt="">
-                                                            </a>
-                                                        </div>
+                                                   
+
+
+                                                    <?php 
+                                                    
+                                                    $totalPrice = 0.00;
+                                                    
+
+
+
+
+                                                    
+                                                    if(count($BucketProductsIdNums) > 0)
+                                                    {
+
+
+                                                        SetTotalPrice();
+
+                                                        $productsAmount = count($BucketProductsIdNums);
+
+                                                        echo '<span class="cart-count">' . $productsAmount . '</span></a>';
+
+                                                        echo '<span class="cart-total-price">$' . $totalPrice . '</span>';
+
+
+
+
+                                                        echo '<ul class="minicart">';
+                                                        $index = 0;
+
+                                                        
+                                                            for ($i = 0; $i < count($BucketProductsIdNums); $i++) 
+                                                            { 
+                                                                $getAllProductsInfoQuery = "SELECT `Title`,
+                                                                `Price`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 AND $shopTable.Id = " . $BucketProductsIdNums[$i];
+
+                                                                if ($result = mysqli_query($link, $getAllProductsInfoQuery)) {
+                                                                    
+                                                                    $row = mysqli_fetch_row($result);
+                                                                    $productId = $BucketProductsIdNums[$index];
+                                                                    $index ++;
+
+                                                                        
+
+                                                                        $title = $row[0];
+                                                                        $price = $row[1];
+                                                                        $imagePath = $row[2];
+
+                                                                        $discountPrice = 0.0;
+
+                                                                        $discountPrice = GetCurrentProductDiscount($productId, $price);
+
+
+                                                                        // if($discountPrice > 0)
+                                                                        //     $totalPrice += $discountPrice;
+                                                                        // else
+                                                                        //     $totalPrice += $price;
+
+
+                                                                        PrintBucketProductBlock($title, $imagePath, $price, $discountPrice, $productId);
+                                                                    
+
+                                                                    mysqli_free_result($result);
+                                                                }
+                                                            }
+
+
+                                                        PrintTotalPrice($totalPrice);
+
+
+
+                                                        PrintMakePurchaseButton();
+                                                    }
+                                                    else //Bucket is empty
+                                                    {
+                                                        echo '</a>';
+                                                        echo '<span class="cart-total-price">$0.00</span>';
+                                                    }
+
+                                                    function SetTotalPrice()
+                                                    {
+                                                        global $BucketProductsIdNums;
+                                                        global $shopTable;
+                                                        global $totalPrice;
+                                                        global $link;
+
+                                                        $index = 0;
+
+                                                        for ($i = 0; $i < count($BucketProductsIdNums); $i++) 
+                                                        { 
+                                                            $getAllProductsInfoQuery = "SELECT `Title`,
+                                                            `Price`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 AND $shopTable.Id = " . $BucketProductsIdNums[$i];
+
+                                                            if ($result = mysqli_query($link, $getAllProductsInfoQuery)) 
+                                                            {
+                                                                
+                                                                $row = mysqli_fetch_row($result);
+                                                                $productId = $BucketProductsIdNums[$index];
+                                                                $index ++;
+
+                                                                    
+
+                                                                    $title = $row[0];
+                                                                    $price = $row[1];
+                                                                    $imagePath = $row[2];
+
+                                                                    $discountPrice = 0.0;
+
+                                                                    $discountPrice = GetCurrentProductDiscount($productId, $price);
+
+
+                                                                    if($discountPrice > 0)
+                                                                        $totalPrice += $discountPrice;
+                                                                    else
+                                                                        $totalPrice += $price;
+                                                            }
+                                                        }
+                                                        
+                                                    }
+                                                    
+                                                    
+                                                    function PrintBucketProductBlock(string $title, string $imagePath, string $price, float $dicsountPrice, string $id)
+                                                    {
+                                                        if($dicsountPrice > 0)
+                                                        {
+                                                            $currentPrice = $price;
+                                                            
+                                                            $price = $dicsountPrice;
+                                                            $dicsountPrice = $currentPrice;
+                                                        }
+                                                            
+
+                                                        $discountPriceHTML = $dicsountPrice > 0 ? '<del>$' . $dicsountPrice . '</del>' : "";
+                                                        //echo "dicsountPrice: " . $dicsountPrice;
+                                                        $priceTextStyle = $dicsountPrice > 0 ? 'style="color: blue; font-weight: bold;"' : "";
+
+                                                        $bucketProductBlockHTML = '
+                                                        <li class="d-flex align-items-start">
+                                                            <div class="cart-img">
+                                                                <a>
+                                                                    <img src="' . $imagePath . '" alt="">
+                                                                </a>
+                                                            </div>
                                                         <div class="cart-content">
                                                             <h4>
-                                                                <a href="#">Charity Nike Brand Yellow T-Shirt</a>
+                                                                <a class="Charity" >' . $title . '</a>
                                                             </h4>
                                                             <div class="cart-price">
-                                                                <span class="new">$229.9</span>
                                                                 <span>
-                                                                    <del>$229.9</del>
+                                                                    ' . $discountPriceHTML . '
                                                                 </span>
+                                                                <span class="new" ' . $priceTextStyle . '>$' . $price . '</span>
                                                             </div>
                                                         </div>
                                                         <div class="del-icon">
-                                                            <a href="#">
+                                                            <a style="cursor: pointer;" id="' . $id . '" onClick="OnBucketMenuDeleteButtonClick(this.id)">
                                                                 <i class="far fa-trash-alt"></i>
                                                             </a>
                                                         </div> 
-                                                    </li> 
+                                                        </li>';
 
+                                                        echo $bucketProductBlockHTML;
+                                                    }
 
+                                                    
+                                                    
+                                                    function PrintTotalPrice(float $totalPrice)
+                                                    {   
+                                                        $totalPriceString = "";
+                                                        if($totalPrice > 0)
+                                                            $totalPriceString = $totalPrice;
+                                                        else
+                                                            $totalPriceString = "0.00";
+
+                                                        $totalPriceHTML = '
+                                                        <li>
+                                                            <div class="total-price">
+                                                                <span class="f-left">Total:</span>
+                                                                <span class="f-right">$' . $totalPriceString . '</span>
+                                                            </div>
+                                                        </li>';
+
+                                                        echo $totalPriceHTML;
+                                                    }
+
+                                                    function PrintMakePurchaseButton()
+                                                    {
+                                                        $makePurchaseButtonHTML = '
+                                                        <li>
+                                                            <div class="checkout-link">
+                                                                <a href="wishlist.php">Make Purchase</a>
+                                                            </div>
+                                                        </li>';
+
+                                                        echo $makePurchaseButtonHTML . '</ul>';
+                                                    }
+                                                    
+                                                    ?>
 
 
 
                                                     <!-- Total Price -->
 
-                                                    <li>
+                                                    <!-- <li>
                                                         <div class="total-price">
                                                             <span class="f-left">Total:</span>
                                                             <span class="f-right">$0.00</span>
                                                         </div>
-                                                    </li>
+                                                    </li> -->
 
 
 
                                                     <!-- Buy Buttons -->
 
-                                                    <li>
+                                                    <!-- <li>
                                                         <div class="checkout-link">
-                                                            <a href="wishlist.php">Shopping Cart</a>
+                                                            <a href="wishlist.php">Make Purchase</a> -->
                                                             <!-- <a class="red-color" href="#">Checkout</a> -->
-                                                        </div>
-                                                    </li>
-                                                </ul>
+                                                        <!-- </div>
+                                                    </li> -->
+
+
+
+
+
+
+
+                                                    
+                                                
 
 
 
@@ -597,185 +862,171 @@ else {
 
 
 
-                                <?php //Products blocks generationg from bd
-
-$shopDB = "thelongdark";
-$shopTable = "shop";
-$shopDiscountsTable = "shopdiscounts";
-
-$link = mysqli_connect("localhost", "root", "123mnbzzZ01p", $shopDB);
-
-if (mysqli_connect_errno()) {
-    printf("Connect failed: %s\n", mysqli_connect_error());
-    exit();
-}
-
-//queries to db 
+<?php //Products blocks generationg from bd
+    
+    //queries to db 
 
 
-$getAllProductsInfoQueryAND = "";
-$getAllProductsInfoQueryOREDERBY = "";
+    $getAllProductsInfoQueryAND = "";
+    $getAllProductsInfoQueryOREDERBY = "";
 
 
 
 
-if ($ShowAllProductsLike != "") {
-    $getAllProductsInfoQueryAND = " AND Title LIKE '%" . $ShowAllProductsLike . "%'";
-}
-
-
-
-
-if ($SortAllProductsBy != "") {
-    $sortQuery = "";
-
-    if ($SortAllProductsBy == "Best Match")
-        $sortQuery = "ORDER BY $shopTable.Rating DESC";
-
-    else if ($SortAllProductsBy == "Newest Item")
-        $sortQuery = "ORDER BY $shopTable.AddedDate DESC";
-
-    else if ($SortAllProductsBy == "A - Z")
-        $sortQuery = "ORDER BY $shopTable.Title DESC";
-
-    $getAllProductsInfoQueryOREDERBY = $sortQuery;
-}
-
-
-
-
-if ($SortAllProductsByColor != "") {
-    $sortQuery = " AND $shopTable.Color LIKE '%$SortAllProductsByColor%'";
-
-    $getAllProductsInfoQueryAND .= $sortQuery;
-}
-
-
-
-
-
-
-if ($SortAllProductsByPrice["min"] != "" && $SortAllProductsByPrice["max"] != "") {
-    $min = $SortAllProductsByPrice["min"];
-    $max = $SortAllProductsByPrice["max"];
-    $sortQuery = " AND $shopTable.Price BETWEEN $min AND $max";
-
-    $getAllProductsInfoQueryAND .= $sortQuery;
-}
-
-
-
-
-$getAllProductsInfoQuery = "SELECT `Id`, `Title`,
-                                        `Price`, `Rating`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 $getAllProductsInfoQueryAND $getAllProductsInfoQueryOREDERBY";
-
-
-PrintAllAvailableProducts();
-
-
-function PrintAllAvailableProducts()
-{
-    global $link;
-    global $getAllProductsInfoQuery;
-
-
-
-    if ($result = mysqli_query($link, $getAllProductsInfoQuery)) {
-        while ($row = mysqli_fetch_row($result)) {
-            $id = $row[0];
-            $title = $row[1];
-            $price = $row[2];
-            $rating = $row[3];
-            $imagePath = $row[4];
-
-            $discountPrice = GetCurrentProductDiscount($id, $price);
-
-            PrintNewsBlock($title, $price, $discountPrice, $rating, $imagePath);
-        }
-
-        mysqli_free_result($result);
-    }
-}
-
-function GetCurrentProductDiscount(int $id, float $price)
-{
-    global $shopDiscountsTable;
-    global $shopTable;
-    $getAllProductsDiscountInfoQuery = "SELECT `Discount` FROM $shopDiscountsTable
-                                        INNER JOIN $shopTable ON $shopDiscountsTable.ShopProductID = $id";
-
-    global $link;
-    if ($result = mysqli_query($link, $getAllProductsDiscountInfoQuery)) {
-        if ($row = mysqli_fetch_row($result)) {
-            //echo "StartIf ";
-
-            return GetCalculatedDiscount($price, $row[0]);
-        }
-
-        mysqli_free_result($result);
+    if ($ShowAllProductsLike != "") {
+        $getAllProductsInfoQueryAND = " AND Title LIKE '%" . $ShowAllProductsLike . "%'";
     }
 
-    return 0.0;
-}
-
-function GetCalculatedDiscount(float $price, float $discount)
-{
-    return $price - (($discount * $price) / 100.0);
-}
 
 
-function PrintNewsBlock(string $title, float $price, float $discountPrice, float $rating, string $imagePath)
-{
-    $discountPriceHTML = $discountPrice == 0.0 ? '<span class="new-price"></span>' : '<span class="new-price">$' . $discountPrice . '</span>';
-    $pricericeHTML = $discountPrice == 0.0 ? '<div class="old-price">$' . $price . '</div>' : '<del class="old-price">$' . $price . '</del>';
-    $ratingHTML = GetRatingHTML($rating);
 
-    $productBlockHTML = '
-                                            <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
-                                                <div class="exclusive-item exclusive-item-three text-center mb-50">
-                                                    <div class="exclusive-item-thumb">
-                                                        <a href="shop-details.html">
-                                                            <img src="' . $imagePath . '" alt="">
-                                                            <img class="overlay-product-thumb" src="' . $imagePath . '" alt="">
-                                                        </a>
-                                                        <ul class="action">
+    if ($SortAllProductsBy != "") {
+        $sortQuery = "";
+
+        if ($SortAllProductsBy == "Best Match")
+            $sortQuery = "ORDER BY $shopTable.Rating DESC";
+
+        else if ($SortAllProductsBy == "Newest Item")
+            $sortQuery = "ORDER BY $shopTable.AddedDate DESC";
+
+        else if ($SortAllProductsBy == "A - Z")
+            $sortQuery = "ORDER BY $shopTable.Title DESC";
+
+        $getAllProductsInfoQueryOREDERBY = $sortQuery;
+    }
+
+
+
+
+    if ($SortAllProductsByColor != "") {
+        $sortQuery = " AND $shopTable.Color LIKE '%$SortAllProductsByColor%'";
+
+        $getAllProductsInfoQueryAND .= $sortQuery;
+    }
+
+
+
+
+
+
+    if ($SortAllProductsByPrice["min"] != "" && $SortAllProductsByPrice["max"] != "") {
+        $min = $SortAllProductsByPrice["min"];
+        $max = $SortAllProductsByPrice["max"];
+        $sortQuery = " AND $shopTable.Price BETWEEN $min AND $max";
+
+        $getAllProductsInfoQueryAND .= $sortQuery;
+    }
+
+
+
+
+    $getAllProductsInfoQuery = "SELECT `Id`, `Title`,
+                                            `Price`, `Rating`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 $getAllProductsInfoQueryAND $getAllProductsInfoQueryOREDERBY";
+
+
+    PrintAllAvailableProducts();
+
+
+    function PrintAllAvailableProducts()
+    {
+        global $link;
+        global $getAllProductsInfoQuery;
+        
+        if ($result = mysqli_query($link, $getAllProductsInfoQuery)) {
+            while ($row = mysqli_fetch_row($result)) {
+                $id = $row[0];
+                $title = $row[1];
+                $price = $row[2];
+                $rating = $row[3];
+                $imagePath = $row[4];
+
+                $discountPrice = GetCurrentProductDiscount($id, $price);
+
+                PrintNewsBlock($title, $price, $discountPrice, $rating, $imagePath, $id);
+            }
+
+            mysqli_free_result($result);
+        }
+    }
+
+    function GetCurrentProductDiscount(int $id, float $price)
+    {
+        global $shopDiscountsTable;
+        global $shopTable;
+        $getAllProductsDiscountInfoQuery = "SELECT `Discount` FROM $shopDiscountsTable
+                                            INNER JOIN $shopTable ON $shopDiscountsTable.ShopProductID = $id";
+
+        global $link;
+        if ($result = mysqli_query($link, $getAllProductsDiscountInfoQuery)) {
+            if ($row = mysqli_fetch_row($result)) {
+
+                return GetCalculatedDiscount($price, $row[0]);
+            }
+
+            mysqli_free_result($result);
+        }
+ 
+        return 0.0;
+    }
+
+    function GetCalculatedDiscount(float $price, float $discount)
+    {
+        return $price - (($discount * $price) / 100.0);
+    }
+
+
+    function PrintNewsBlock(string $title, float $price, float $discountPrice, float $rating, string $imagePath, string $id)
+    {
+        $discountPriceHTML = $discountPrice == 0.0 ? '<span class="new-price"></span>' : '<span class="new-price">$' . $discountPrice . '</span>';
+        $pricericeHTML = $discountPrice == 0.0 ? '<div class="old-price">$' . $price . '</div>' : '<del class="old-price">$' . $price . '</del>';
+        $ratingHTML = GetRatingHTML($rating);
+
+        $productBlockHTML = '
+                                                <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
+                                                    <div class="exclusive-item exclusive-item-three text-center mb-50">
+                                                        <div class="exclusive-item-thumb">
+                                                            <a href="shop-details.html">
+                                                                <img src="' . $imagePath . '" alt="">
+                                                                <img class="overlay-product-thumb" src="' . $imagePath . '" alt="">
+                                                            </a>
+                                                            <ul class="action">
+                                                                
+                                                            <li><a id="' . $id . '" style="background-color: lightblue; cursor: pointer;" onclick="OnProductBuyButtonClick(this.id)">BUY</a></li>
+                                                            <li><a id="' . $id . '" style="cursor: pointer;" onclick="AddSelectedProductIdToCookies(this.id)"><i class="flaticon-supermarket"></i></a></li>
                                                             
-                                                        <li><a style="background-color: lightblue; cursor: default;">BUY</a></li>
-                                                        <li><a><i class="flaticon-supermarket"></i></a></li>
-                                                        
-                                                        </ul>
-                                                    </div>
-                                                    <div class="exclusive-item-content">
-                                                        <h5><a href="shop-details.html">' . $title . '</a></h5>
-                                                        <div class="exclusive--item--price">
-                                                            ' . $pricericeHTML . '
-                                                            ' . $discountPriceHTML . '
+                                                            </ul>
                                                         </div>
-                                                        <div class="rating">
-                                                            ' . $ratingHTML . '
+                                                        <div class="exclusive-item-content">
+                                                            <h5><a href="shop-details.html">' . $title . '</a></h5>
+                                                            <div class="exclusive--item--price">
+                                                                ' . $pricericeHTML . '
+                                                                ' . $discountPriceHTML . '
+                                                            </div>
+                                                            <div class="rating">
+                                                                ' . $ratingHTML . '
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>';
+                                                </div>';
 
-    echo $productBlockHTML;
-}
-
-
-function GetRatingHTML(int $rating)
-{
-    $ratingHTML = "";
-    for ($i = 0; $i < $rating; $i++) {
-        $ratingHTML .= "<i class='fas fa-star'></i>";
+        echo $productBlockHTML;
     }
 
-    return $ratingHTML;
-}
+
+    function GetRatingHTML(int $rating)
+    {
+        $ratingHTML = "";
+        for ($i = 0; $i < $rating; $i++) {
+            $ratingHTML .= "<i class='fas fa-star'></i>";
+        }
+
+        return $ratingHTML;
+    }
 
 
 
 
-$_SESSION["showAllProductsLike"] = "";
+    $_SESSION["showAllProductsLike"] = "";
 
 
 
@@ -783,488 +1034,7 @@ $_SESSION["showAllProductsLike"] = "";
 
 ?>
 
-                                    
-
-
-                                
-                                    
-
-
-
-                                <!-- <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
-                                    <div class="exclusive-item exclusive-item-three text-center mb-50">
-                                        <div class="exclusive-item-thumb">
-                                            <a href="shop-details.html">
-                                                <img src="img/clothes/327x358/t-shirt-one.jpg" alt="">
-                                                <img class="overlay-product-thumb" src="img/clothes/327x358/t-shirt-one.jpg" alt="">
-                                            </a>
-                                            <ul class="action">
-                                                
-                                                <li><a href="#"><i class="flaticon-supermarket"></i></a></li>
-                                              
-                                            </ul>
-                                        </div>
-                                        <div class="exclusive-item-content">
-                                            <h5><a href="shop-details.html">Short Sleev T-Shirt</a></h5>
-                                            <div class="exclusive--item--price">
-                                                <del class="old-price">$15.00</del>
-                                                <span class="new-price">$10.99</span>
-                                            </div>
-                                            <div class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                 <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
-                                    <div class="exclusive-item exclusive-item-three text-center mb-50">
-                                        <div class="exclusive-item-thumb">
-                                            <a href="shop-details.html">
-                                                <img src="img/clothes/327x358/t-shirt-two.jpg" alt="">
-                                                <img class="overlay-product-thumb" src="img/clothes/327x358/t-shirt-two.jpg" alt="">
-                                            </a>
-                                            <ul class="action">
-                                                
-                                                <li><a href="#"><i class="flaticon-supermarket"></i></a></li>
-                                               
-                                            </ul>
-                                        </div>
-                                        <div class="exclusive-item-content">
-                                            <h5><a href="shop-details.html">WOMAN Short Sleev T-Shirt</a></h5>
-                                            <div class="exclusive--item--price">
-                                                <del class="old-price">$15.00</del>
-                                                <span class="new-price">$10.99</span>
-                                            </div>
-                                            <div class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-
-
-
-
-
-
-
-
-                                <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
-                                    <div class="exclusive-item exclusive-item-three text-center mb-50">
-                                        <div class="exclusive-item-thumb">
-                                            <a href="shop-details.html">
-                                                <img src="img/clothes/327x358/t-shirt-3.jpg" alt="">
-                                                <img class="overlay-product-thumb" src="img/clothes/327x358/t-shirt-3.jpg" alt="">
-                                            </a>
-                                            <ul class="action">
-                                                
-                                                <li><a href="#"><i class="flaticon-supermarket"></i></a></li>
-                                               
-                                            </ul>
-                                        </div>
-                                        <div class="exclusive-item-content">
-                                            <h5><a href="shop-details.html">WOMAN Short Sleev T-Shirt</a></h5>
-                                            <div class="exclusive--item--price">
-                                                <del class="old-price">$15.00</del>
-                                                <span class="new-price">$10.99</span>
-                                            </div>
-                                            <div class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-
-
-
-
-
-
-                                <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
-                                    <div class="exclusive-item exclusive-item-three text-center mb-50">
-                                        <div class="exclusive-item-thumb">
-                                            <a href="shop-details.html">
-                                                <img src="img/clothes/327x358/t-shirt-4.jpg" alt="">
-                                                <img class="overlay-product-thumb" src="img/clothes/327x358/t-shirt-4.jpg" alt="">
-                                            </a>
-                                            <ul class="action">
-                                               
-                                                <li><a href="#"><i class="flaticon-supermarket"></i></a></li>
-                                                
-                                            </ul>
-                                        </div>
-                                        <div class="exclusive-item-content">
-                                            <h5><a href="shop-details.html">Short Sleev T-Shirt</a></h5>
-                                            <div class="exclusive--item--price">
-                                                <del class="old-price">$15.00</del>
-                                                <span class="new-price">$10.99</span>
-                                            </div>
-                                            <div class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-
-
-
-
-
-                                <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
-                                    <div class="exclusive-item exclusive-item-three text-center mb-50">
-                                        <div class="exclusive-item-thumb">
-                                            <a href="shop-details.html">
-                                                <img src="img/clothes/327x358/t-shirt-5.jpg" alt="">
-                                                <img class="overlay-product-thumb" src="img/clothes/327x358/t-shirt-5.jpg" alt="">
-                                            </a>
-                                            <ul class="action">
-                                               
-                                                <li><a href="#"><i class="flaticon-supermarket"></i></a></li>
-                                                
-                                            </ul>
-                                        </div>
-                                        <div class="exclusive-item-content">
-                                            <h5><a href="shop-details.html">Short Sleev T-Shirt</a></h5>
-                                            <div class="exclusive--item--price">
-                                                <del class="old-price">$15.00</del>
-                                                <span class="new-price">$10.99</span>
-                                            </div>
-                                            <div class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-
-
-
-
-
-
-                                <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
-                                    <div class="exclusive-item exclusive-item-three text-center mb-50">
-                                        <div class="exclusive-item-thumb">
-                                            <a href="shop-details.html">
-                                                <img src="img/clothes/327x358/t-shirt-6.jpg" alt="">
-                                                <img class="overlay-product-thumb" src="img/clothes/327x358/t-shirt-6.jpg" alt="">
-                                            </a>
-                                            <ul class="action">
-                                                
-                                                <li><a href="#"><i class="flaticon-supermarket"></i></a></li>
-                                              
-                                            </ul>
-                                        </div>
-                                        <div class="exclusive-item-content">
-                                            <h5><a href="shop-details.html">Short Sleev T-Shirt</a></h5>
-                                            <div class="exclusive--item--price">
-                                                <del class="old-price">$15.00</del>
-                                                <span class="new-price">$10.99</span>
-                                            </div>
-                                            <div class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-
-
-
-
-
-
-
-                                <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
-                                    <div class="exclusive-item exclusive-item-three text-center mb-50">
-                                        <div class="exclusive-item-thumb">
-                                            <a href="shop-details.html">
-                                                <img src="img/clothes/327x358/t-shirt-7.jpg" alt="">
-                                                <img class="overlay-product-thumb" src="img/clothes/327x358/t-shirt-7.jpg" alt="">
-                                            </a>
-                                            <ul class="action">
-                                               
-                                                <li><a href="#"><i class="flaticon-supermarket"></i></a></li>
-                                               
-                                            </ul>
-                                        </div>
-                                        <div class="exclusive-item-content">
-                                            <h5><a href="shop-details.html">Short Sleev T-Shirt</a></h5>
-                                            <div class="exclusive--item--price">
-                                                <del class="old-price">$15.00</del>
-                                                <span class="new-price">$10.99</span>
-                                            </div>
-                                            <div class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-
-
-
-
-
-
-
-
-
-                                <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
-                                    <div class="exclusive-item exclusive-item-three text-center mb-50">
-                                        <div class="exclusive-item-thumb">
-                                            <a href="shop-details.html">
-                                                <img src="img/clothes/327x358/t-shirt-8.jpg" alt="">
-                                                <img class="overlay-product-thumb" src="img/clothes/327x358/t-shirt-8.jpg" alt="">
-                                            </a>
-                                            <ul class="action">
-                                                
-                                                <li><a href="#"><i class="flaticon-supermarket"></i></a></li>
-                                               
-                                            </ul>
-                                        </div>
-                                        <div class="exclusive-item-content">
-                                            <h5><a href="shop-details.html">Long Sleev T-Shirt</a></h5>
-                                            <div class="exclusive--item--price">
-                                                <del class="old-price">$15.00</del>
-                                                <span class="new-price">$10.99</span>
-                                            </div>
-                                            <div class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
-                                    <div class="exclusive-item exclusive-item-three text-center mb-50">
-                                        <div class="exclusive-item-thumb">
-                                            <a href="shop-details.html">
-                                                <img src="img/clothes/327x358/axe.jpg" alt="">
-                                                <img class="overlay-product-thumb" src="img/clothes/327x358/axe.jpg" alt="">
-                                            </a>
-                                            <ul class="action">
-                                                
-                                                <li><a href="#"><i class="flaticon-supermarket"></i></a></li>
-                                                
-                                            </ul>
-                                        </div>
-                                        <div class="exclusive-item-content">
-                                            <h5><a href="shop-details.html">HINTERLAND Theme AXE</a></h5>
-                                            <div class="exclusive--item--price">
-                                                <del class="old-price">$69.00</del>
-                                                <span class="new-price">$58.00</span>
-                                            </div>
-                                            <div class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-
-
-
-
-
-
-
-                                <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
-                                    <div class="exclusive-item exclusive-item-three text-center mb-50">
-                                        <div class="exclusive-item-thumb">
-                                            <a href="shop-details.html">
-                                                <img src="img/clothes/327x358/cups.jpg" alt="">
-                                                <img class="overlay-product-thumb" src="img/clothes/327x358/cups.jpg" alt="">
-                                            </a>
-                                            <ul class="action">
-                                                
-                                                <li><a href="#"><i class="flaticon-supermarket"></i></a></li>
-                                                
-                                            </ul>
-                                        </div>
-                                        <div class="exclusive-item-content">
-                                            <h5><a href="shop-details.html">The Long Dark Theme Cup</a></h5>
-                                            <div class="exclusive--item--price">
-                                                <del class="old-price">$10.00</del>
-                                                <span class="new-price">$6.99</span>
-                                            </div>
-                                            <div class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-
-
-
-
-
-
-
-                                <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
-                                    <div class="exclusive-item exclusive-item-three text-center mb-50">
-                                        <div class="exclusive-item-thumb">
-                                            <a href="shop-details.html">
-                                                <img src="img/clothes/327x358/cups2.jpg" alt="">
-                                                <img class="overlay-product-thumb" src="img/clothes/327x358/cups2.jpg" alt="">
-                                            </a>
-                                            <ul class="action">
-                                                
-                                                <li><a href="#"><i class="flaticon-supermarket"></i></a></li>
-                                               
-                                            </ul>
-                                        </div>
-                                        <div class="exclusive-item-content">
-                                            <h5><a href="shop-details.html"> The Long Dark Theme Cup</a></h5>
-                                            <div class="exclusive--item--price">
-                                                <del class="old-price">$10.00</del>
-                                                <span class="new-price">$6.99</span>
-                                            </div>
-                                            <div class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-
-
-
-
-
-                                <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
-                                    <div class="exclusive-item exclusive-item-three text-center mb-50">
-                                        <div class="exclusive-item-thumb">
-                                            <a href="shop-details.html">
-                                                <img src="img/clothes/327x358/poster.png" alt="">
-                                                <img class="overlay-product-thumb" src="img/clothes/327x358/poster.png" alt="">
-                                            </a>
-                                            <ul class="action">
-                                               
-                                                <li><a href="#"><i class="flaticon-supermarket"></i></a></li>
-                                                
-                                            </ul>
-                                        </div>
-                                        <div class="exclusive-item-content">
-                                            <h5><a href="shop-details.html">The Long Dark Poster</a></h5>
-                                            <div class="exclusive--item--price">
-                                                <del class="old-price">$25.00</del>
-                                                <span class="new-price">$12.99</span>
-                                            </div>
-                                            <div class="rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
-
-
-
-
-
-
-
-
-
-
-
+                             
 
                             </div>
                             
@@ -1283,6 +1053,10 @@ $_SESSION["showAllProductsLike"] = "";
                             </div>
                             -->
                         </div>
+
+
+
+
                         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8">
                             <aside class="shop-sidebar shop-right-sidebar">
                                 
@@ -1309,18 +1083,10 @@ $_SESSION["showAllProductsLike"] = "";
                                 </div>
                                 <div class="shop-cat-list">
                                     <ul>
-                                        <li><a><button id="productCategoriesButton_1" class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML, this.id)"> Hoodie </button></a></li>
-                                        <li><a><button id="productCategoriesButton_2" class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML, this.id)"> Short Sleeve T-Shirt </button></a></li>
-                                        <li><a><button id="productCategoriesButton_3" class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML, this.id)"> Long Sleeve T-Shirt </button></a></li>
-                                        <li><a><button id="productCategoriesButton_4" class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML, this.id)"> Accessorie </button></a></li>
-                                        
-
-                                        <!-- <li><a href="#">Accessories</a><span>27</span></li> 
-                                        <li><a type="submit" href="#">Leather Jacket</a><span>12</span></li>
-                                        <li><a href="#">Woman Hoodies</a><span>6</span></li>
-                                        <li><a href="#">Man Shoes</a><span>7</span></li>
-                                        <li><a href="#">Baby Troys</a><span>9</span></li>
-                                        <li><a href="#">Kitchen Accessories</a><span>16</span></li>-->
+                                        <li><a style="cursor: pointer;" id="productCategoriesButton_1" class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML, this.id)"> Hoodie </a></li>
+                                        <li><a style="cursor: pointer;" id="productCategoriesButton_2" class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML, this.id)"> Short Sleeve T-Shirt </a></li>
+                                        <li><a style="cursor: pointer;" id="productCategoriesButton_3" class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML, this.id)"> Long Sleeve T-Shirt </a></li>
+                                        <li><a style="cursor: pointer;" id="productCategoriesButton_4" class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML, this.id)"> Accessorie </a></li>
                                     </ul>
                                 </div>
 
@@ -1676,11 +1442,10 @@ $_SESSION["showAllProductsLike"] = "";
                 SortAllProductsByPriceMax_Current =  "<?php echo $SortAllProductsByPrice["max"]; ?>";
 
                 
+                
 
+                
 
-                /*ShowAllProductsLike_New = "";
-                SortAllProductsBy_New = "";
-                SortAllProductsByColor_New = "";*/
                 
                 isParametersChanged = false;
 
@@ -1688,17 +1453,17 @@ $_SESSION["showAllProductsLike"] = "";
 
                 
                 SortingBySelectedId = "<?php if (isset($_COOKIE["sortAllProductsBySelectedId"]))
-    echo $_COOKIE["sortAllProductsBySelectedId"];
-else
-    echo ""; ?>"
+                    echo $_COOKIE["sortAllProductsBySelectedId"];
+                else
+                    echo ""; ?>";
                 SortingByTypeId = "<?php if (isset($_COOKIE["showAllProductsByTypeId"]))
-    echo $_COOKIE["showAllProductsByTypeId"];
-else
-    echo ""; ?>"
+                    echo $_COOKIE["showAllProductsByTypeId"];
+                else
+                    echo ""; ?>";
                 SortingByColorId = "<?php if (isset($_COOKIE["sortAllProductsByColorId"]))
-    echo $_COOKIE["sortAllProductsByColorId"];
-else
-    echo ""; ?>"
+                    echo $_COOKIE["sortAllProductsByColorId"];
+                else
+                    echo ""; ?>";
 
 
                 if(SortingBySelectedId != "")
@@ -1710,7 +1475,7 @@ else
                 if(SortingByTypeId != "")
                 {
                     var pressedButton = document.getElementById(SortingByTypeId);
-                    pressedButton.setAttribute('style', 'background-color: black');
+                    pressedButton.setAttribute('style', 'color: blue;');
                 }
                 if(SortingByColorId != "")
                 {
@@ -1747,7 +1512,24 @@ else
 
                 function deleteAllCookies() 
                 {
-                    var cookies = document.cookie.split(";");
+                    document.cookie = "sortAllProductsBySelectedId= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    document.cookie = "showAllProductsByTypeId= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    document.cookie = "sortAllProductsByColorId= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    document.cookie = "sortAllProductsByPriceMin= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    document.cookie = "sortAllProductsByPriceMax= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+                    document.cookie = "sortAllProductsBy= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    document.cookie = "showAllProductsLike= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    document.cookie = "sortAllProductsByColor2= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    document.cookie = "sortAllProductsByPriceMin= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    document.cookie = "sortAllProductsByPriceMax= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                    //document.cookie = "bucketProductsId=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+
+
+
+
+                    /*var cookies = document.cookie.split(";");
 
                     for (var i = 0; i < cookies.length; i++) 
                     {
@@ -1755,7 +1537,7 @@ else
                         var eqPos = cookie.indexOf("=");
                         var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
                         document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-                    }
+                    }*/
                 }
 
                 //window.onbeforeunload = IsSortingParametersChanged();
@@ -1852,7 +1634,7 @@ else
                         ShowAllProductsLike_Current = buttonText;
                     
                     var pressedButton = document.getElementById(id);
-                    pressedButton.setAttribute('style', 'background-color: black');
+                    pressedButton.setAttribute('style', 'color: blue;');
 
                     SortingByTypeId = id;
                     
@@ -1911,100 +1693,100 @@ else
                 }
 
                 
-  
 
 
 
 
 
 
+                //-----------Bucket functionality---------------------
 
+                //AddSelectedProductIdToCookies();//////////////
 
-
-
-
-                /*function getElementByXpath(path) 
+                function OnProductBucketClick() //+
                 {
-                    return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-                }*/
+                    AddSelectedProductIdToCookies();
+                }   
 
-                //alert( getElementByXpath("//html/body/main/section[2]/div/div/div[2]/aside/div[2]/div[2]/div[1]/div/@style").item(1));
-
-                // Creating a cookie after the document is ready
-                /*$(document).ready(function () {
-                    createCookie("gfg", "GeeksforGeeks", "10");
-                });
                 
-                // Function to create the cookie
-                function createCookie(name, value, days) {
-                    var expires;
+
+                function OnMenuBucketClick() 
+                {
+                    document.location = "wishlist.php";
+                }
+
+                function OnBucketMenuDeleteButtonClick(id) //+
+                {
+                    var passedArray = <?php echo json_encode($BucketProductsIdNums); ?>;
+                    arrayValues = [];
                     
-                    if (days) {
-                        var date = new Date();
-                        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                        expires = "; expires=" + date.toGMTString();
+                    for (let i = 0; i < passedArray.length; i++) 
+                    {
+                        if(passedArray[i] != id)
+                            arrayValues.push(passedArray[i]);
                     }
-                    else {
-                        expires = "";
-                    }
+
+                    var json_str = JSON.stringify(arrayValues);
+                    document.cookie="bucketProductsId=" + json_str;
+
+                    document.location.reload(true);
+                    //delete from cookie
+                    //reload page (bucket)
+                }
+
+                function OnBucketMenuMakePurchaseClick() 
+                {
+                    document.location = "wishlist.php";
+                } 
+
+
+
+                //----------Buying functionality----------
+
+                function OnProductBuyButtonClick(id) //+
+                {
+                    /*var passedArray = <?php echo json_encode($BucketProductsIdNums); ?>;
+                    passedArray.push(id);
+                    var json_str = JSON.stringify(passedArray);
+                    document.cookie="bucketProductsId=" + json_str;*/
                     
-                    document.cookie = escape(name) + "=" + 
-                        escape(value) + expires + "; path=/";
-                }*/
-
-
-                //document.cookie = "name=Alex";
-                //document.cookie = "favorite_food=tripe";
-                
-                
+                    document.location = "wishlist.php";
+                }   
 
 
 
-
-           /*  
-
-            document.body.onload = addElement;
-            var my_div = newDiv = null;*/
-
-            /*function addElement() {
-
-
-
+                //alert("1");
 
 
                 
-                //alert(document.cookie);
 
-                // Создаём новый элемент div
-                // и добавляем в него немного контента
+                   
+                    //alert(bucketProductsID[0]);
 
-                //var newDiv = document.createElement("div");
-                    //newDiv.innerHTML = "<h1>"+javaScriptVar+"</h1>";
-
-                // Добавляем только что созданный элемент в дерево DOM
-
-                //my_div = document.getElementById("org_div1");
-                //document.body.insertBefore(newDiv, my_div);
-            }*/
-
-
-            
+                    //document.cookie = "sortAllProductsBySelectedId=" + SortingBySelectedId;
+                    //document.cookie = "showAllProductsByTypeId=" + SortingByTypeId;
+                    //document.cookie = "sortAllProductsByColorId=" + SortingByColorId;
 
 
 
+                //Commom (OnAddingNewProduct and OnSiteLoadCookies)
 
-            /*var songlist = ['song1', 'song2', 'song3'];
+                
+               
 
-            var sendData = function() {
-            $.post('shop-right-sidebar.php', {
-                data: songlist
-            }, function(response) {
-                console.log(response);
-            });
-            }
-            sendData();*/
+                function AddSelectedProductIdToCookies(id) //+
+                {
+                    var passedArray = <?php echo json_encode($BucketProductsIdNums); ?>;
 
-
+                    if(!passedArray.includes(id))
+                    {
+                        passedArray.push(id);
+                        var json_str = JSON.stringify(passedArray);
+                        document.cookie="bucketProductsId=" + json_str;
+                        
+                        document.location.reload(true);
+                    }
+                }
         </script> 
 
 
