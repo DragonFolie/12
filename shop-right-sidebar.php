@@ -184,6 +184,112 @@ else
 
 
 
+
+
+
+
+
+$BucketProductsAmountNums = [];
+
+    if (isset($_COOKIE["bucketProductsAmount"]) && $_COOKIE["bucketProductsAmount"] != "[]") 
+    {
+        
+        /*$str = array_values($_COOKIE["bucketProductsId"]);*/ 
+        $BucketProductsId = $_COOKIE["bucketProductsAmount"];
+        
+        $numString = "";
+    
+        for ($i = 0; $i < strlen($BucketProductsId); $i++) 
+        { 
+            if(is_numeric($BucketProductsId[$i]) == true && is_numeric($BucketProductsId[$i + 1]) == false) 
+            {   
+                $numString .= $BucketProductsId[$i];
+                array_push($BucketProductsAmountNums, $numString);
+                $numString = "";
+                //$BucketProductsIdNums .= $BucketProductsId[$i] . ",";
+            } 
+            else if(is_numeric($BucketProductsId[$i]) == false) 
+            {
+                continue;
+            } 
+            else
+            {
+                $numString .= $BucketProductsId[$i];
+            }
+        }
+
+        //echo $BucketProductsAmountNums[1];
+
+        
+        /*echo $BucketProductsIdNums[0];
+        echo $BucketProductsIdNums[1];
+        echo $BucketProductsIdNums[2];*/
+    }
+    else 
+    {
+        echo $_COOKIE["bucketProductsAmount"];
+        $BucketProductsAmountNums = [];
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// WishListProductsId
+$WishListProductsIdNums = [];
+
+if (isset($_COOKIE["wishListProductsId"])) 
+{
+    /*$str = array_values($_COOKIE["wishListProductsId"]);*/ 
+    $wishListProductsId = $_COOKIE["wishListProductsId"];
+    
+    
+    $numString = "";
+
+    for ($i = 0; $i < strlen($wishListProductsId); $i++) 
+    { 
+        if(is_numeric($wishListProductsId[$i]) == true && is_numeric($wishListProductsId[$i + 1]) == false) 
+        {   
+            $numString .= $wishListProductsId[$i];
+            array_push($WishListProductsIdNums, $numString);
+            $numString = "";
+            //$WishListProductsIdNums .= $BucketProductsId[$i] . ",";
+        } 
+        else if(is_numeric($wishListProductsId[$i]) == false) 
+        {
+            continue;
+        } 
+        else
+        {
+            $numString .= $wishListProductsId[$i];
+        }
+    }
+}
+else 
+{
+    $WishListProductsIdNums = [];
+}
+
+
+
+
+
+
+
+
+
+
 //unset($_COOKIE['sortAllProductsByColor']); 
 
 
@@ -993,6 +1099,7 @@ else
                                                                 
                                                             <li><a id="' . $id . '" style="background-color: lightblue; cursor: pointer;" onclick="OnProductBuyButtonClick(this.id)">BUY</a></li>
                                                             <li><a id="' . $id . '" style="cursor: pointer;" onclick="AddSelectedProductIdToCookies(this.id)"><i class="flaticon-supermarket"></i></a></li>
+                                                            <li><a id="' . $id . '" style="cursor: pointer;" onclick="AddSelectedProductIdToWishListCookies(this.id)">WL</a></li>
                                                             
                                                             </ul>
                                                         </div>
@@ -1697,8 +1804,6 @@ else
 
 
 
-
-
                 //-----------Bucket functionality---------------------
 
                 //AddSelectedProductIdToCookies();//////////////
@@ -1717,6 +1822,7 @@ else
 
                 function OnBucketMenuDeleteButtonClick(id) //+
                 {
+                    var productIndex;
                     var passedArray = <?php echo json_encode($BucketProductsIdNums); ?>;
                     arrayValues = [];
                     
@@ -1724,10 +1830,38 @@ else
                     {
                         if(passedArray[i] != id)
                             arrayValues.push(passedArray[i]);
+                        else
+                            productIndex = i;
                     }
 
                     var json_str = JSON.stringify(arrayValues);
                     document.cookie="bucketProductsId=" + json_str;
+
+
+
+
+
+                    passedArray = <?php echo json_encode($BucketProductsAmountNums); ?>;
+                    alert("passedArray " + passedArray);
+                    
+                    //var sliaced = passedArray.slice(productIndex, 1);
+
+                    var a = [];
+                    
+                    for (let index = 0; index < passedArray.length; index++) 
+                    {
+                        if(index != productIndex)
+                            a.push(passedArray[index]);
+                    }
+                    
+                    var json_str = JSON.stringify(a);
+                    document.cookie="bucketProductsAmount=" + json_str;
+
+
+
+
+
+
 
                     document.location.reload(true);
                     //delete from cookie
@@ -1771,7 +1905,7 @@ else
 
                 //Commom (OnAddingNewProduct and OnSiteLoadCookies)
 
-                
+                alert(document.cookie);
                
 
                 function AddSelectedProductIdToCookies(id) //+
@@ -1785,8 +1919,95 @@ else
                         document.cookie="bucketProductsId=" + json_str;
                         
                         document.location.reload(true);
+
+                        //alert("start");                            
+                        var bucketProductsAmount = <?php echo json_encode($BucketProductsAmountNums); ?>;
+
+                        if(bucketProductsAmount != false)
+                        {
+                            //wasChange = true;
+                            
+                            //alert(1);
+
+                            productIndexInArray = passedArray.indexOf(id);
+
+                            //alert(productIndexInArray);
+
+                            bucketProductsAmount[productIndexInArray] = 1;
+                            
+                            json_str = JSON.stringify(bucketProductsAmount);
+                        
+                            document.cookie="bucketProductsAmount=" + json_str;
+                            
+                            
+                        }
+                        else
+                        {
+                            //alert(2);
+
+                            bucketProductsAmount2 = [];
+                            productIndexInArray = passedArray.indexOf(id);
+
+                            bucketProductsAmount2[productIndexInArray] = 1;
+                            
+                            json_str = JSON.stringify(bucketProductsAmount2);
+                        
+                            document.cookie="bucketProductsAmount=" + json_str;
+                        }
+
+                        document.location.reload(true);
+
+                        
                     }
                 }
+                
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                //document.cookie = "wishListProductsId= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+                //alert(document.cookie);
+                
+
+
+
+                //Add to WishListProductId
+
+                function AddSelectedProductIdToWishListCookies(id) 
+                {
+                    var passedArray = <?php echo json_encode($WishListProductsIdNums); ?>;
+
+                    if(!passedArray.includes(id))
+                    {
+                        passedArray.push(id);
+                        var json_str = JSON.stringify(passedArray);
+                        document.cookie="wishListProductsId=" + json_str;
+                        
+                        document.location.reload(true);
+                    }
+                }
+
+
+                function SetProductAmount() //(1)
+                {
+
+                }
+
+
+
         </script> 
 
 

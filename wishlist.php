@@ -1,3 +1,172 @@
+<?php
+    $shopDB = "thelongdark";
+    $shopTable = "shop";
+    $shopDiscountsTable = "shopdiscounts";
+
+    $link = mysqli_connect("localhost", "root", "123mnbzzZ01p", $shopDB);
+    
+    if (mysqli_connect_errno()) {
+        printf("Connect failed: %s\n", mysqli_connect_error());
+        exit();
+    }
+
+
+
+
+
+
+    $BucketProductsIdNums = [];
+    //$BucketProductsId = [];
+
+
+    if (isset($_COOKIE["bucketProductsId"]) && $_COOKIE["bucketProductsId"] != "[]") 
+    {
+        /*$str = array_values($_COOKIE["bucketProductsId"]);*/ 
+        $BucketProductsId = $_COOKIE["bucketProductsId"];
+        
+        
+        $numString = "";
+    
+        for ($i = 0; $i < strlen($BucketProductsId); $i++) 
+        { 
+            if(is_numeric($BucketProductsId[$i]) == true && is_numeric($BucketProductsId[$i + 1]) == false) 
+            {   
+                $numString .= $BucketProductsId[$i];
+                array_push($BucketProductsIdNums, $numString);
+                $numString = "";
+                //$BucketProductsIdNums .= $BucketProductsId[$i] . ",";
+            } 
+            else if(is_numeric($BucketProductsId[$i]) == false) 
+            {
+                continue;
+            } 
+            else
+            {
+                $numString .= $BucketProductsId[$i];
+            }
+        }
+        /*echo $BucketProductsIdNums[0];
+        echo $BucketProductsIdNums[1];
+        echo $BucketProductsIdNums[2];*/
+    }
+    else 
+    {
+        echo "BucketProductsIdNums " . $_COOKIE["bucketProductsId"];
+        $BucketProductsIdNums = [];
+    }
+
+
+    echo "BucketProductsIdNums " . $_COOKIE["bucketProductsId"];
+
+
+
+
+
+
+    $BucketProductsAmountNums = [];
+
+    if (isset($_COOKIE["bucketProductsAmount"]) && $_COOKIE["bucketProductsAmount"] != "[]") 
+    {
+        /*$str = array_values($_COOKIE["bucketProductsId"]);*/ 
+        $BucketProductsId = $_COOKIE["bucketProductsAmount"];
+        
+        
+        $numString = "";
+    
+        for ($i = 0; $i < strlen($BucketProductsId); $i++) 
+        { 
+            if(is_numeric($BucketProductsId[$i]) == true && is_numeric($BucketProductsId[$i + 1]) == false) 
+            {   
+                $numString .= $BucketProductsId[$i];
+                array_push($BucketProductsAmountNums, $numString);
+                $numString = "";
+                //$BucketProductsIdNums .= $BucketProductsId[$i] . ",";
+            } 
+            else if(is_numeric($BucketProductsId[$i]) == false) 
+            {
+                continue;
+            } 
+            else
+            {
+                $numString .= $BucketProductsId[$i];
+            }
+        }
+        /*echo $BucketProductsIdNums[0];
+        echo $BucketProductsIdNums[1];
+        echo $BucketProductsIdNums[2];*/
+    }
+    else 
+    {
+        echo "bucketProductsAmount " . $_COOKIE["bucketProductsAmount"];
+        $BucketProductsAmountNums = [];
+    }
+
+
+    echo "bucketProductsAmount " . $_COOKIE["bucketProductsAmount"];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // WishListProductsId
+$WishListProductsIdNums = [];
+
+if (isset($_COOKIE["wishListProductsId"])) 
+{
+    /*$str = array_values($_COOKIE["wishListProductsId"]);*/ 
+    $wishListProductsId = $_COOKIE["wishListProductsId"];
+    
+    
+    $numString = "";
+
+    for ($i = 0; $i < strlen($wishListProductsId); $i++) 
+    { 
+        if(is_numeric($wishListProductsId[$i]) == true && is_numeric($wishListProductsId[$i + 1]) == false) 
+        {   
+            $numString .= $wishListProductsId[$i];
+            array_push($WishListProductsIdNums, $numString);
+            $numString = "";
+            //$WishListProductsIdNums .= $BucketProductsId[$i] . ",";
+        } 
+        else if(is_numeric($wishListProductsId[$i]) == false) 
+        {
+            continue;
+        } 
+        else
+        {
+            $numString .= $wishListProductsId[$i];
+        }
+    }
+}
+else 
+{
+    $WishListProductsIdNums = [];
+}
+
+
+
+?>
+
+
+
+
+
+
+
+
+
+
+
+
 <!doctype html>
 <html class="no-js" lang="">
     <head>
@@ -27,7 +196,7 @@
     </head>
     <body>
 
- <!-- <!-- preloader  
+ <!-- preloader  
         <div id="preloader">
             <div id="ctn-preloader" class="ctn-preloader">
                 <div class="animation-preloader">
@@ -170,71 +339,14 @@
                                     </div>
                                     <div class="header-action d-none d-md-block">
                                         <ul>
-                                            <li><a href="#"><i class="flaticon-two-arrows"></i></a></li>
+                                            <!-- <li><a href="#"><i class="flaticon-two-arrows"></i></a></li> -->
                                             <li><a href="wishlist.php"><i class="flaticon-heart"></i></a></li>
-                                            <li class="header-shop-cart"><a href="wishlist.php"><i class="flaticon-shopping-bag"></i><span class="cart-count">2</span></a>
+                                            <li></li>
+                                            <li></li>
+                                            <!-- <li class="header-shop-cart"><a href="wishlist.php"><i class="flaticon-shopping-bag"></i><span class="cart-count">2</span></a> -->
                                                 <span class="cart-total-price">$ 128.00</span>
-                                                <ul class="minicart">
-                                                    <li class="d-flex align-items-start">
-                                                        <div class="cart-img">
-                                                            <a href="#">
-                                                                <img src="img/product/cart_p01.jpg" alt="">
-                                                            </a>
-                                                        </div>
-                                                        <div class="cart-content">
-                                                            <h4>
-                                                                <a href="#">Charity Nike Brand Yellow T-Shirt</a>
-                                                            </h4>
-                                                            <div class="cart-price">
-                                                                <span class="new">$229.9</span>
-                                                                <span>
-                                                                    <del>$229.9</del>
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="del-icon">
-                                                            <a href="#">
-                                                                <i class="far fa-trash-alt"></i>
-                                                            </a>
-                                                        </div>
-                                                    </li>
-                                                    <li class="d-flex align-items-start">
-                                                        <div class="cart-img">
-                                                            <a href="#">
-                                                                <img src="img/product/cart_p02.jpg" alt="">
-                                                            </a>
-                                                        </div>
-                                                        <div class="cart-content">
-                                                            <h4>
-                                                                <a href="#">BackPack For School Student</a>
-                                                            </h4>
-                                                            <div class="cart-price">
-                                                                <span class="new">$229.9</span>
-                                                                <span>
-                                                                    <del>$229.9</del>
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="del-icon">
-                                                            <a href="#">
-                                                                <i class="far fa-trash-alt"></i>
-                                                            </a>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="total-price">
-                                                            <span class="f-left">Total:</span>
-                                                            <span class="f-right">$239.9</span>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="checkout-link">
-                                                            <a href="wishlist.php">Shopping Cart</a>
-                                                            <a class="red-color" href="#">Checkout</a>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </li>
+                                                
+                                            <li></li>
                                         </ul>
                                     </div>
                                 </nav>
@@ -282,7 +394,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="breadcrumb-content text-center">
-                                <h2>Yours Wishlist</h2>
+                                <h2>Wishlist</h2>
                                 
                             </div>
                         </div>
@@ -301,83 +413,314 @@
                                 <table class="table mb-0">
                                     <thead>
                                         <tr>
-                                            <th class="product-thumbnail"></th>
-                                            <th class="product-name">Product</th>
-                                            <th class="product-price">Price</th>
-                                            <th class="product-quantity">QUANTITY</th>
-                                            <th class="product-subtotal">SUBTOTAL</th>
-                                            <th class="product-stock-status">Stock Status</th>
-                                            <th class="product-add-to-cart"></th>
+                                            <th class="product-thumbnail" style="cursor: default;"></th>
+                                            <th class="product-name" style="cursor: default;">Product</th>
+                                            <th class="product-price" style="cursor: default;">Price</th>
+                                            <th class="product-quantity" style="cursor: default;">QUANTITY</th>
+                                            <th class="product-subtotal" style="cursor: default;">SUBTOTAL</th>
+                                            <th class="product-stock-status" style="cursor: default;">Stock Status</th>
+                                            <th class="product-add-to-cart" style="cursor: default;"></th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    <?php 
+                                                    
+                                        $totalPrice = 0.00;
+                                        
+                                        $amountElementId = 100000;
+                                        $maxLimitAmountElementId = 1100000;
+                                        $totalPriceId = 11100000;
+
+                                        
+                                        if(count($WishListProductsIdNums) > 0)
+                                        {
+
+
+                                            //SetTotalPrice();
+
+                                            $productsAmount = count($WishListProductsIdNums);
+
+                                            /*echo '<span class="cart-count">' . $productsAmount . '</span></a>';
+
+                                            echo '<span class="cart-total-price">$' . $totalPrice . '</span>';*/
+
+
+
+
+                                            //echo '<ul class="minicart">';
+                                            $index = 0;
+
+                                            
+                                            for ($i = 0; $i < count($WishListProductsIdNums); $i++) 
+                                            { 
+                                                $getAllProductsInfoQuery = "SELECT `Title`,
+                                                `Price`, `ImagePath`, `Description`, `Amount` FROM $shopTable WHERE $shopTable.Amount > 0 AND $shopTable.Id = " . $WishListProductsIdNums[$i];
+
+                                                if ($result = mysqli_query($link, $getAllProductsInfoQuery)) {
+                                                    
+                                                    $row = mysqli_fetch_row($result);
+                                                    $productId = $WishListProductsIdNums[$index];
+                                                    $index ++;
+
+                                                        
+
+                                                    $title = $row[0];
+                                                    $price = $row[1];
+                                                    $imagePath = $row[2];
+                                                    $imagePath = str_replace("327x358", "103x129", $imagePath);
+                                                    $description = $row[3];
+                                                    $amount = $row[4];
+
+                                                    $discountPrice = 0.0;
+
+                                                    $discountPrice = GetCurrentProductDiscount($productId, $price);
+
+
+                                                    PrintWishListProductBlock($title, $imagePath, $price, $discountPrice, $productId, $description, $amount);
+                                                    
+
+                                                    mysqli_free_result($result);
+                                                }
+                                            }
+
+
+                                            //PrintTotalPrice($totalPrice);
+
+
+
+                                            //PrintMakePurchaseButton();
+                                        }
+                                        else //Bucket is empty
+                                        {
+                                            //echo '</a>';
+                                            //echo '<span class="cart-total-price">$0.00</span>';
+                                        }
+
+                                        function SetTotalPrice()
+                                        {
+                                            global $WishListProductsIdNums;
+                                            global $shopTable;
+                                            global $totalPrice;
+                                            global $link;
+
+                                            $index = 0;
+
+                                            for ($i = 0; $i < count($WishListProductsIdNums); $i++) 
+                                            { 
+                                                $getAllProductsInfoQuery = "SELECT `Title`,
+                                                `Price`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 AND $shopTable.Id = " . $WishListProductsIdNums[$i];
+
+                                                if ($result = mysqli_query($link, $getAllProductsInfoQuery)) 
+                                                {
+                                                    
+                                                    $row = mysqli_fetch_row($result);
+                                                    $productId = $WishListProductsIdNums[$index];
+                                                    $index ++;
+
+                                                        
+
+                                                    $title = $row[0];
+                                                    $price = $row[1];
+                                                    $imagePath = $row[2];
+
+                                                    $discountPrice = 0.0;
+
+                                                    $discountPrice = GetCurrentProductDiscount($productId, $price);
+
+
+                                                    if($discountPrice > 0)
+                                                        $totalPrice += $discountPrice;
+                                                    else
+                                                        $totalPrice += $price;
+                                                }
+                                            }
+
+                                            
+                                            
+                                        }
+
+                                        function GetCurrentProductDiscount(int $id, float $price)
+                                        {
+                                            global $shopDiscountsTable;
+                                            global $shopTable;
+                                            $getAllProductsDiscountInfoQuery = "SELECT `Discount` FROM $shopDiscountsTable
+                                                                                INNER JOIN $shopTable ON $shopDiscountsTable.ShopProductID = $id";
+
+                                            global $link;
+                                            if ($result = mysqli_query($link, $getAllProductsDiscountInfoQuery)) {
+                                                if ($row = mysqli_fetch_row($result)) {
+
+                                                    return GetCalculatedDiscount($price, $row[0]);
+                                                }
+
+                                                mysqli_free_result($result);
+                                            }
+                                    
+                                            return 0.0;
+                                        }
+
+                                        function GetCalculatedDiscount(float $price, float $discount)
+                                        {
+                                            return $price - (($discount * $price) / 100.0);
+                                        }
+
+                                        function generateRandomString($length = 10) {
+                                            return substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
+                                        }
+                                        
+                                        function PrintWishListProductBlock(string $title, string $imagePath, string $price, float $dicsountPrice, string $id, string $description, int $stockAmount)
+                                        {
+                                            global $amountElementId;
+                                            $amountElementId ++;
+                                            global $maxLimitAmountElementId;
+                                            $maxLimitAmountElementId ++;
+                                            global $totalPriceId;
+                                            $totalPriceId ++;
+
+                                            $stockAmountStyle = "";
+                                            $addToBucketButtonHTML = "";
+                                            if($stockAmount > 0)
+                                            {
+                                                $addToBucketButtonHTML = '
+                                                <td class="product-add-to-cart" style="cursor: default;"><a id="' . $id . '" class="btn" onclick="OnAddToBucketButtonClick('.$id.', '. $amountElementId .')" style="color: white;">Add to Bucket</a></td>';
+                                            }
+                                            else
+                                            {
+                                                $stockAmountStyle = 'style="color: gray"';
+                                            }
+
+                                            $priceStyle = "";
+                                            
+                                            if($dicsountPrice > 0)
+                                            {
+                                                $currentPrice = $price;
+                                                
+                                                $price = $dicsountPrice;
+                                                $dicsountPrice = $currentPrice;
+
+                                                $priceStyle = 'color: blue; font-weight: bold;';
+                                            }
+                                                
+
+                                            /*$discountPriceHTML = $dicsountPrice > 0 ? '<del>$' . $dicsountPrice . '</del>' : "";
+                                            //echo "dicsountPrice: " . $dicsountPrice;
+                                            $priceTextStyle = $dicsountPrice > 0 ? 'style="color: blue; font-weight: bold;"' : "";*/
+
+                                            $wishListProductBlockHTML = '
+                                            <tbody>
+                                                <tr>
+                                                    
+                                                    <td class="product-thumbnail"><a id="' . $id . '" style="cursor: pointer;" class="wishlist-remove" onclick="OnDeleteButtonClick(this.id)"><i class="flaticon-cancel-1"></i></a><a><img src="' . $imagePath . '" alt=""></a>
+                                                    </td>
+                                                    <td class="product-name">
+                                                        <h4 style="cursor: default;">' . $title . '</h4>
+                                                        <p style="cursor: default;">' . $description . '</p>
+                                                        
+                                                    </td>
+                                                    <td class="product-price" style="cursor: default; ' . $priceStyle . '">$ ' . $price . '</td>
+                                                    <td class="product-quantity">
+                                                        <div style="text-align: center;">
+                                                            <p style="font-weight: bold; cursor: pointer;" onClick="OnPlusAmountButtonClick('.$amountElementId.', '.$maxLimitAmountElementId.', '.$totalPriceId.', '.$price.')">+</p>
+                                                            <p id="'.$amountElementId.'">1</p>
+                                                            <p style="font-weight: bold; cursor: pointer;" onClick="OnMinusAmountButtonClick('.$amountElementId.', '.$totalPriceId.', '.$price.')">-</p>
+                                                        </div>
+                                                    </td>
+                                                    <td id="'. $totalPriceId .'" class="product-subtotal" style="cursor: default; color: gray; font-weight: bold;"><span id="totalPrice" style="color: gray; font-weight: bold;">$ ' . $price . '</span></td>
+                                                    <td class="product-stock-status" style="cursor: default;"><span id="'.$maxLimitAmountElementId.'" ' . $stockAmountStyle . '>' . $stockAmount . '</span></td>
+                                                    ' . $addToBucketButtonHTML . '
+                                                </tr>
+                                            </tbody>';
+
+                                            echo $wishListProductBlockHTML;
+                                        }
+
+                                        
+                                        
+                                        function PrintTotalPrice(float $totalPrice)
+                                        {   
+                                            $totalPriceString = "";
+                                            if($totalPrice > 0)
+                                                $totalPriceString = $totalPrice;
+                                            else
+                                                $totalPriceString = "0.00";
+
+                                            $totalPriceHTML = '
+                                            <li>
+                                                <div class="total-price">
+                                                    <span class="f-left">Total:</span>
+                                                    <span class="f-right">$' . $totalPriceString . '</span>
+                                                </div>
+                                            </li>';
+
+                                            echo $totalPriceHTML;
+                                        }
+
+                                        function PrintMakePurchaseButton()
+                                        {
+                                            $makePurchaseButtonHTML = '
+                                            <li>
+                                                <div class="checkout-link">
+                                                    <a href="wishlist.php">Make Purchase</a>
+                                                </div>
+                                            </li>';
+
+                                            echo $makePurchaseButtonHTML . '</ul>';
+                                        }
+                                        
+                                
+                                    ?>
+
+
+
+
+                                    <!-- <tbody>
                                         <tr>
-                                            <td class="product-thumbnail"><a href="#" class="wishlist-remove"><i class="flaticon-cancel-1"></i></a><a href="shop-details.html"><img src="img/clothes/103x129/poster.png" alt=""></a>
+                                            <td class="product-thumbnail"><a id="" style="cursor: pointer;" class="wishlist-remove" onclick="OnDeleteButtonClick(this.id)"><i class="flaticon-cancel-1"></i></a><a><img src="img/clothes/103x129/poster.png" alt=""></a>
                                             </td>
                                             <td class="product-name">
-                                                <h4><a href="shop-details.html">The Long Dark Poster</a></h4>
-                                                <p>Beautiful wall poster</p>
+                                                <h4 style="cursor: default;">The Long Dark Poster</h4>
+                                                <p style="cursor: default;">Beautiful wall poster</p>
                                                 
                                             </td>
-                                            <td class="product-price">$ 15.00</td>
+                                            <td class="product-price" style="cursor: default;">$ 15.00</td>
                                             <td class="product-quantity">
                                                 <div class="cart-plus">
                                                     <form action="#">
                                                         <div class="cart-plus-minus">
-                                                            <input type="text" value="2">
+                                                            <input style="cursor: default;" type="text" value="2">
                                                         </div>
                                                     </form>
                                                 </div>
                                             </td>
-                                            <td class="product-subtotal"><span> $ 15.00</span></td>
-                                            <td class="product-stock-status"><span>In Stock</span></td>
-                                            <td class="product-add-to-cart"><span>Added on March 10. 2020</span><a href="cart.html" class="btn">Add to Cart</a></td>
+                                            <td class="product-subtotal" style="cursor: default;"><span> $ 15.00</span></td>
+                                            <td class="product-stock-status" style="cursor: default;"><span>In Stock</span></td>
+                                            <td class="product-add-to-cart" style="cursor: default;"><span>Added on March 10. 2020</span><a id="" class="btn" onclick="OnAddToBucketButtonClick(this.id)" style="color: white;">Add to Bucket</a></td>
                                         </tr>
-                                        <tr>
-                                            <td class="product-thumbnail"><a href="#" class="wishlist-remove"><i class="flaticon-cancel-1"></i></a><a href="shop-details.html"><img src="img/clothes/103x129/axe.jpg" alt=""></a>
-                                            </td>
-                                            <td class="product-name">
-                                                <h4><a href="shop-details.html">HINTERLAND Theme AXE</a></h4>
-                                                <p>Hight quality & Handmade</p>
-                                                <span>70% wood, 30% steel </span>
-                                            </td>
-                                            <td class="product-price">$ 59.00</td>
-                                            <td class="product-quantity">
-                                                <div class="cart-plus">
-                                                    <form action="#">
-                                                        <div class="cart-plus-minus">
-                                                            <input type="text" value="2">
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                            <td class="product-subtotal"><span> $ 58.00</span></td>
-                                            <td class="product-stock-status"><span>In Stock</span></td>
-                                            <td class="product-add-to-cart"><span>Added on March 10. 2020</span><a href="cart.html" class="btn">Add to Cart</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="product-thumbnail"><a href="#" class="wishlist-remove"><i class="flaticon-cancel-1"></i></a><a href="shop-details.html"><img src="img/clothes/103x129/t-shirt-6.jpg" alt=""></a>
-                                            </td>
-                                            <td class="product-name">
-                                                <h4><a href="shop-details.html">Long Sleev T-Shirt</a></h4>
-                                                <p>Long Sleev T-Shirt</p>
-                                                <span>65% poly, 35% rayon</span>
-                                            </td>
-                                            <td class="product-price"> $10.99</td>
-                                            <td class="product-quantity">
-                                                <div class="cart-plus">
-                                                    <form action="#">
-                                                        <div class="cart-plus-minus">
-                                                            <input type="text" value="2">
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                            <td class="product-subtotal"><span>$ 10.99</span></td>
-                                            <td class="product-stock-status"><span>In Stock</span></td>
-                                            <td class="product-add-to-cart"><span>Added on March 10. 2020</span><a href="cart.html" class="btn">Add to Cart</a></td>
-                                        </tr>
-                                    </tbody>
+                                    </tbody> -->
+
+
+
+
+
                                 </table>
                             </div>
                         </div>
@@ -387,47 +730,6 @@
 
 
 
-
-
-                    <div style="margin: 0 auto; padding-left: 250px;padding-right: 200px;padding-top: 50px;" >
-                        <h1 style="text-align: center; margin: 75px 0;">Delivery information</h1>
-                        <div class="content_inner_text_form">
-                            <form action="vlad_work_with_sql_add">
-                                <div class="name_surname">
-                                    <div class="name">
-                                        <label>Name*</label>
-                                        <br>
-                                        <input class="content_inner_text_third_input_type_One" type="text" size="40">
-                                        <br>
-                                        <label style="font-size: 16px; color: #666;">First Name</label>
-                                    </div>
-                                    <div class="surname">
-                                        <input class="content_inner_text_third_input_type_One" type="text" size="40">
-                                        <br>
-                                        <label style="font-size: 16px; color: #666;">Last Name</label>
-                                    </div>
-                                </div>
-                                <label style="font-size: 24px; color: #666;">Email Address*</label>
-                                <br>
-                                <input class="content_inner_text_third_input_type_One" type="email" size="90">
-                                <br>
-                                <label style="font-size: 24px; color: #666;">Your number*</label>
-                                <br>
-                                <input class="content_inner_text_third_input_type_One" type="text" size="90">
-                                <br>
-                                <label style="font-size: 24px; color: #666;">Message, leave your adress *</label>
-                                <br>
-                                <textarea cols="82  " rows="10"></textarea>
-                                <div class="button_send">
-                                    <div class="box-2">
-                                        <div class="btn btn-two">
-                                            <span>Send</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
 
 
 
@@ -564,6 +866,372 @@
             </div>
         </footer>
         <!-- footer-area-end -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>  
+
+            //document.cookie = "bucketProductsId= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            //document.cookie = "bucketProductsAmount= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+
+            // var passedArray = <?php echo json_encode($BucketProductsAmountNums); ?>;  
+            // alert(passedArray);  
+            // passedArray.splice(0, 1);  //index, 1 
+            
+            // alert(passedArray);  
+
+            /*var passedArray = <?php echo json_encode($WishListProductsIdNums); ?>;
+            arrayValues = [];
+
+            alert(passedArray);
+
+            passedArray[0] = passedArray[1] = passedArray[2] = 1;
+
+            //passedArray.splice(1, 1);
+
+            var json_str = JSON.stringify(passedArray);
+
+            alert(document.cookie);*/
+
+            //document.location.reload(true);
+
+
+
+            //Delete from wishList
+
+
+            alert(document.cookie);
+
+            //delete WishListItem
+            function OnDeleteButtonClick(id) 
+            {
+                //delete from wishListProductsId Cookie
+
+                var passedArray = <?php echo json_encode($WishListProductsIdNums); ?>;
+                arrayValues = [];
+                
+                for (let i = 0; i < passedArray.length; i++) 
+                {
+                    if(passedArray[i] != id)
+                        arrayValues.push(passedArray[i]);
+                }
+
+                var json_str = JSON.stringify(arrayValues);
+                document.cookie="wishListProductsId=" + json_str;
+
+                document.location.reload(true);
+            } 
+
+
+
+            //Amount & TotalPrice
+
+
+            function OnPlusAmountButtonClick(amountElementId, maxLimitAmountElementId, totalPriceId, productPrice)
+            {
+                //alert(amountElementId + " " + maxLimitAmountElementId);
+                //check amount -- agree/disagree increase
+                var maxLimit = parseFloat(document.getElementById(""+maxLimitAmountElementId).innerText);
+                
+                var amount = parseFloat(document.getElementById(""+amountElementId).innerText);
+                if(amount < maxLimit)
+                {
+                    amount ++;
+                    document.getElementById(""+amountElementId).innerText = amount;
+                }
+                else
+                {
+                    
+                }
+
+                SetTotalPrice(totalPriceId, amount, productPrice);
+            }
+            
+            function OnMinusAmountButtonClick(amountElementId, totalPriceId, productPrice)
+            {
+                //alert(amountElementId);
+
+                var amount = document.getElementById(""+amountElementId).innerText;
+                if(amount > 1)
+                {
+                    amount --;
+                    document.getElementById(""+amountElementId).innerText = amount;
+                }
+
+                SetTotalPrice(totalPriceId, amount, productPrice);
+            }
+
+            function SetTotalPrice(totalPriceId, amountMultiplier, productPrice)
+            {
+                var price = parseFloat(productPrice);
+                var totalPrice = price * amountMultiplier;
+                document.getElementById(""+totalPriceId).innerText = "$ " + totalPrice;
+            }
+            
+
+
+
+
+
+
+
+
+
+
+
+
+            /*var bucketProductsIdNums = <?php echo json_encode($BucketProductsIdNums); ?>;
+            alert("bucketProductsIdNums: " + bucketProductsIdNums);
+
+            var currentProductIndexInBucket = bucketProductsIdNums.indexOf("3");
+            alert("currentProductIndexInBucket: " + currentProductIndexInBucket);*/
+
+
+
+
+
+
+
+
+            
+            //Add to bucket
+
+            //set BucketAmount
+            //set BucketItem (if not setted)
+            function OnAddToBucketButtonClick(id, currentAmountId) 
+            {
+                //alert("click");
+                var currentAmount = document.getElementById(currentAmountId).innerText; 
+
+                var bucketProductsIdNums = <?php echo json_encode($BucketProductsIdNums); ?>;
+
+                var bucketProductsAmountNums = <?php echo json_encode($BucketProductsAmountNums); ?>;
+
+                var json_str;
+
+
+                if(bucketProductsIdNums == false) //if no items in bucket
+                {
+                    alert("no items" + "  slectedProductId: " + id);
+
+                    var bucketProductsIdNumsNew = [];
+                    bucketProductsIdNumsNew[0] = id;
+                    json_str = JSON.stringify(bucketProductsIdNumsNew);
+                    document.cookie="bucketProductsId=" + json_str; 
+                    
+                    alert("bucketProductsIdNumsNew: " + bucketProductsIdNumsNew);
+
+                    var bucketProductsAmountNumsNew = [];
+                    bucketProductsAmountNumsNew[0] = currentAmount;
+                    json_str = JSON.stringify(bucketProductsAmountNumsNew);
+                    document.cookie="bucketProductsAmount=" + json_str;
+
+                    alert("bucketProductsAmountNumsNew: " + bucketProductsAmountNumsNew);
+                }
+
+
+                else //if SOME items exists
+                {
+                    alert("some items" + "  slectedProductId: " + id);
+                    //alert("bucketProductsIdNums: " + bucketProductsIdNums);
+                    var currentProductIndexInBucket = bucketProductsIdNums.indexOf(""+id);
+                    alert("currentProductIndexInBucket: " + currentProductIndexInBucket + "  bucketProductsIdNums: " + bucketProductsIdNums);
+                    //alert("productIndexInArray: " + productIndexInArray);
+
+                    if(currentProductIndexInBucket == -1) //if this item not exists in the bucket
+                    {
+                        alert("not same");
+                        
+                        bucketProductsIdNums.push(id);
+                        json_str = JSON.stringify(bucketProductsIdNums);
+                        document.cookie="bucketProductsId=" + json_str; 
+                        
+                        alert("bucketProductsIdNums: " + bucketProductsIdNums);
+
+                        bucketProductsAmountNums.push(currentAmount);
+                        json_str = JSON.stringify(bucketProductsAmountNums);
+                        document.cookie="bucketProductsAmount=" + json_str;
+
+                        alert("bucketProductsAmountNums: " + bucketProductsAmountNums);
+                    }   
+                    else //if this item exists in the bucket
+                    {
+                        alert("same");
+
+                        var currentProductIndexInBucketNew = bucketProductsIdNums.indexOf(""+id);
+
+                        var num = parseInt(bucketProductsAmountNums[currentProductIndexInBucketNew]);
+                        num += parseInt(currentAmount);
+                        bucketProductsAmountNums[currentProductIndexInBucketNew] = num;
+                    
+                        json_str = JSON.stringify(bucketProductsAmountNums);
+                        document.cookie="bucketProductsAmount=" + json_str;
+                    }
+                }
+
+                document.location.reload(true);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+                /*if(bucketProductsId == false || bucketProductsId.length < 1) //if no items
+                {
+                    alert("1" + "  " + id);
+
+                    bucketProductsId.push(id);
+                    var json_str = JSON.stringify(bucketProductsId);
+                    document.cookie="bucketProductsId=" + json_str; 
+                    
+                    alert(bucketProductsId);
+
+                    productIndexInArray = bucketProductsId.indexOf(id);
+
+                    if(bucketProductsAmountNums != false) 
+                    {
+                        bucketProductsAmountNums[productIndexInArray] = parseInt(currentAmount);
+                    
+                        var json_str = JSON.stringify(bucketProductsAmountNums);
+                    
+                        document.cookie="bucketProductsAmount=" + json_str;
+                    }
+                    else //if no items
+                    {
+                        bucketProductsAmount2 = [];
+                        bucketProductsAmount2[productIndexInArray] = parseInt(currentAmount);
+                        var json_str = JSON.stringify(bucketProductsAmount2);
+                    
+                        document.cookie="bucketProductsAmount=" + json_str;
+                    }
+
+                    
+                }
+                else //if some items exists
+                {
+                    alert("step 2" + "  id: " + id);
+                    alert("bucketProductsId: " + bucketProductsId);
+                    productIndexInArray = bucketProductsId.indexOf(id);
+                    alert("productIndexInArray: " + productIndexInArray);
+
+                    if(productIndexInArray == -1) //if this item not exists in the bucket
+                    {
+                        alert("not same");
+                        
+                        
+
+                        //alert(bucketProductsAmount2);
+
+                        if(bucketProductsAmountNums != false || bucketProductsAmountNums.length < 1)
+                        {
+                            alert(productIndexInArray);
+                            num = parseInt(bucketProductsAmountNums[productIndexInArray]);
+
+                            alert(num + " + " + currentAmount);
+
+                            num += parseInt(currentAmount);
+                            bucketProductsAmountNums[productIndexInArray] = num;
+
+                            
+                            
+                            var json_str = JSON.stringify(bucketProductsAmountNums);
+                            document.cookie="bucketProductsAmount=" + json_str;
+                        }
+                        
+
+
+
+                        // var bucketProductsAmount = <?php echo json_encode($BucketProductsAmountNums); ?>;
+
+                        // if(bucketProductsAmount != false || bucketProductsAmount.length < 1)
+                        // {
+                        //     num = parseInt(bucketProductsAmount[productIndexInArray]);
+                        //     num += parseInt(currentAmount);
+                        //     bucketProductsAmount[productIndexInArray] = num;
+                            
+                        //     var json_str = JSON.stringify(bucketProductsAmount);
+                        //     document.cookie="bucketProductsAmount=" + json_str;
+                        // }
+                        
+                    }   
+                    else //if this item exists in the bucket
+                    {
+                        alert("not same");
+                        bucketProductsId.push(id);
+                        var json_str = JSON.stringify(bucketProductsId);
+                        document.cookie="bucketProductsId=" + json_str; 
+                        
+                        //alert(bucketProductsId);
+
+                        productIndexInArray = bucketProductsId.indexOf(id);
+                        
+                        //var bucketProductsAmount = <?php echo json_encode($BucketProductsAmountNums); ?>;
+
+                        bucketProductsAmount[productIndexInArray] = parseInt(currentAmount);
+                    
+                        var json_str = JSON.stringify(bucketProductsAmount);
+                        document.cookie="bucketProductsAmount=" + json_str;
+                    }*/
+                    
+
+                    
+
+                    // if(bucketProductsAmount != false && bucketProductsAmount.length > 0)
+                    // {
+                        
+                    // }
+                    // else
+                    // {
+
+                    // }
+
+                    
+                //}
+                
+                
+            }
+
+    </script>
+
+
 
 
 
