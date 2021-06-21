@@ -154,6 +154,204 @@ else
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+    function SetCookiesValues()
+    {
+        //echo "aaaaaaaaaaaaaa";
+
+        global $BucketProductsIdNums;
+        $BucketProductsIdNums = [];
+        //$BucketProductsId = [];
+
+
+        if (isset($_COOKIE["bucketProductsId"]) && $_COOKIE["bucketProductsId"] != "[]") 
+        {
+            /*$str = array_values($_COOKIE["bucketProductsId"]);*/ 
+            $BucketProductsId = $_COOKIE["bucketProductsId"];
+            
+            
+            $numString = "";
+
+            for ($i = 0; $i < strlen($BucketProductsId); $i++) 
+            { 
+                if(is_numeric($BucketProductsId[$i]) == true && is_numeric($BucketProductsId[$i + 1]) == false) 
+                {   
+                    $numString .= $BucketProductsId[$i];
+                    array_push($BucketProductsIdNums, $numString);
+                    $numString = "";
+                    //$BucketProductsIdNums .= $BucketProductsId[$i] . ",";
+                } 
+                else if(is_numeric($BucketProductsId[$i]) == false) 
+                {
+                    continue;
+                } 
+                else
+                {
+                    $numString .= $BucketProductsId[$i];
+                }
+            }
+            /*echo $BucketProductsIdNums[0];
+            echo $BucketProductsIdNums[1];
+            echo $BucketProductsIdNums[2];*/
+        }
+        else 
+        {
+            //echo "BucketProductsIdNums " . $_COOKIE["bucketProductsId"];
+            $BucketProductsIdNums = [];
+        }
+
+
+        //echo "BucketProductsIdNums " . $_COOKIE["bucketProductsId"];
+
+
+
+
+
+
+        global $BucketProductsAmountNums;
+        $BucketProductsAmountNums = [];
+
+        if (isset($_COOKIE["bucketProductsAmount"]) && $_COOKIE["bucketProductsAmount"] != "[]") 
+        {
+            /*$str = array_values($_COOKIE["bucketProductsId"]);*/ 
+            $BucketProductsId = $_COOKIE["bucketProductsAmount"];
+            
+            
+            $numString = "";
+
+            for ($i = 0; $i < strlen($BucketProductsId); $i++) 
+            { 
+                if(is_numeric($BucketProductsId[$i]) == true && is_numeric($BucketProductsId[$i + 1]) == false) 
+                {   
+                    $numString .= $BucketProductsId[$i];
+                    array_push($BucketProductsAmountNums, $numString);
+                    $numString = "";
+                    //$BucketProductsIdNums .= $BucketProductsId[$i] . ",";
+                } 
+                else if(is_numeric($BucketProductsId[$i]) == false) 
+                {
+                    continue;
+                } 
+                else
+                {
+                    $numString .= $BucketProductsId[$i];
+                }
+            }
+            /*echo $BucketProductsIdNums[0];
+            echo $BucketProductsIdNums[1];
+            echo $BucketProductsIdNums[2];*/
+        }
+        else 
+        {
+            //echo "bucketProductsAmount " . $_COOKIE["bucketProductsAmount"];
+            $BucketProductsAmountNums = [];
+        }
+    }
+
+    
+
+
+
+
+
+
+
+
+
+
+    $IsButtonConfirmPurchaseClicked = "false";
+
+    //setcookie("IsButtonConfirmPurchaseClicked", "true");
+
+    //echo $_COOKIE["IsButtonConfirmPurchaseClicked"];
+
+    //$_SESSION["IsButtonConfirmPurchaseClicked"] = "false";
+
+    DecreaseProductAmount();
+
+
+
+    function DecreaseProductAmount()
+    {
+        global $IsButtonConfirmPurchaseClicked;
+
+        if(isset($_COOKIE["IsButtonConfirmPurchaseClicked"]) && $_COOKIE["IsButtonConfirmPurchaseClicked"] == "true")
+        {
+            $IsButtonConfirmPurchaseClicked = $_COOKIE["IsButtonConfirmPurchaseClicked"];
+
+            SetCookiesValues();
+
+            echo "call";
+
+            global $shopTable;
+            global $link;
+
+            global $BucketProductsIdNums;
+            global $BucketProductsAmountNums;
+
+            for ($i = 0; $i < count($BucketProductsIdNums); $i++) 
+            { 
+                echo count($BucketProductsIdNums);
+                $productId = $BucketProductsIdNums[$i];
+                $amontToMinus = $BucketProductsAmountNums[$i];
+
+                //echo $i . "<br>";
+
+                $getAmountValueQuery = "SELECT $shopTable.Amount FROM $shopTable WHERE $shopTable.Id = $productId";
+                if ($result = mysqli_query($link, $getAmountValueQuery)) 
+                {                                      
+                    if($row = mysqli_fetch_row($result))
+                    {
+                        $currentProductAmount = $row[0];
+                    
+                        $resultProductAmount = intval($currentProductAmount) - intval($amontToMinus);
+
+                        mysqli_free_result($result);
+
+                        //echo $row;
+
+                        $decreaseProductAmountQuery = "UPDATE $shopTable 
+                        SET 
+                            $shopTable.Amount = '$resultProductAmount'
+                        WHERE
+                            $shopTable.Id = $productId";
+
+                        mysqli_query($link, $decreaseProductAmountQuery);
+                    }
+                }
+            }
+
+            setcookie("IsButtonConfirmPurchaseClicked", "false");
+            $IsButtonConfirmPurchaseClicked = "true";
+            
+            setcookie("bucketProductsId", "", time() - 3600);
+            setcookie("bucketProductsAmount", "", time() - 3600);
+        }
+        else
+        {
+            //setcookie("IsButtonConfirmPurchaseClicked", "false");
+            $IsButtonConfirmPurchaseClicked = "false";
+            echo "not call";
+        }
+        
+    }
+
+
+
+
+
+
+
 ?>
 
 
@@ -394,7 +592,7 @@ else
                     <div class="row">
                         <div class="col-12">
                             <div class="breadcrumb-content text-center">
-                                <h2>Wishlist</h2>
+                                <h2>Shopping Cart</h2>
                                 
                             </div>
                         </div>
@@ -451,13 +649,13 @@ else
                                         $totalPriceId = 11100000;
 
                                         
-                                        if(count($WishListProductsIdNums) > 0)
+                                        if(count($BucketProductsIdNums) > 0)
                                         {
 
 
                                             //SetTotalPrice();
 
-                                            $productsAmount = count($WishListProductsIdNums);
+                                            $productsAmount = count($BucketProductsIdNums);
 
                                             /*echo '<span class="cart-count">' . $productsAmount . '</span></a>';
 
@@ -470,15 +668,15 @@ else
                                             $index = 0;
 
                                             
-                                            for ($i = 0; $i < count($WishListProductsIdNums); $i++) 
+                                            for ($i = 0; $i < count($BucketProductsIdNums); $i++) 
                                             { 
                                                 $getAllProductsInfoQuery = "SELECT `Title`,
-                                                `Price`, `ImagePath`, `Description`, `Amount` FROM $shopTable WHERE $shopTable.Amount > 0 AND $shopTable.Id = " . $WishListProductsIdNums[$i];
+                                                `Price`, `ImagePath`, `Description`, `Amount` FROM $shopTable WHERE $shopTable.Amount > 0 AND $shopTable.Id = " . $BucketProductsIdNums[$i];
 
                                                 if ($result = mysqli_query($link, $getAllProductsInfoQuery)) {
                                                     
                                                     $row = mysqli_fetch_row($result);
-                                                    $productId = $WishListProductsIdNums[$index];
+                                                    $productId = $BucketProductsIdNums[$index];
                                                     $index ++;
 
                                                         
@@ -517,23 +715,23 @@ else
 
                                         function SetTotalPrice()
                                         {
-                                            global $WishListProductsIdNums;
+                                            global $BucketProductsIdNums;
                                             global $shopTable;
                                             global $totalPrice;
                                             global $link;
 
                                             $index = 0;
 
-                                            for ($i = 0; $i < count($WishListProductsIdNums); $i++) 
+                                            for ($i = 0; $i < count($BucketProductsIdNums); $i++) 
                                             { 
                                                 $getAllProductsInfoQuery = "SELECT `Title`,
-                                                `Price`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 AND $shopTable.Id = " . $WishListProductsIdNums[$i];
+                                                `Price`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 AND $shopTable.Id = " . $BucketProductsIdNums[$i];
 
                                                 if ($result = mysqli_query($link, $getAllProductsInfoQuery)) 
                                                 {
                                                     
                                                     $row = mysqli_fetch_row($result);
-                                                    $productId = $WishListProductsIdNums[$index];
+                                                    $productId = $BucketProductsIdNums[$index];
                                                     $index ++;
 
                                                         
@@ -589,6 +787,11 @@ else
                                         
                                         function PrintWishListProductBlock(string $title, string $imagePath, string $price, float $dicsountPrice, string $id, string $description, int $stockAmount)
                                         {
+                                            global $BucketProductsIdNums;
+                                            $productIdInArray = array_search($id,  $BucketProductsIdNums);
+                                            global $BucketProductsAmountNums;
+                                            $currentAmount = $BucketProductsAmountNums[$productIdInArray];
+                                            
                                             global $amountElementId;
                                             $amountElementId ++;
                                             global $maxLimitAmountElementId;
@@ -600,8 +803,7 @@ else
                                             $addToBucketButtonHTML = "";
                                             if($stockAmount > 0)
                                             {
-                                                $addToBucketButtonHTML = '
-                                                <td class="product-add-to-cart" style="cursor: default;"><a id="' . $id . '" class="btn" onclick="OnAddToBucketButtonClick('.$id.', '. $amountElementId .')" style="color: white;">Add to Bucket</a></td>';
+                                                $addToBucketButtonHTML = '';
                                             }
                                             else
                                             {
@@ -639,9 +841,9 @@ else
                                                     <td class="product-price" style="cursor: default; ' . $priceStyle . '">$ ' . $price . '</td>
                                                     <td class="product-quantity">
                                                         <div style="text-align: center;">
-                                                            <p style="font-weight: bold; cursor: pointer;" onClick="OnPlusAmountButtonClick('.$amountElementId.', '.$maxLimitAmountElementId.', '.$totalPriceId.', '.$price.')">+</p>
-                                                            <p id="'.$amountElementId.'">1</p>
-                                                            <p style="font-weight: bold; cursor: pointer;" onClick="OnMinusAmountButtonClick('.$amountElementId.', '.$totalPriceId.', '.$price.')">-</p>
+                                                            <p style="font-weight: bold; cursor: pointer;" onClick="OnPlusAmountButtonClick('.$amountElementId.', '.$maxLimitAmountElementId.', '.$totalPriceId.', '.$price.', ' . $id . ')">+</p>
+                                                            <p id="'.$amountElementId.'">'.$currentAmount.'</p>
+                                                            <p style="font-weight: bold; cursor: pointer;" onClick="OnMinusAmountButtonClick('.$amountElementId.', '.$totalPriceId.', '.$price.', ' . $id . ')">-</p>
                                                         </div>
                                                     </td>
                                                     <td id="'. $totalPriceId .'" class="product-subtotal" style="cursor: default; color: gray; font-weight: bold;"><span id="totalPrice" style="color: gray; font-weight: bold;">$ ' . $price . '</span></td>
@@ -713,7 +915,7 @@ else
                                             </td>
                                             <td class="product-subtotal" style="cursor: default;"><span> $ 15.00</span></td>
                                             <td class="product-stock-status" style="cursor: default;"><span>In Stock</span></td>
-                                            <td class="product-add-to-cart" style="cursor: default;"><span>Added on March 10. 2020</span><a id="" class="btn" onclick="OnAddToBucketButtonClick(this.id)" style="color: white;">Add to Bucket</a></td>
+                                            <td class="product-add-to-cart" style="cursor: default;"><span>Added on March 10. 2020</span><a id="" class="btn" onclick="OnConfirmPurchaseButtonClick(this.id)" style="color: white;">Add to Bucket</a></td>
                                         </tr>
                                     </tbody> -->
 
@@ -730,7 +932,42 @@ else
 
 
 
-
+                    <div style="margin: 0 auto; padding-left: 250px;padding-right: 200px;padding-top: 50px;" >
+                        <h1 style="text-align: center; margin: 75px 0;">Delivery information</h1>
+                        <div class="content_inner_text_form">
+                            <form action="vlad_work_with_sql_add">
+                                <div class="name_surname">
+                                    <div class="name">
+                                    <label style="font-size: 24px; color: #666;">Name*</label>
+                                        <br>
+                                        <input class="content_inner_text_third_input_type_One" type="text" size="40">
+                                        <label style="font-size: 16px; color: #666;"></label>
+                                    </div>
+                                </div>
+                                <label style="font-size: 24px; color: #666;">Email Address*</label>
+                                <br>
+                                <input class="content_inner_text_third_input_type_One" type="email" size="90" >
+                                <br>
+                                <label style="font-size: 24px; color: #666;">Phone number*</label>
+                                <br>
+                                <input class="content_inner_text_third_input_type_One" type="text" size="90">
+                                <br>
+                                <label style="font-size: 24px; color: #666;">City*</label>
+                                <br>
+                                <input class="content_inner_text_third_input_type_One" type="text" size="90">
+                                <br>
+                                <label style="font-size: 24px; color: #666;">ZIP Code*</label>
+                                <br>
+                                <input class="content_inner_text_third_input_type_One" type="text" size="90">
+                                <br>
+                                <div class="button_send">
+                                    <div class="box-2">
+                                        <div class="product-add-to-cart" style="cursor: default;"><a id="' . $id . '" class="btn" onclick="OnConfirmPurchaseButtonClick()" style="color: white;">Confirm Purchase </a></div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
 
 
@@ -881,30 +1118,7 @@ else
 
     <script>  
 
-            //document.cookie = "bucketProductsId= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
-            //document.cookie = "bucketProductsAmount= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
-
-
-            // var passedArray = <?php echo json_encode($BucketProductsAmountNums); ?>;  
-            // alert(passedArray);  
-            // passedArray.splice(0, 1);  //index, 1 
             
-            // alert(passedArray);  
-
-            /*var passedArray = <?php echo json_encode($WishListProductsIdNums); ?>;
-            arrayValues = [];
-
-            alert(passedArray);
-
-            passedArray[0] = passedArray[1] = passedArray[2] = 1;
-
-            //passedArray.splice(1, 1);
-
-            var json_str = JSON.stringify(passedArray);
-
-            alert(document.cookie);*/
-
-            //document.location.reload(true);
 
 
 
@@ -917,18 +1131,33 @@ else
             function OnDeleteButtonClick(id) 
             {
                 //delete from wishListProductsId Cookie
-
-                var passedArray = <?php echo json_encode($WishListProductsIdNums); ?>;
-                arrayValues = [];
+                var index;
+                var passedArray = <?php echo json_encode($BucketProductsIdNums); ?>;
+                var arrayValues = [];
                 
                 for (let i = 0; i < passedArray.length; i++) 
                 {
                     if(passedArray[i] != id)
                         arrayValues.push(passedArray[i]);
+                    else index = i;
                 }
 
                 var json_str = JSON.stringify(arrayValues);
-                document.cookie="wishListProductsId=" + json_str;
+                document.cookie="bucketProductsId=" + json_str;
+
+
+                var passedArray2 = <?php echo json_encode($BucketProductsAmountNums); ?>;
+                var arrayValues2 = [];
+                
+                for (let i = 0; i < passedArray.length; i++) 
+                {
+                    if(i != index)
+                        arrayValues2.push(passedArray2[i]);
+                }
+
+                var json_str2 = JSON.stringify(arrayValues2);
+                document.cookie="bucketProductsAmount=" + json_str2;
+
 
                 document.location.reload(true);
             } 
@@ -938,7 +1167,7 @@ else
             //Amount & TotalPrice
 
 
-            function OnPlusAmountButtonClick(amountElementId, maxLimitAmountElementId, totalPriceId, productPrice)
+            function OnPlusAmountButtonClick(amountElementId, maxLimitAmountElementId, totalPriceId, productPrice, productId)
             {
                 //alert(amountElementId + " " + maxLimitAmountElementId);
                 //check amount -- agree/disagree increase
@@ -950,15 +1179,15 @@ else
                     amount ++;
                     document.getElementById(""+amountElementId).innerText = amount;
                 }
-                else
-                {
-                    
-                }
+
+                //alert(amount);
 
                 SetTotalPrice(totalPriceId, amount, productPrice);
+
+                SetProductAmount(productId, amount);
             }
             
-            function OnMinusAmountButtonClick(amountElementId, totalPriceId, productPrice)
+            function OnMinusAmountButtonClick(amountElementId, totalPriceId, productPrice, productId)
             {
                 //alert(amountElementId);
 
@@ -969,7 +1198,11 @@ else
                     document.getElementById(""+amountElementId).innerText = amount;
                 }
 
+                //alert(amount);
+
                 SetTotalPrice(totalPriceId, amount, productPrice);
+
+                SetProductAmount(productId, amount);
             }
 
             function SetTotalPrice(totalPriceId, amountMultiplier, productPrice)
@@ -980,6 +1213,7 @@ else
             }
             
 
+            alert(document.cookie);
 
 
 
@@ -987,245 +1221,90 @@ else
 
 
 
+            //set amount for all products (on plus/minus change) ---->
+            //call function ChangeAmountInDB from php ---->
+            //delete all products in bucket cookies
 
 
+            //підгружати кількість в php
+            //change totalPrice in mainMenu
+            
+            //change db all products in bucket amount - set amount and delete from php
+            //delete from bucketList - productId and productAmount +
 
+            bucketProductsIdNumsSetProductAmount = <?php echo json_encode($BucketProductsIdNums); ?>;
+            bucketProductsAmountNumsSetProductAmount = <?php echo json_encode($BucketProductsAmountNums); ?>;
 
-            /*var bucketProductsIdNums = <?php echo json_encode($BucketProductsIdNums); ?>;
-            alert("bucketProductsIdNums: " + bucketProductsIdNums);
+            function SetProductAmount(id, amount)
+            {
+                //var bucketProductsIdNums = <?php echo json_encode($BucketProductsIdNums); ?>;
+                //var bucketProductsAmountNums = <?php echo json_encode($BucketProductsAmountNums); ?>;
 
-            var currentProductIndexInBucket = bucketProductsIdNums.indexOf("3");
-            alert("currentProductIndexInBucket: " + currentProductIndexInBucket);*/
+                var currentProductIndexInBucketNew = bucketProductsIdNumsSetProductAmount.indexOf(""+id);
 
+                //alert(currentProductIndexInBucketNew);
+                
+                bucketProductsAmountNumsSetProductAmount[currentProductIndexInBucketNew] = parseInt(amount);
 
+                //alert(bucketProductsAmountNums[currentProductIndexInBucketNew]);
+            
+                var json_str = JSON.stringify(bucketProductsAmountNumsSetProductAmount);
+                document.cookie="bucketProductsAmount=" + json_str;
+            }
+            
+            //document.cookie = "IsButtonConfirmPurchaseClicked= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
 
+            var isButtonConfirmPurchaseClicked = <?php echo $IsButtonConfirmPurchaseClicked; ?>;
 
+            //alert("isButtonConfirmPurchaseClicked: " + isButtonConfirmPurchaseClicked);
+            /*if(isButtonConfirmPurchaseClicked == true)
+            {
+                document.cookie="IsButtonConfirmPurchaseClicked=false";
 
-
-
+                
+                document.cookie = "bucketProductsId= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                document.cookie = "bucketProductsAmount= '';expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            }*/
 
             
-            //Add to bucket
 
-            //set BucketAmount
-            //set BucketItem (if not setted)
-            function OnAddToBucketButtonClick(id, currentAmountId) 
+            function OnConfirmPurchaseButtonClick() 
             {
-                //alert("click");
-                var currentAmount = document.getElementById(currentAmountId).innerText; 
+                
 
-                var bucketProductsIdNums = <?php echo json_encode($BucketProductsIdNums); ?>;
+                
+               
+                    //alert(2);
 
-                var bucketProductsAmountNums = <?php echo json_encode($BucketProductsAmountNums); ?>;
-
-                var json_str;
+                    document.cookie="IsButtonConfirmPurchaseClicked=true";
 
 
-                if(bucketProductsIdNums == false) //if no items in bucket
-                {
-                    //alert("no items" + "  slectedProductId: " + id);
 
-                    var bucketProductsIdNumsNew = [];
-                    bucketProductsIdNumsNew[0] = id;
-                    json_str = JSON.stringify(bucketProductsIdNumsNew);
-                    document.cookie="bucketProductsId=" + json_str; 
+                    document.location.reload(true);
+
+                
+
+                    //alert("true");
+                    //document.cookie="IsButtonConfirmPurchaseClicked=true";
                     
-                    //alert("bucketProductsIdNumsNew: " + bucketProductsIdNumsNew);
+                
 
-                    var bucketProductsAmountNumsNew = [];
-                    bucketProductsAmountNumsNew[0] = currentAmount;
-                    json_str = JSON.stringify(bucketProductsAmountNumsNew);
-                    document.cookie="bucketProductsAmount=" + json_str;
+                
+                //alert("before "+document.cookie);
 
-                    //alert("bucketProductsAmountNumsNew: " + bucketProductsAmountNumsNew);
-                }
+                
+                
 
+                
 
-                else //if SOME items exists
-                {
-                    //alert("some items" + "  slectedProductId: " + id);
-                    //alert("bucketProductsIdNums: " + bucketProductsIdNums);
-                    var currentProductIndexInBucket = bucketProductsIdNums.indexOf(""+id);
-                    //alert("currentProductIndexInBucket: " + currentProductIndexInBucket + "  bucketProductsIdNums: " + bucketProductsIdNums);
-                    //alert("productIndexInArray: " + productIndexInArray);
-
-                    if(currentProductIndexInBucket == -1) //if this item not exists in the bucket
-                    {
-                        //alert("not same");
-                        
-                        bucketProductsIdNums.push(id);
-                        json_str = JSON.stringify(bucketProductsIdNums);
-                        document.cookie="bucketProductsId=" + json_str; 
-                        
-                        //alert("bucketProductsIdNums: " + bucketProductsIdNums);
-
-                        bucketProductsAmountNums.push(currentAmount);
-                        json_str = JSON.stringify(bucketProductsAmountNums);
-                        document.cookie="bucketProductsAmount=" + json_str;
-
-                        //alert("bucketProductsAmountNums: " + bucketProductsAmountNums);
-                    }   
-                    else //if this item exists in the bucket
-                    {
-                        //alert("same");
-
-                        var currentProductIndexInBucketNew = bucketProductsIdNums.indexOf(""+id);
-
-                        var num = parseInt(bucketProductsAmountNums[currentProductIndexInBucketNew]);
-                        num += parseInt(currentAmount);
-                        bucketProductsAmountNums[currentProductIndexInBucketNew] = num;
-                    
-                        json_str = JSON.stringify(bucketProductsAmountNums);
-                        document.cookie="bucketProductsAmount=" + json_str;
-                    }
-                }
-
-                document.location.reload(true);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                
 
 
 
 
 
                 
-                /*if(bucketProductsId == false || bucketProductsId.length < 1) //if no items
-                {
-                    alert("1" + "  " + id);
 
-                    bucketProductsId.push(id);
-                    var json_str = JSON.stringify(bucketProductsId);
-                    document.cookie="bucketProductsId=" + json_str; 
-                    
-                    alert(bucketProductsId);
-
-                    productIndexInArray = bucketProductsId.indexOf(id);
-
-                    if(bucketProductsAmountNums != false) 
-                    {
-                        bucketProductsAmountNums[productIndexInArray] = parseInt(currentAmount);
-                    
-                        var json_str = JSON.stringify(bucketProductsAmountNums);
-                    
-                        document.cookie="bucketProductsAmount=" + json_str;
-                    }
-                    else //if no items
-                    {
-                        bucketProductsAmount2 = [];
-                        bucketProductsAmount2[productIndexInArray] = parseInt(currentAmount);
-                        var json_str = JSON.stringify(bucketProductsAmount2);
-                    
-                        document.cookie="bucketProductsAmount=" + json_str;
-                    }
-
-                    
-                }
-                else //if some items exists
-                {
-                    alert("step 2" + "  id: " + id);
-                    alert("bucketProductsId: " + bucketProductsId);
-                    productIndexInArray = bucketProductsId.indexOf(id);
-                    alert("productIndexInArray: " + productIndexInArray);
-
-                    if(productIndexInArray == -1) //if this item not exists in the bucket
-                    {
-                        alert("not same");
-                        
-                        
-
-                        //alert(bucketProductsAmount2);
-
-                        if(bucketProductsAmountNums != false || bucketProductsAmountNums.length < 1)
-                        {
-                            alert(productIndexInArray);
-                            num = parseInt(bucketProductsAmountNums[productIndexInArray]);
-
-                            alert(num + " + " + currentAmount);
-
-                            num += parseInt(currentAmount);
-                            bucketProductsAmountNums[productIndexInArray] = num;
-
-                            
-                            
-                            var json_str = JSON.stringify(bucketProductsAmountNums);
-                            document.cookie="bucketProductsAmount=" + json_str;
-                        }
-                        
-
-
-
-                        // var bucketProductsAmount = <?php echo json_encode($BucketProductsAmountNums); ?>;
-
-                        // if(bucketProductsAmount != false || bucketProductsAmount.length < 1)
-                        // {
-                        //     num = parseInt(bucketProductsAmount[productIndexInArray]);
-                        //     num += parseInt(currentAmount);
-                        //     bucketProductsAmount[productIndexInArray] = num;
-                            
-                        //     var json_str = JSON.stringify(bucketProductsAmount);
-                        //     document.cookie="bucketProductsAmount=" + json_str;
-                        // }
-                        
-                    }   
-                    else //if this item exists in the bucket
-                    {
-                        alert("not same");
-                        bucketProductsId.push(id);
-                        var json_str = JSON.stringify(bucketProductsId);
-                        document.cookie="bucketProductsId=" + json_str; 
-                        
-                        //alert(bucketProductsId);
-
-                        productIndexInArray = bucketProductsId.indexOf(id);
-                        
-                        //var bucketProductsAmount = <?php echo json_encode($BucketProductsAmountNums); ?>;
-
-                        bucketProductsAmount[productIndexInArray] = parseInt(currentAmount);
-                    
-                        var json_str = JSON.stringify(bucketProductsAmount);
-                        document.cookie="bucketProductsAmount=" + json_str;
-                    }*/
-                    
-
-                    
-
-                    // if(bucketProductsAmount != false && bucketProductsAmount.length > 0)
-                    // {
-                        
-                    // }
-                    // else
-                    // {
-
-                    // }
-
-                    
-                //}
-                
                 
             }
 

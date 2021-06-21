@@ -227,7 +227,7 @@ $BucketProductsAmountNums = [];
     }
     else 
     {
-        echo $_COOKIE["bucketProductsAmount"];
+        //echo $_COOKIE["bucketProductsAmount"];
         $BucketProductsAmountNums = [];
     }
 
@@ -563,7 +563,7 @@ else
                                         <ul>
                                             <!-- <li><a href="#"><i class="flaticon-two-arrows"></i></a></li> -->
                                             <li><a href="wishlist.php"><i class="flaticon-heart"></i></a></li>
-                                             <li class="header-shop-cart"><a href="wishlist.php"><i class="flaticon-shopping-bag"></i>
+                                             <li class="header-shop-cart"><a href="bucket.php"><i class="flaticon-shopping-bag"></i>
                                                 
                                                 
                                                 
@@ -769,7 +769,7 @@ else
                                                         $makePurchaseButtonHTML = '
                                                         <li>
                                                             <div class="checkout-link">
-                                                                <a href="wishlist.php">Make Purchase</a>
+                                                                <a href="bucket.php">Make Purchase</a>
                                                             </div>
                                                         </li>';
 
@@ -1842,7 +1842,7 @@ else
 
 
                     passedArray = <?php echo json_encode($BucketProductsAmountNums); ?>;
-                    alert("passedArray " + passedArray);
+                    //alert("passedArray " + passedArray);
                     
                     //var sliaced = passedArray.slice(productIndex, 1);
 
@@ -1905,7 +1905,7 @@ else
 
                 //Commom (OnAddingNewProduct and OnSiteLoadCookies)
 
-                alert(document.cookie);
+                //alert(document.cookie);
                
 
                 function AddSelectedProductIdToCookies(id) //+
