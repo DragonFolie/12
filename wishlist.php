@@ -152,7 +152,7 @@
                                     </div>
                                     <div class="navbar-wrap main-menu d-none d-lg-flex">
                                         <ul class="navigation">
-                                            <li ><a href="http://localhost:8080/site/long_dark_news.php">NEWS</a></li>
+                                            <li ><a href="long_dark_news.php">NEWS</a></li>
 
                                             <li><a href="long_dark_survival_mode.html">SURVIVAL MODE </a></li>
 
@@ -429,7 +429,6 @@
                         </div>
                     </div>
 
-                    
 
 
 
