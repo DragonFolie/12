@@ -51,7 +51,6 @@
 .content {
 }
 .content_inner {
-  
   width: 100%;
 
   display: grid;
@@ -2498,10 +2497,7 @@ label {
   font-size: 20px;
   color: #2b2b2b;
 }
-.exclusive-item-three .action li a:hover {
-  background: #ff6000;
-  color: #fff;
-}
+
 .exclusive-item-three .exclusive-item-content h5 {
   font-size: 18px;
   font-weight: 600;
@@ -3961,14 +3957,21 @@ label {
 .shop-size-list ul li a:hover,
 .shop-meta-right ul li a:hover,
 .shop-meta-right ul li.active a {
-  border-color: #ff6000;
-  background: #ff6000;
+  border-color: #000000;
+  background: #000000;
 }
 .shop-sidebar-size,
 .shop-sidebar-color {
   margin-top: 35px;
   padding-top: 35px;
   border-top: 1px dashed #dbdbdb;
+}
+
+.shop-sidebar-size:hover {
+  opacity: 50%;
+}
+.shop-sidebar-color:hover {
+  opacity: 50%;
 }
 .shop-size-list ul {
   display: flex;
@@ -3998,8 +4001,17 @@ label {
   cursor: pointer;
   background: #ff6000;
 }
+
+.shop-sidebar-color .shop-size-list ul li:hover {
+  opacity: 50%;
+}
+
 .shop-sidebar-color .shop-size-list ul li:nth-child(2) {
   background: #ffa800;
+}
+
+.shop-size-list ul li:hover {
+  opacity: 20%;
 }
 .shop-sidebar-color .shop-size-list ul li:nth-child(3) {
   background: #8baa37;

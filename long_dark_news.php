@@ -2,7 +2,7 @@
 $newsDB = "thelongdark";
 $newsTable = "news";
 
-$link = mysqli_connect("localhost", "root", "123mnbzzZ01p", $newsDB);
+$link = mysqli_connect("localhost", "DragonFolie", "nair6455", $newsDB);
 
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
