@@ -1,3 +1,138 @@
+<?php
+$newsDB = "thelongdark";
+$newsTable = "news";
+$commentsTable = "newscomments";
+
+$link = mysqli_connect("localhost", "root", "123mnbzzZ01p", $newsDB);
+
+if (mysqli_connect_errno()) {
+    printf("Connect failed: %s\n", mysqli_connect_error());
+    exit();
+}
+
+//queries to db 
+$commentsInfoQuerySortedByNewer = "SELECT `Id`, `Name`, `Comment`, `Date`, `Likes`, `Dislikes` 
+FROM $commentsTable 
+WHERE NewsID = 3";
+
+
+//FROM $commentsTable 
+//INNER JOIN $newsTable ON $commentsTable.NewsID = $newsTable.Id
+
+$commentsInfoQuerySortedByOlder = "SELECT `Id`, `Name`, `Comment`, `Date`, `Likes, `Dislikes`
+                            FROM $commentsTable 
+                            INNER JOIN $newsTable ON $commentsTable.NewsID = $newsTable.Id 
+                            ORDER BY `Date` ASC";
+ 
+
+
+
+
+
+
+$IsAllNewsSortedByOlder = false;
+
+if (isset($_COOKIE["IsAllNewsSortedByOlder"])) {
+    $IsAllNewsSortedByOlder = $_COOKIE["IsAllNewsSortedByOlder"];
+//echo "IsAllNewsSortedByOlder setted <br>";
+}
+else {
+    $IsAllNewsSortedByOlder = false;
+//echo "IsAllNewsSortedByOlder not setted <br>";
+}
+
+
+
+
+
+
+if(isset($_COOKIE["commentIdLike"]) && $_COOKIE["commentIdLike"] != "")
+{
+    $id = intval($_COOKIE["commentIdLike"]);
+
+    $currentAmountQuery = "SELECT $commentsTable.Likes FROM $commentsTable WHERE $commentsTable.Id = $id";
+    $currentAmount;
+
+    if ($result = mysqli_query($link, $currentAmountQuery)) {
+        while ($row = mysqli_fetch_row($result)) {
+            $currentAmount = intval($row[0]); 
+            
+        }
+        mysqli_free_result($result);
+    }
+
+    $currentAmount ++;
+
+
+    $query = "UPDATE $commentsTable 
+        SET 
+            $commentsTable.Likes = '$currentAmount'
+        WHERE
+            $commentsTable.Id = $id";
+
+    mysqli_query($link, $query);
+
+    setcookie("commentIdLike", "", time() - 3600);
+}
+
+if(isset($_COOKIE["commentIdDislike"]) && $_COOKIE["commentIdDislike"] != "")
+{
+    $id = intval($_COOKIE["commentIdDislike"]);
+
+    $currentAmountQuery = "SELECT $commentsTable.Dislikes FROM $commentsTable WHERE $commentsTable.Id = $id";
+    $currentAmount;
+
+    if ($result = mysqli_query($link, $currentAmountQuery)) {
+        while ($row = mysqli_fetch_row($result)) {
+            $currentAmount = intval($row[0]); 
+            
+        }
+        mysqli_free_result($result);
+    }
+
+    $currentAmount ++;
+
+
+    $query = "UPDATE $commentsTable 
+        SET 
+            $commentsTable.Dislikes = '$currentAmount'
+        WHERE
+            $commentsTable.Id = $id";
+
+    mysqli_query($link, $query);
+
+    setcookie("commentIdDislike", "", time() - 3600);
+}
+
+
+
+
+
+
+
+
+//echo date("Y-m-d");
+
+
+
+if(isset($_COOKIE["nickNameField"]) && $_COOKIE["nickNameField"] != "" && isset($_COOKIE["commentArea"]) && $_COOKIE["commentArea"] != "")
+{
+    $name = $_COOKIE["nickNameField"];
+    $comment = $_COOKIE["commentArea"];
+    $date = date("Y-m-d H:i:s");
+
+    $query = "INSERT $commentsTable(Name, Comment, Date, Likes, Dislikes, NewsID) 
+    VALUES ('$name', '$comment', '$date', '0', '0', '3');";
+
+    mysqli_query($link, $query);
+
+    setcookie("nickNameField", "", time() - 3600);
+    setcookie("commentArea", "", time() - 3600);
+}
+?>
+
+
+
 
 <!DOCTYPE html>
 <html>
@@ -1300,98 +1435,171 @@ transition: 1s;
         <div class="comment_area">
             <div class="name">
                 <div class="page">
-            
                     <label class="field field_v2">
-                      <input type="text" class="field__input" placeholder="e.g. Hinterland">
+
+
+
+                      <input id="nickNameField" type="text" class="field__input" placeholder="e.g. Hinterland">
+
+
+
                       <span class="field__label-wrap">
-                        <span class="field__label"> Last name </span>
+                        <span class="field__label"> Nick name </span>
                       </span>
-                    </label>    
-                    
+                    </label>  
                   </div>
-
-
-
             </div>
-            
          </div>
          <br><br>
          <div class="text">
 
             
 
-            <textarea class="text_inner" cols="85  " maxlength="909" rows="10"></textarea>
+            <textarea id="commentArea" class="text_inner" cols="85  " maxlength="909" rows="10"></textarea>
+
+
 
          </div>
          <div class="button_send">
 
-            <div id="btn"><span class="noselect">Send</span><div id="circle"></div></div>
+
+
+            <div id="btn" onclick="OnButtonCommentSendClick()"><span class="noselect">Send</span><div id="circle"></div></div>
+
+
+
          </div>
 
-         <h1 class="just_nicho"> YOUR COMMENT
-
-
-            <button class="sort_button">
-                <img class="sort_button" src="img/sort-down.png" alt="">
-            </button>
-
-
+         <h1 class="just_nicho">COMMENTS
          </h1><br>
-         <div class="comment_list">
-             
-            <div class="comment_list_left">
-                <p>VLAD</p>
-                
-
-                <img src="img/wolf.png" alt="" srcset=""><br>
-                
-
-
-
-            </div>
-            <div class="comment_list_right">
-                <div class="comment_list_right_posted">
-                    <p >Posted Monday at 01:17 AM</p>
-                </div>
-                <p >I have had a number of runs over 1,000 days at Stalker or Voyager level without a major problem.  On one occasion I was running low on matches, another time cured leather and birch saplings for arrows.  I presume that was on a Stalker run not a Voyager run.  It is possible to survive without most resources by adapting  your life style and using alternative resources.  I have not tried beach combing but I assume that could provide some hard to find resources.</p>
-
-
-            </div>
-
-
-         </div>
-
-
-         <div class="comment_list">
-             
-            <div class="comment_list_left">
-                <p>VLAD</p>
-                
-
-                <img src="img/wolf.png" alt="" srcset=""><br>
-                
-
-
-
-            </div>
-            <div class="comment_list_right">
-                <div class="comment_list_right_posted">
-                    <p >Posted Monday at 01:17 AM</p>
-                </div>
-                <p >I have had a number of runs over 1,000 days at Stalker or Voyager level without a major problem.  On one occasion I was running low on matches, another time cured leather and birch saplings for arrows.  I presume that was on a Stalker run not a Voyager run.  It is possible to survive without most resources by adapting  your life style and using alternative resources.  I have not tried beach combing but I assume that could provide some hard to find resources.</p>
-
-
-            </div>
-
-
-         </div>
          
-        
-          
+             
 
 
-        
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+         <?php
+
+                    $likesId = 100000;
+                    $dislikesId = 1100000;
+
+                    CreateCommentsBlock($commentsInfoQuerySortedByNewer);
+                    //`Id`, `Name`, `Comment`, `Date`, `Likes, `Dislikes`
+
+                    function CreateCommentsBlock(string $newsInfoQuery)
+                    {
+                        global $link;
+                        if ($result = mysqli_query($link, $newsInfoQuery)) {
+                            while ($row = mysqli_fetch_row($result)) {
+                                //printf(count($row));
+                                $id = $row[0];
+                                $name = $row[1];
+                                $comment = $row[2];
+                                $date = $row[3];
+                                $likes = $row[4];
+                                $dislikes = $row[5];
+
+                                //echo $id . "  " . $name . "  " . $comment . "  " . $date . "  " . $likes . "  " . $dislikes;
+
+                                PrintCommentsBlock($id, $name, $comment, $date, $likes, $dislikes);
+                            }
+                        }
+
+                        mysqli_free_result($result);
+                    }
+
+
+
+
+                    function PrintCommentsBlock(string $id, string $name, string $comment, string $date, string $likes, string $dislikes)
+                    {
+                        global $likesId;
+                        global $dislikesId;
+
+                        $likesId ++;
+                        $dislikesId ++;
+
+                        $commentBlockHTML = '
+                        <div class="comment_list">
+                            <div class="comment_list_left">
+                                <p>'.htmlspecialchars($name).'</p>
+                                <img src="img/wolf.png" alt="" srcset=""><br>
+                                <p id="'.$likesId.'">'.$likes.'</p><button onClick="OnLikeClick('.$id.', '.$likesId.')">Like</button>
+                                <p id="'.$dislikesId.'">'.$dislikes.'</p><button onClick="OnDislikeClick('.$id.', '.$dislikesId.')">Disike</button>
+                            </div>
+                            <div class="comment_list_right">
+                                <div class="comment_list_right_posted">
+                                    <p>Posted '.$date.'</p>
+                                </div>
+                                <p>
+                                '.htmlspecialchars($comment).'
+                                </p>
+                            </div>
+                        </div>';
+
+                        echo $commentBlockHTML;
+                    }
+            ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
     </div>
 </div>
 
@@ -1508,4 +1716,55 @@ transition: 1s;
 
 
 </body>
+
+
+
+
+<script>
+
+                function OnButtonCommentSendClick()
+                {
+                    var nickName = document.getElementById("nickNameField").value;
+                    var comment = document.getElementById("commentArea").value;
+
+                    document.cookie="nickNameField="+nickName;
+                    document.cookie="commentArea="+comment;
+                    document.location.reload(true);
+                }
+
+
+
+
+
+
+
+
+                function OnLikeClick(id, likeId)
+                {
+                    var elementint = parseInt(document.getElementById(likeId).innerText);
+                    elementint ++;
+                    document.getElementById(likeId).innerText = elementint;
+
+                    document.cookie="commentIdLike="+id;
+                    document.location.reload(true);
+                }
+                
+                function OnDislikeClick(id, dislikeId)
+                {
+                    var elementint = parseInt(document.getElementById(dislikeId).innerText);
+                    elementint ++;
+                    document.getElementById(dislikeId).innerText = elementint;
+
+                    document.cookie="commentIdDislike="+id;
+                    document.location.reload(true);
+                }
+
+
+            </script>
+
+
+
+
+
+
 </html>
