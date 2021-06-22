@@ -341,10 +341,21 @@ else
                                         <ul>
                                             <!-- <li><a href="#"><i class="flaticon-two-arrows"></i></a></li> -->
                                             <li><a href="wishlist.php"><i class="flaticon-heart"></i></a></li>
-                                            <li></li>
-                                            <li></li>
-                                            <!-- <li class="header-shop-cart"><a href="wishlist.php"><i class="flaticon-shopping-bag"></i><span class="cart-count">2</span></a> -->
-                                                <span class="cart-total-price">$ 128.00</span>
+                                            <li class="header-shop-cart"><a href="bucket.php"><i class="flaticon-shopping-bag"></i></a>
+                                                <!-- <span class="cart-total-price">$ 128.00</span> -->
+
+
+
+
+                                                <?php 
+                                                    $totalPrice = 0.00;
+                                                    SetTotalPrice();
+                                                    echo '<span class="cart-total-price">$ '.$totalPrice.'</span>';
+
+                                                
+                                                ?>
+
+
                                                 
                                             <li></li>
                                         </ul>
@@ -443,8 +454,6 @@ else
 
 
                                     <?php 
-                                                    
-                                        $totalPrice = 0.00;
                                         
                                         $amountElementId = 100000;
                                         $maxLimitAmountElementId = 1100000;

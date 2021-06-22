@@ -98,14 +98,16 @@ else {
 //Color
 
 
-if (isset($_COOKIE["sortAllProductsByColor2"])) {
+if (isset($_COOKIE["sortAllProductsByColor2"])) 
+{
     $sortAllProductsByColorCookie = $_COOKIE["sortAllProductsByColor2"];
     $_SESSION["sortAllProductsByColor2"] = $sortAllProductsByColorCookie;
     $SortAllProductsByColor = $sortAllProductsByColorCookie;
 
 //echo "sortAllProductsByColor2 setted = " . $SortAllProductsByColor . "<br>";
 }
-else {
+else 
+{
     $SortAllProductsByColor = "";
 //echo "sortAllProductsByColor2 not setted <br>";
 }
@@ -146,7 +148,7 @@ else {
 // BucketProductsId
     
 
-if (isset($_COOKIE["bucketProductsId"])) 
+if (isset($_COOKIE["bucketProductsId"]) && $_COOKIE["bucketProductsId"] != "[]") 
 {
     /*$str = array_values($_COOKIE["bucketProductsId"]);*/ 
     $BucketProductsId = $_COOKIE["bucketProductsId"];
@@ -636,9 +638,10 @@ else
                                                                         //     $totalPrice += $discountPrice;
                                                                         // else
                                                                         //     $totalPrice += $price;
-
-
-                                                                        PrintBucketProductBlock($title, $imagePath, $price, $discountPrice, $productId);
+                                                                        if($i < 3)
+                                                                            PrintBucketProductBlock($title, $imagePath, $price, $discountPrice, $productId);
+                                                                        else if($i >= 3)
+                                                                            echo "<a href='bucket.php'><p style='font-size: 35px; cursor: pointer;'>More ...</p></a>";
                                                                     
 
                                                                     mysqli_free_result($result);
@@ -1194,6 +1197,7 @@ else
                                         <li><a style="cursor: pointer;" id="productCategoriesButton_2" class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML, this.id)"> Short Sleeve T-Shirt </a></li>
                                         <li><a style="cursor: pointer;" id="productCategoriesButton_3" class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML, this.id)"> Long Sleeve T-Shirt </a></li>
                                         <li><a style="cursor: pointer;" id="productCategoriesButton_4" class="sort_button" onclick="SetCookie_ShowAllProductsLike(this.innerHTML, this.id)"> Accessorie </a></li>
+                                        <button onclick="OnButtonResetProductsTypeClick()">Reset</button>
                                     </ul>
                                 </div>
 
@@ -1232,6 +1236,7 @@ else
                                                 <li id="filterColor_3" onclick="SetSelectedFilterColor('Green', this.id)"></li>
                                                 <li id="filterColor_4" onclick="SetSelectedFilterColor('Blue', this.id)"></li>
                                                 <li id="filterColor_5" onclick="SetSelectedFilterColor('Black', this.id)"></li>
+                                                <button style="margin-left: 5%;" onclick="OnButtonResetColorsClick()">Reset</button>
                                             </ul>
                                         </div>
                                     </div>
@@ -1244,26 +1249,109 @@ else
                                         <h6 class="title">NEW PRODUCT</h6>
                                         <div class="slider-nav"></div>
                                     </div>
+
+
+                
                                     <div class="sidebar-product-active">
                                         <div class="sidebar-product-list">
                                             <ul>
-                                                <li>
-                                                    <div class="sidebar-product-thumb">
-                                                        <a href="#"><img src="img/product/sidebar_product01.jpg" alt=""></a>
-                                                    </div>
-                                                    <div class="sidebar-product-content">
-                                                        <div class="rating">
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <i class="fas fa-star"></i>
-                                                        </div>
-                                                        <h5><a href="#">Slim Fit Cotton</a></h5>
-                                                        <span>$ 39.00</span>
-                                                    </div>
-                                                </li>
-                                                <li>
+                                                
+
+
+
+
+
+                                                    <?php 
+                                                    
+                                                        PrintNewProducts();
+
+                                                        function PrintNewProducts()
+                                                        {
+                                                            global $link;
+                                                            global $shopTable;
+                                                            global $BucketProductsIdNums;
+                                                            $getAllProductsInfoQuery = "SELECT `Id`, `Title`,
+                                                            `Price`, `Rating`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 ORDER BY $shopTable.AddedDate DESC";
+
+                                                            $counter = 0;
+
+                                                            if ($result = mysqli_query($link, $getAllProductsInfoQuery)) 
+                                                            {
+                                                                while ($row = mysqli_fetch_row($result)) 
+                                                                {
+                                                                    if($counter <= 5)
+                                                                    {
+                                                                        $id = $row[0];
+                                                                        $title = $row[1];
+                                                                        $price = $row[2];
+                                                                        $rating = $row[3];
+                                                                        $imagePath = $row[4];
+                                                                        $imagePath = str_replace("327x358", "103x129", $imagePath);
+
+
+                                                                        $discountPrice = GetCurrentProductDiscount($id, $price);
+
+                                                                        PrintSliderBlock($title, $price, $discountPrice, $rating, $imagePath, $id);
+
+                                                                        if($counter == 2)
+                                                                        {
+                                                                            echo '
+                                                                            </div>
+                                                                            <div class="sidebar-product-list">
+                                                                            <ul>';
+                                                                        }   
+
+                                                                        $counter ++;
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        mysqli_free_result($result);
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+
+
+
+
+                                                    
+                                                        function PrintSliderBlock(string $title, float $price, float $discountPrice, float $rating, string $imagePath, string $id)
+                                                        {
+                                                            $discountPriceHTML = $discountPrice == 0.0 ? '<span class="new-price"></span>' : '<span class="new-price">$' . $discountPrice . '</span>';
+                                                            $pricericeHTML = $discountPrice == 0.0 ? '<span>$' . $price . '</span>' : '<del class="old-price">$' . $price . '</del>';
+                                                            if($discountPrice != 0.0)
+                                                                $pricericeHTML = $discountPriceHTML;
+                                                            
+                                                            $ratingHTML = GetRatingHTML($rating);
+
+                                                            $productBlockHTML = '
+                                                            <li>
+                                                                <div class="sidebar-product-thumb">
+                                                                    <a><img src="'.$imagePath.'" alt=""></a>
+                                                                </div>
+                                                                <div class="sidebar-product-content">
+                                                                    <div class="rating">
+                                                                        '.$ratingHTML.'
+                                                                    </div>
+                                                                    <h5><a>'.$title.'</a></h5>
+                                                                    '.$pricericeHTML.'
+                                                                </div>
+                                                            </li>';
+
+                                                            echo $productBlockHTML;
+                                                        }
+                                                    
+                                                    
+        
+                                                    ?>
+
+
+
+
+
+                                                    
+                                                <!-- <li>
                                                     <div class="sidebar-product-thumb">
                                                         <a href="#"><img src="img/product/sidebar_product02.jpg" alt=""></a>
                                                     </div>
@@ -1295,11 +1383,41 @@ else
                                                         <span>$ 39.00</span>
                                                     </div>
                                                 </li>
-                                            </ul>
-                                        </div>
+                                            </ul> -->
+
+
+
+
+
+
+
+
+
+
+
+
+                                        <!-- </div>
+
+
+
+
+
+
+
                                         <div class="sidebar-product-list">
-                                            <ul>
-                                                <li>
+                                            <ul> -->
+
+
+
+
+
+
+
+
+
+
+
+                                                <!-- <li>
                                                     <div class="sidebar-product-thumb">
                                                         <a href="#"><img src="img/product/sidebar_product01.jpg" alt=""></a>
                                                     </div>
@@ -1346,7 +1464,18 @@ else
                                                         <h5><a href="#">Slim Fit Cotton</a></h5>
                                                         <span>$ 39.00</span>
                                                     </div>
-                                                </li>
+                                                </li> -->
+
+
+
+
+
+
+
+
+
+
+
                                             </ul>
                                         </div>
                                     </div>
@@ -1550,10 +1679,6 @@ else
 
                 
                 
-
-                
-
-                
                 isParametersChanged = false;
 
                 
@@ -1753,6 +1878,18 @@ else
 
 
 
+                function OnButtonResetProductsTypeClick()
+                {
+                    ShowAllProductsLike_Current = "";
+                    SortingByTypeId = "";
+
+                    SaveCookies();
+                    SaveSelectedParametersID();
+                    document.location.reload(true);
+                }
+
+
+
 
                 //FILTER BY PRICE
 
@@ -1799,8 +1936,18 @@ else
                     document.location.reload(true);
                 }
 
-                
 
+
+
+                function OnButtonResetColorsClick()
+                {
+                    SortAllProductsByColor_Current = "";
+                    SortingByColorId = "";
+
+                    SaveCookies();
+                    SaveSelectedParametersID();
+                    document.location.reload(true);
+                }
 
 
 
@@ -1870,7 +2017,7 @@ else
 
                 function OnBucketMenuMakePurchaseClick() 
                 {
-                    document.location = "wishlist.php";
+                    document.location = "bucket.php";
                 } 
 
 
@@ -1879,12 +2026,37 @@ else
 
                 function OnProductBuyButtonClick(id) //+
                 {
-                    /*var passedArray = <?php echo json_encode($BucketProductsIdNums); ?>;
-                    passedArray.push(id);
-                    var json_str = JSON.stringify(passedArray);
-                    document.cookie="bucketProductsId=" + json_str;*/
+                    var passedArray = <?php echo json_encode($BucketProductsIdNums); ?>;
+
+                    if(passedArray != false)
+                    {
+                        if(!passedArray.includes(id))
+                        {
+                            passedArray.push(id);
+                            var json_str = JSON.stringify(passedArray);
+                            document.cookie="bucketProductsId=" + json_str;
+                                                    
+                            var bucketProductsAmount = <?php echo json_encode($BucketProductsAmountNums); ?>;
+
+                            productIndexInArray = passedArray.indexOf(id);
+                            bucketProductsAmount[productIndexInArray] = 1;
+                            json_str = JSON.stringify(bucketProductsAmount);
+                            document.cookie="bucketProductsAmount=" + json_str;  
+                        }
+                    }
+                    else
+                    {
+                        var bucketProductsId = [id];
+                        var json_str = JSON.stringify(bucketProductsId);
+                        document.cookie="bucketProductsId=" + json_str;
+
+                        var bucketProductsAmount = [1];
+                        json_str = JSON.stringify(bucketProductsAmount);
+                        document.cookie="bucketProductsAmount=" + json_str;
+                    }
+
                     
-                    document.location = "wishlist.php";
+                    document.location = "bucket.php";
                 }   
 
 
@@ -1912,24 +2084,20 @@ else
                 {
                     var passedArray = <?php echo json_encode($BucketProductsIdNums); ?>;
 
-                    if(!passedArray.includes(id))
+                    if(passedArray != false) //if some items exist
                     {
-                        passedArray.push(id);
-                        var json_str = JSON.stringify(passedArray);
-                        document.cookie="bucketProductsId=" + json_str;
-                        
-                        document.location.reload(true);
-
-                        //alert("start");                            
-                        var bucketProductsAmount = <?php echo json_encode($BucketProductsAmountNums); ?>;
-
-                        if(bucketProductsAmount != false)
+                        if(!passedArray.includes(id)) //if not exists same produt
                         {
-                            //wasChange = true;
+                            passedArray.push(id);
+                            var json_str = JSON.stringify(passedArray);
+                            document.cookie="bucketProductsId=" + json_str;
                             
-                            //alert(1);
+                            //document.location.reload(true);
 
-                            productIndexInArray = passedArray.indexOf(id);
+                            //alert("start");                            
+                            var bucketProductsAmount = <?php echo json_encode($BucketProductsAmountNums); ?>;
+
+                            var productIndexInArray = passedArray.indexOf(id);
 
                             //alert(productIndexInArray);
 
@@ -1940,29 +2108,43 @@ else
                             document.cookie="bucketProductsAmount=" + json_str;
                             
                             
-                        }
-                        else
-                        {
+                        
                             //alert(2);
 
-                            bucketProductsAmount2 = [];
+                            /*bucketProductsAmount2 = [];
                             productIndexInArray = passedArray.indexOf(id);
 
                             bucketProductsAmount2[productIndexInArray] = 1;
                             
                             json_str = JSON.stringify(bucketProductsAmount2);
                         
-                            document.cookie="bucketProductsAmount=" + json_str;
+                            document.cookie="bucketProductsAmount=" + json_str;*/
+                            
+
+                            document.location.reload(true);
                         }
+                    }
+                    else //if no items
+                    {
+
+                        var bucketProductsId = [id];
+                        var json_str = JSON.stringify(bucketProductsId);
+                        document.cookie="bucketProductsId=" + json_str;
+                        
+                        
+                        var bucketProductsAmount = [1];
+                        var json_str = JSON.stringify(bucketProductsAmount);
+                        document.cookie="bucketProductsAmount=" + json_str;
+
 
                         document.location.reload(true);
 
-                        
                     }
+
+                    
                 }
                 
                 
-
 
 
 

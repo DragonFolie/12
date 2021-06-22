@@ -291,7 +291,7 @@ else
 
             SetCookiesValues();
 
-            echo "call";
+            //echo "call";
 
             global $shopTable;
             global $link;
@@ -336,12 +336,15 @@ else
             
             setcookie("bucketProductsId", "", time() - 3600);
             setcookie("bucketProductsAmount", "", time() - 3600);
+
+            $BucketProductsIdNums = "";
+            $BucketProductsAmountNums = "";
         }
         else
         {
             //setcookie("IsButtonConfirmPurchaseClicked", "false");
             $IsButtonConfirmPurchaseClicked = "false";
-            echo "not call";
+            //echo "not call";
         }
         
     }
@@ -542,8 +545,27 @@ else
                                             <li></li>
                                             <li></li>
                                             <!-- <li class="header-shop-cart"><a href="wishlist.php"><i class="flaticon-shopping-bag"></i><span class="cart-count">2</span></a> -->
-                                                <span class="cart-total-price">$ 128.00</span>
                                                 
+
+
+
+
+
+                                                <?php 
+                                                    $totalPrice = 0.00;
+                                                    SetTotalPrice();
+                                                    echo '<span class="cart-total-price">$ '.$totalPrice.'</span>';
+
+                                                
+                                                ?>
+
+
+
+
+
+
+
+
                                             <li></li>
                                         </ul>
                                     </div>
@@ -642,76 +664,79 @@ else
 
                                     <?php 
                                                     
-                                        $totalPrice = 0.00;
                                         
                                         $amountElementId = 100000;
                                         $maxLimitAmountElementId = 1100000;
                                         $totalPriceId = 11100000;
 
-                                        
-                                        if(count($BucketProductsIdNums) > 0)
+                                        if($BucketProductsIdNums != "")
                                         {
+                                                if(count($BucketProductsIdNums) > 0)
+                                            {
 
 
-                                            //SetTotalPrice();
+                                                //SetTotalPrice();
 
-                                            $productsAmount = count($BucketProductsIdNums);
+                                                $productsAmount = count($BucketProductsIdNums);
 
-                                            /*echo '<span class="cart-count">' . $productsAmount . '</span></a>';
+                                                /*echo '<span class="cart-count">' . $productsAmount . '</span></a>';
 
-                                            echo '<span class="cart-total-price">$' . $totalPrice . '</span>';*/
-
-
+                                                echo '<span class="cart-total-price">$' . $totalPrice . '</span>';*/
 
 
-                                            //echo '<ul class="minicart">';
-                                            $index = 0;
 
-                                            
-                                            for ($i = 0; $i < count($BucketProductsIdNums); $i++) 
-                                            { 
-                                                $getAllProductsInfoQuery = "SELECT `Title`,
-                                                `Price`, `ImagePath`, `Description`, `Amount` FROM $shopTable WHERE $shopTable.Amount > 0 AND $shopTable.Id = " . $BucketProductsIdNums[$i];
 
-                                                if ($result = mysqli_query($link, $getAllProductsInfoQuery)) {
-                                                    
-                                                    $row = mysqli_fetch_row($result);
-                                                    $productId = $BucketProductsIdNums[$index];
-                                                    $index ++;
+                                                //echo '<ul class="minicart">';
+                                                $index = 0;
 
+                                                
+                                                for ($i = 0; $i < count($BucketProductsIdNums); $i++) 
+                                                { 
+                                                    $getAllProductsInfoQuery = "SELECT `Title`,
+                                                    `Price`, `ImagePath`, `Description`, `Amount` FROM $shopTable WHERE $shopTable.Amount > 0 AND $shopTable.Id = " . $BucketProductsIdNums[$i];
+
+                                                    if ($result = mysqli_query($link, $getAllProductsInfoQuery)) {
+                                                        
+                                                        $row = mysqli_fetch_row($result);
+                                                        $productId = $BucketProductsIdNums[$index];
+                                                        $index ++;
+
+                                                            
+
+                                                        $title = $row[0];
+                                                        $price = $row[1];
+                                                        $imagePath = $row[2];
+                                                        $imagePath = str_replace("327x358", "103x129", $imagePath);
+                                                        $description = $row[3];
+                                                        $amount = $row[4];
+
+                                                        $discountPrice = 0.0;
+
+                                                        $discountPrice = GetCurrentProductDiscount($productId, $price);
+
+
+                                                        PrintWishListProductBlock($title, $imagePath, $price, $discountPrice, $productId, $description, $amount);
                                                         
 
-                                                    $title = $row[0];
-                                                    $price = $row[1];
-                                                    $imagePath = $row[2];
-                                                    $imagePath = str_replace("327x358", "103x129", $imagePath);
-                                                    $description = $row[3];
-                                                    $amount = $row[4];
-
-                                                    $discountPrice = 0.0;
-
-                                                    $discountPrice = GetCurrentProductDiscount($productId, $price);
-
-
-                                                    PrintWishListProductBlock($title, $imagePath, $price, $discountPrice, $productId, $description, $amount);
-                                                    
-
-                                                    mysqli_free_result($result);
+                                                        mysqli_free_result($result);
+                                                    }
                                                 }
+
+
+                                                //PrintTotalPrice($totalPrice);
+
+
+
+                                                //PrintMakePurchaseButton();
                                             }
-
-
-                                            //PrintTotalPrice($totalPrice);
-
-
-
-                                            //PrintMakePurchaseButton();
+                                            else //Bucket is empty
+                                            {
+                                                //echo '</a>';
+                                                //echo '<span class="cart-total-price">$0.00</span>';
+                                            }
                                         }
-                                        else //Bucket is empty
-                                        {
-                                            //echo '</a>';
-                                            //echo '<span class="cart-total-price">$0.00</span>';
-                                        }
+
+                                        
 
                                         function SetTotalPrice()
                                         {
@@ -1213,7 +1238,7 @@ else
             }
             
 
-            alert(document.cookie);
+            //alert(document.cookie);
 
 
 
