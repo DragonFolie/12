@@ -1,139 +1,3 @@
-<?php
-$newsDB = "thelongdark";
-$newsTable = "news";
-$commentsTable = "newscomments";
-
-$link = mysqli_connect("localhost", "DragonFolie", "nair6455", $newsDB);
-
-if (mysqli_connect_errno()) {
-    printf("Connect failed: %s\n", mysqli_connect_error());
-    exit();
-}
-
-//queries to db 
-$commentsInfoQuerySortedByNewer = "SELECT `Id`, `Name`, `Comment`, `Date`, `Likes`, `Dislikes` 
-FROM $commentsTable 
-WHERE NewsID = 3";
-
-
-//FROM $commentsTable 
-//INNER JOIN $newsTable ON $commentsTable.NewsID = $newsTable.Id
-
-$commentsInfoQuerySortedByOlder = "SELECT `Id`, `Name`, `Comment`, `Date`, `Likes, `Dislikes`
-                            FROM $commentsTable 
-                            INNER JOIN $newsTable ON $commentsTable.NewsID = $newsTable.Id 
-                            ORDER BY `Date` ASC";
-
-
-
-
-
-
-
-
-$IsAllNewsSortedByOlder = false;
-
-if (isset($_COOKIE["IsAllNewsSortedByOlder"])) {
-    $IsAllNewsSortedByOlder = $_COOKIE["IsAllNewsSortedByOlder"];
-//echo "IsAllNewsSortedByOlder setted <br>";
-}
-else {
-    $IsAllNewsSortedByOlder = false;
-//echo "IsAllNewsSortedByOlder not setted <br>";
-}
-
-
-
-
-
-
-if (isset($_COOKIE["commentIdLike"]) && $_COOKIE["commentIdLike"] != "") 
-{
-    $id = intval($_COOKIE["commentIdLike"]);
-
-    $currentAmountQuery = "SELECT $commentsTable.Likes FROM $commentsTable WHERE $commentsTable.Id = $id";
-    $currentAmount;
-
-    if ($result = mysqli_query($link, $currentAmountQuery)) {
-        while ($row = mysqli_fetch_row($result)) {
-            $currentAmount = intval($row[0]);
-
-        }
-        mysqli_free_result($result);
-    }
-
-    $currentAmount++;
-
-
-    $query = "UPDATE $commentsTable 
-        SET 
-            $commentsTable.Likes = '$currentAmount'
-        WHERE
-            $commentsTable.Id = $id";
-
-    mysqli_query($link, $query);
-
-    setcookie("commentIdLike", "", time() - 3600);
-}
-
-if (isset($_COOKIE["commentIdDislike"]) && $_COOKIE["commentIdDislike"] != "") 
-{
-    $id = intval($_COOKIE["commentIdDislike"]);
-
-    $currentAmountQuery = "SELECT $commentsTable.Dislikes FROM $commentsTable WHERE $commentsTable.Id = $id";
-    $currentAmount;
-
-    if ($result = mysqli_query($link, $currentAmountQuery)) {
-        while ($row = mysqli_fetch_row($result)) {
-            $currentAmount = intval($row[0]);
-
-        }
-        mysqli_free_result($result);
-    }
-
-    $currentAmount++;
-
-
-    $query = "UPDATE $commentsTable 
-        SET 
-            $commentsTable.Dislikes = '$currentAmount'
-        WHERE
-            $commentsTable.Id = $id";
-
-    mysqli_query($link, $query);
-
-    setcookie("commentIdDislike", "", time() - 3600);
-}
-
-
-
-
-
-
-
-
-//echo date("Y-m-d");
-
-
-
-if (isset($_COOKIE["nickNameField"]) && $_COOKIE["nickNameField"] != "" && isset($_COOKIE["commentArea"]) && $_COOKIE["commentArea"] != "") 
-{
-    $name = $_COOKIE["nickNameField"];
-    $comment = $_COOKIE["commentArea"];
-    $date = date("Y-m-d H:i:s");
-
-    $query = "INSERT $commentsTable(Name, Comment, Date, Likes, Dislikes, NewsID) 
-    VALUES ('$name', '$comment', '$date', '0', '0', '3');";
-
-    mysqli_query($link, $query);
-
-    setcookie("nickNameField", "", time() - 3600);
-    setcookie("commentArea", "", time() - 3600);
-}
-?>
-
-
-
 
 <!DOCTYPE html>
 <html>
@@ -158,13 +22,15 @@ body{
         font-family: 'Yusei Magic', sans-serif;
          padding: 0;
          margin: 0;
-         
+         list-style:none;
          text-decoration: none;
          
 
      }
-     
-     li {
+     ul, ol {
+    list-style: none;
+}
+li {
     list-style-type: none; /* Убираем маркеры */
    }
 
@@ -338,10 +204,6 @@ body{
     line-height: 1.65em;
     
 }
-.main_text p{
-    font-weight:400;
-    
-}
 
 
 
@@ -436,7 +298,6 @@ body{
     color: #757575;
     text-align: center;
     font-family: 'Yusei Magic', sans-serif;
-    
     font-weight: 300;
     font-size: 24px;
     line-height: 2em;
@@ -803,6 +664,7 @@ body{
 
 
 
+
 /* Comment List *//* Comment List *//* Comment List *//* Comment List *//* Comment List *//* Comment List */
 
 .comment_list{
@@ -898,6 +760,7 @@ body{
     border-bottom: .5px solid white ;
 
 }
+
 
   /* Footer */ /* Footer */ /* Footer */ /* Footer */ /* Footer */ /* Footer */
 
@@ -1024,6 +887,7 @@ letter-spacing: 0.03em;
 text-decoration: underline;
 color: #757575;
 }
+
 /* Email Sender */ /* Email Sender */ /* Email Sender */ /* Email Sender */ /* Email Sender */ /* Email Sender */ /* Email Sender */ 
     
 .email_sender{
@@ -1106,6 +970,7 @@ color: #757575;
         transition: 1s;
         opacity: 1;
     }
+
     .just_nicho{
         margin: 50px auto;
     }
@@ -1128,7 +993,6 @@ transition: 1s;
 
 
 }
-
 </style>
      
 <body>
@@ -1175,7 +1039,7 @@ transition: 1s;
 <main class="main">
     <div class="main_inner">
         <div class="main_inner_title_content">
-            <img src="img/Fearless-Navigator_Blog_Post_Cover_1360x566-comp-1024x426-1.jpg" class="main_inner_title_photo" alt="season's greetings" srcset="">
+            <img src="img/Nvidia-Banner-Site-Forum-1360x566-1-1.png" class="main_inner_title_photo" alt="season's greetings" srcset="">
             <h1 class="main_inner_title">THE LONG DARK RETURNS TO GEFORCE NOW</h1>
             <span class="main_inner_date">28.05.2020.</span>
 
@@ -1185,202 +1049,35 @@ transition: 1s;
             
             <br>
             <div class="main_text">
+                <p >I believe that creators must be the custodians of their own content, and that developers should be able to determine for themselves which platforms their games are experienced on. In fact, I strongly believe that the continued vibrancy of the independent games industry depends on us being masters of our own destiny</p><br>
                 <p >
-                    Hello Community,
-                </p><br>
-                <p >
-                    We’ve just updated The Long Dark to v1.76 (62505) — FEARLESS NAVIGATOR
+                    Back in March I decided to remove The Long Dark from NVIDIA’s GeForce NOW game streaming platform, as I disagreed with our game being incorporated into the service without our consent. We discussed our position with NVIDIA, which they respected. This week, NVIDIA announced they are shifting to an opt-in program for getting games onto GeForce NOW. This means developers now fully control whether or not their games appear on the platform. I’m thrilled to see NVIDIA move to this model as it’s best for everyone — for players, for the platform, and for the developers who create the games you love.
                 </p>
                 <br>
                 <p>
-                    For a detailed breakdown of the new features and changes, please review the latest Update video
-                <br>
-                <p >
-
-                    <div style="margin: 60px auto;">
-                    <iframe width="940" height="519" src="https://www.youtube.com/embed/WBpMFegfykw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div></p>
-                <br>
-                <h2>
-
-                    SURVIVAL MARKERS
-
-                </h2>
-                <br><br>
-                
-                <p>
-
-                    Find Spray Cans in the world. Leave markers identifying important survival information such as the location of supplies or dangerous places to avoid. These in-world indicators appear on your map so that you can find things back even days or weeks after you’ve left a region.
-
-                </p><br><br>
-                <h2>
-                    
-                    ROCK CACHES
-
-                </h2>
-                <br><br>
-                
-                <p>
-
-                    Build a landmark to help you navigate, and create emergency supply caches along commonly travelled routes. Review your Caches in the Journal, and leave notes on what you’ve stored in them so you can find vital tools or resources in the future.
-                </p><br><br>
-                <h2>
-                    
-                    VISTA SURVEYS
-
-                </h2>
-                <br><br>
-                
-                <p>
-
-                    Hard to find Polaroids in the world indicate locations that offer sweeping Vista views of a region. Get to those locations and Survey them to reveal the majority of a region’s map!
-                </p><br><br>
-                <h2>
-                    
-                    MPROVED CHARCOAL SURVEY
-
-                </h2>
-                <br><br>
-                
-                <p>
-
-                    The Charcoal Survey action now reveals an enhanced radius on the Map. Surveying from higher altitudes now increases how much of the Map is revealed.
-
-                </p><br><br>
-                <h2>
-                    
-                    MAP & JOURNAL IMPROVEMENTS
-
-                </h2>
-                <br><br>
-                
-                <p>
-
-                    Turn layers of information on and off in the Map. Locate and rename Rock Caches. Keep track of all Surveyed locations to know if you’ve found them all. Especially useful if you are hunting locations for the Faithful Cartographer achievement.
-                </p><br><br><h2>
-                    
-                    TELEMETRY & QUALITY OF LIFE
-
-                </h2>
-                <br><br>
-                
-                <p>
-
-                    New Autowalk accessibility feature ensures comfort for players with hand or wrist issues. New Opt-in Telemetry gathers gameplay data the development team will use to inform future balance and feature development efforts (Note: Telemetry is defaulted to OFF and needs to be turned on in the Options>Privacy settings.)
-                </p><br><br><h2>
-                    
-                    THE LONG DARK v1.76 (62505) CHANGELIST
-
-                </h2>
-                <br><br>
-                <h2>
-                    
-                    KNOWN ISSUES
-
-                </h2>
-                <br><br>
-                <p>
-                    
-                    These are issues we’re currently tracking and will be addressing in an upcoming hotfix:
-
+                    Accessibility is important to us. GeForce NOW is a great service that offers players with low-spec or incompatible hardware the chance to play the games that might otherwise be out of reach, and we’re happy to announce that we’re bringing The Long Dark back to GeForce NOW, effective immediately.
                 </p>
-                <br><br>
-                
-                <ul  type="disc">
-
-                    <li>[UI] When viewing the Rock Cache Notes in your Journal, the scroll bar will not scroll.</li>
-                    <li>[UI] When viewing the Rock Cache Notes in your Journal, the edit button will appear, even if there are no notes to edit.</li>
-                    <li>[Audio] Sometimes during a blizzard, ambient wind sounds may become muted.</li>
-                    <li>Players on Mac may not be able to see Spray Paint markers on the map, when sprayed on the ground</li>
-                    <li>Players are unable to edit Rock Cache notes when playing with a controller</li>
-                    
-
-
-
-                </ul>
-                <br><br>
-                <h2>
-                    
-                    GENERAL FIXES
-
-                </h2>
-                <br><br>
-                <ul  type="disc">
-
-                    <li>[General] Fixed stuttering when looking towards Wolves, while in Milton.</li>
-                    <li>[General] Fixed null exception that would occur when lighting the Pot Belly Stove.</li>
-                    <li>[General] Bear sound effects no longer play when a carcass is removed from the world.</li>
-                    <li>[General] Updated Steam Controller profile. </li>
-                    <li>[General] Fixed an issue that prevented Players from being able to save or load their game if the save contained invalid data.</li>
-                    
-
-                    
-
-                </ul>
-                <br><br>
-                <h2>
-                    
-                    GENERAL ART FIXES
-
-                </h2>
-                <br><br>
-
-                <ul type="disc">
-                    <li>[Enviro] Numerous optimizations to improve performance.</li>
-                    <li>[Enviro] Fixed numerous areas the player could become stuck in.</li>
-                    <li>[Enviro] Fixed numerous areas the player could get outside of the intended play area.</li>
-                    <li>[Enviro] Fixed numerous clipping and floating objects.</li>
-                    <li>[Enviro] Performed various optimizations to avoid texture popping.</li>
-                    <li>[Enviro] Added casting shadows to numerous trees.</li>
-                    <li>[Enviro] Improvements to item placement system to reduce frequency of out of reach items.</li>
-                    <li>[Enviro] Fixed many minor art bugs to improve general polish in Bleak Inlet region.</li>
-
-                </ul>
-
-                <br><br>
-                <h2>
-                    
-                    WINTERMUTE FIXES
-
-                </h2>
-                <br><br>
-
-                <ul type="disc">
-                    <li>[WINTERMUTE] Completing an Episode 1 or Episode 2 Side Missions now displays a completion message. </li>
-                    <li>[EPISODE THREE] Fixed an issue in the Mine exiting Pleasant Valley, where players would be repositioned after reloading a saved game.</li>
-                    <li>[EPISODE THREE] Added missing foley to the second part of the Mine Tremor cinematic.</li>
-                    <li>[EPISODE THREE] IDs are now removed from the Players inventory when completing the Fallen Star mission in Episode Three .</li>
-                    <li>[EPISODE THREE] Removed access to Timberwolf Mountain from Pleasant Valley.</li>
-                    <li>[EPISODE THREE] Fixed the spawn condition of the Revolver found in Molly’s basement.</li>
-
-                </ul>
-
-                <br><br>
-                <h2>
-                    
-                    SURVIVAL MODE
-
-                </h2>
-                <br><br>
-
-                <ul type="disc">
-                   <li>[Survival] Fixed incorrect spawn rate for the Prepper Cache found in Pleasant Valley.</li>
-                   <li>[Survival] All cabins now display smoke coming out of their chimney, when a fire is lit inside. </li>
-                   <li>[Survival] When sleeping, the save file screenshot will now occur after the player transitions from sleep, instead of during the transition.</li>
-                   <li>[Survival] Players can now place a Rifle on the gun rack found in the Hunting Lodge.</li>
-                   <li>[Survival] Cancelling while drinking Coffee will now award the appropriate amount of progress to the “Straight to the Heart” Feat.</li>
-                   <li>[Survival] Pre-Spawned campfires will no longer respawn, when loading a save where they were previously broken down.</li>
-                   <li>[Saves] Implemented a check to force the Aurora to be enabled on Survival Mode save files created prior to the Aurora being enabled.</li>
-
-
-                </ul>
-                <br><br>
+                <br>
                 <p>
 
-                    ### END OF CHANGELIST ###
-                </p><br><br>
+                    I applaud NVIDIA for embracing this opt-in approach, and for their support of independent creators like Hinterland. I also support any developers who choose, for their own reasons, to withhold their games from any platform, and I hope you will respect their decisions to do so as well. Developer choice is at the heart of a strong independent games industry.
+                </p>
+                <br>
+                <p>
+                    Sincerely,
+                </p>
                 
+                <p>
+                    Raphael van Lierop
+                </p>
                 
+                <p>
+                    Founder & CEO
+                </p>
+                
+                <p>
+                    Hinterland
+                </p>
 
             </div>
 
@@ -1427,186 +1124,213 @@ transition: 1s;
 --> 
 
 
-<div class="comment">
+        <div class="comment">
 
-    <div class="comment_inner">
+            <div class="comment_inner">
 
-        <h1> WRITE YOUR COMMENT</h1><br>
+                <h1> WRITE YOUR COMMENT</h1><br>
 
-        <div class="comment_area">
-            <div class="name">
-                <div class="page">
-                    <label class="field field_v2">
+                <div class="comment_area">
+                    <div class="name">
+                        <div class="page">
+                    
+                            <label class="field field_v2">
+                              <input type="text" class="field__input" placeholder="e.g. Hinterland">
+                              <span class="field__label-wrap">
+                                <span class="field__label"> Last name </span>
+                              </span>
+                            </label>    
+                            
+                          </div>
 
 
 
-                      <input id="nickNameField" type="text" class="field__input" placeholder="e.g. Hinterland">
+                    </div>
+                    
+                 </div>
+                 <br><br>
+                 <div class="text">
+
+                    
+
+                    <textarea class="text_inner" cols="85  " maxlength="909" rows="10"></textarea>
+
+                 </div>
+                 <div class="button_send">
+
+                    <div id="btn"><span class="noselect">Send</span><div id="circle"></div></div>
+                 </div>
+
+                 <h1 class="just_nicho"> YOUR COMMENT
+
+
+                    <button class="sort_button">
+                        <img class="sort_button" src="img/sort-down.png" alt="">
+                    </button>
+
+
+                 </h1><br>
+                 <div class="comment_list">
+                     
+                    <div class="comment_list_left">
+                        <p>VLAD</p>
+                        
+
+                        <img src="img/wolf.png" alt="" srcset=""><br>
+                        
 
 
 
-                      <span class="field__label-wrap">
-                        <span class="field__label"> Nick name </span>
-                      </span>
-                    </label>  
-                  </div>
+                    </div>
+                    <div class="comment_list_right">
+                        <div class="comment_list_right_posted">
+                            <p >Posted Monday at 01:17 AM</p>
+                        </div>
+                        <p >I have had a number of runs over 1,000 days at Stalker or Voyager level without a major problem.  On one occasion I was running low on matches, another time cured leather and birch saplings for arrows.  I presume that was on a Stalker run not a Voyager run.  It is possible to survive without most resources by adapting  your life style and using alternative resources.  I have not tried beach combing but I assume that could provide some hard to find resources.</p>
+
+
+                    </div>
+
+
+                 </div>
+
+
+                 <div class="comment_list">
+                     
+                    <div class="comment_list_left">
+                        <p>VLAD</p>
+                        
+
+                        <img src="img/wolf.png" alt="" srcset=""><br>
+                        
+
+
+
+                    </div>
+                    <div class="comment_list_right">
+                        <div class="comment_list_right_posted">
+                            <p >Posted Monday at 01:17 AM</p>
+                        </div>
+                        <p >I have had a number of runs over 1,000 days at Stalker or Voyager level without a major problem.  On one occasion I was running low on matches, another time cured leather and birch saplings for arrows.  I presume that was on a Stalker run not a Voyager run.  It is possible to survive without most resources by adapting  your life style and using alternative resources.  I have not tried beach combing but I assume that could provide some hard to find resources.</p>
+
+
+                    </div>
+
+
+                 </div>
+                 
+                
+                  
+
+
+                
+
             </div>
-         </div>
-         <br><br>
-         <div class="text">
+        </div>
 
-            
+<!-- Блоки новин назив news_list  news_list_inner_text-текст справа  news_list_inner_photo - фото    --> 
+        <div class="news_list">
 
-            <textarea id="commentArea" class="text_inner" cols="85  " maxlength="909" rows="10"></textarea>
+            <span class="news_list_date">07.12.2020.</span>
 
 
+            <div class="news_list_inner">
 
-         </div>
-         <div class="button_send">
+                
+                <div class="news_list_inner_photo">
 
+                    <a href="#">
+                        <img src="img/HP-Blog-Featured-Img.png" width="329px" height="auto" alt="" srcset="">
+                    </a>
 
+                </div>
+                
 
-            <div id="btn" onclick="OnButtonCommentSendClick()"><span class="noselect">Send</span><div id="circle"></div></div>
+                <div class="news_list_inner_text">
+                    HESITANT PROSPECT Update Now Live
+                </div>
+                
 
+            </div>
 
+        </div>
 
-         </div>
+<!-- Блоки новин назив news_list  news_list_inner_text-текст справа  news_list_inner_photo - фото    --> 
 
-         <h1 class="just_nicho">COMMENTS
-         </h1><br>
-         
-             
 
+        <div class="news_list">
 
+            <span class="news_list_date">07.12.2020.</span>
 
 
+            <div class="news_list_inner">
 
+                
+                <div class="news_list_inner_photo">
 
+                    <a href="#">
+                        <img src="img/HP-Blog-Featured-Img.png" width="329px" height="auto" alt="" srcset="">
+                    </a>
 
+                </div>
+                
 
+                <div class="news_list_inner_text">
+                    HESITANT PROSPECT Update Now Live
+                </div>
+                
 
+            </div>
 
+        </div>
 
 
+<!-- Блоки новин назив news_list  news_list_inner_text-текст справа  news_list_inner_photo - фото    --> 
 
+        <div class="news_list">
 
+            <span class="news_list_date">07.12.2020.</span>
 
 
+            <div class="news_list_inner">
 
+                
+                <div class="news_list_inner_photo">
 
+                    <a href="#">
+                        <img src="img/HP-Blog-Featured-Img.png" width="329px" height="auto" alt="" srcset="">
+                    </a>
 
+                </div>
+                
 
+                <div class="news_list_inner_text">
+                    HESITANT PROSPECT Update Now Live
+                </div>
+                
 
+            </div>
 
+        </div>
 
+        <div class="about_game_forum">
+            <a class="email_sender_forum" href="#">NEWS & UPDATES <img class="about_game_forum_padding" src="img/icon-promo.png" alt="" srcset=""></a>
+    
+        
+    
+    
+        </div>
+        
 
+        
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-         <?php
-
-$likesId = 100000;
-$dislikesId = 1100000;
-
-CreateCommentsBlock($commentsInfoQuerySortedByNewer);
-//`Id`, `Name`, `Comment`, `Date`, `Likes, `Dislikes`
-
-function CreateCommentsBlock(string $newsInfoQuery)
-{
-    global $link;
-    if ($result = mysqli_query($link, $newsInfoQuery)) {
-        while ($row = mysqli_fetch_row($result)) {
-            //printf(count($row));
-            $id = $row[0];
-            $name = $row[1];
-            $comment = $row[2];
-            $date = $row[3];
-            $likes = $row[4];
-            $dislikes = $row[5];
-
-            //echo $id . "  " . $name . "  " . $comment . "  " . $date . "  " . $likes . "  " . $dislikes;
-
-            PrintCommentsBlock($id, $name, $comment, $date, $likes, $dislikes);
-        }
-    }
-
-    mysqli_free_result($result);
-}
-
-
-
-
-function PrintCommentsBlock(string $id, string $name, string $comment, string $date, string $likes, string $dislikes)
-{
-    global $likesId;
-    global $dislikesId;
-
-    $likesId++;
-    $dislikesId++;
-
-    $commentBlockHTML = '
-                        <div class="comment_list">
-                            <div class="comment_list_left">
-                                <p>' . htmlspecialchars($name) . '</p>
-                                <img src="img/wolf.png" alt="" srcset=""><br>
-                                <p id="' . $likesId . '">' . $likes . '</p><button onClick="OnLikeClick(' . $id . ', ' . $likesId . ')">Like</button>
-                                <p id="' . $dislikesId . '">' . $dislikes . '</p><button onClick="OnDislikeClick(' . $id . ', ' . $dislikesId . ')">Disike</button>
-                            </div>
-                            <div class="comment_list_right">
-                                <div class="comment_list_right_posted">
-                                    <p>Posted ' . $date . '</p>
-                                </div>
-                                <p>
-                                ' . htmlspecialchars($comment) . '
-                                </p>
-                            </div>
-                        </div>';
-
-    echo $commentBlockHTML;
-}
-?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
     </div>
-</div>
 
     
 
 </main>
+
 
 <footer class="footer">
 
@@ -1715,57 +1439,5 @@ function PrintCommentsBlock(string $id, string $name, string $comment, string $d
 
 </footer>
 
-
 </body>
-
-
-
-
-<script>
-
-                function OnButtonCommentSendClick()
-                {
-                    var nickName = document.getElementById("nickNameField").value;
-                    var comment = document.getElementById("commentArea").value;
-
-                    document.cookie="nickNameField="+nickName;
-                    document.cookie="commentArea="+comment;
-                    document.location.reload(true);
-                }
-
-
-
-
-
-
-
-
-                function OnLikeClick(id, likeId)
-                {
-                    var elementint = parseInt(document.getElementById(likeId).innerText);
-                    elementint ++;
-                    document.getElementById(likeId).innerText = elementint;
-
-                    document.cookie="commentIdLike="+id;
-                    document.location.reload(true);
-                }
-                
-                function OnDislikeClick(id, dislikeId)
-                {
-                    var elementint = parseInt(document.getElementById(dislikeId).innerText);
-                    elementint ++;
-                    document.getElementById(dislikeId).innerText = elementint;
-
-                    document.cookie="commentIdDislike="+id;
-                    document.location.reload(true);
-                }
-
-
-            </script>
-
-
-
-
-
-
 </html>

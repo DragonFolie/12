@@ -3,7 +3,7 @@
     $shopTable = "shop";
     $shopDiscountsTable = "shopdiscounts";
 
-    $link = mysqli_connect("localhost", "root", "123mnbzzZ01p", $shopDB);
+    $link = mysqli_connect("localhost", "DragonFolie", "nair6455", $shopDB);
     
     if (mysqli_connect_errno()) {
         printf("Connect failed: %s\n", mysqli_connect_error());

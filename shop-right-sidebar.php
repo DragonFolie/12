@@ -1,30 +1,31 @@
 <?php
-    $shopDB = "thelongdark";
-    $shopTable = "shop";
-    $shopDiscountsTable = "shopdiscounts";
+$shopDB = "thelongdark";
+$shopTable = "shop";
+$shopDiscountsTable = "shopdiscounts";
 
-    $link = mysqli_connect("localhost", "root", "123mnbzzZ01p", $shopDB);
-    
-    if (mysqli_connect_errno()) {
-        printf("Connect failed: %s\n", mysqli_connect_error());
-        exit();
-    }
+$link = mysqli_connect("localhost", "DragonFolie", "nair6455", $shopDB);
 
-    
+if (mysqli_connect_errno()) {
+    printf("Connect failed: %s\n", mysqli_connect_error());
+    exit();
+}
 
-                    // $info  = array(
-                    //     "key"  => "value",
-                    //     "key2" => "value2",
-                    //     "key3" => "value3",
-                    // );
 
-                    // setcookie("cookie", serialize($info), time()+3600);
-                    
 
-                    // $data = unserialize($_COOKIE["cookie"], ["allowed_classes" => false]);
-                    // echo $data["key"];
-                    // echo $data["key2"];
-                
+// $info  = array(
+//     "key"  => "value",
+//     "key2" => "value2",
+//     "key3" => "value3",
+// );
+
+// setcookie("cookie", serialize($info), time()+3600);
+
+
+// $data = unserialize($_COOKIE["cookie"], ["allowed_classes" => false]);
+// echo $data["key"];
+// echo $data["key2"];
+
+
 
 
 
@@ -146,37 +147,34 @@ else {
 
 
 // BucketProductsId
-    
+
+
 
 if (isset($_COOKIE["bucketProductsId"]) && $_COOKIE["bucketProductsId"] != "[]") 
 {
-    /*$str = array_values($_COOKIE["bucketProductsId"]);*/ 
+    /*$str = array_values($_COOKIE["bucketProductsId"]);*/
     $BucketProductsId = $_COOKIE["bucketProductsId"];
-    
-    
+
+
     $numString = "";
 
-    for ($i = 0; $i < strlen($BucketProductsId); $i++) 
-    { 
-        if(is_numeric($BucketProductsId[$i]) == true && is_numeric($BucketProductsId[$i + 1]) == false) 
-        {   
+    for ($i = 0; $i < strlen($BucketProductsId); $i++) {
+        if (is_numeric($BucketProductsId[$i]) == true && is_numeric($BucketProductsId[$i + 1]) == false) {
             $numString .= $BucketProductsId[$i];
             array_push($BucketProductsIdNums, $numString);
             $numString = "";
-            //$BucketProductsIdNums .= $BucketProductsId[$i] . ",";
-        } 
-        else if(is_numeric($BucketProductsId[$i]) == false) 
-        {
+        //$BucketProductsIdNums .= $BucketProductsId[$i] . ",";
+        }
+        else if (is_numeric($BucketProductsId[$i]) == false) {
             continue;
-        } 
-        else
-        {
+        }
+        else {
             $numString .= $BucketProductsId[$i];
         }
     }
-    /*echo $BucketProductsIdNums[0];
-    echo $BucketProductsIdNums[1];
-    echo $BucketProductsIdNums[2];*/
+/*echo $BucketProductsIdNums[0];
+ echo $BucketProductsIdNums[1];
+ echo $BucketProductsIdNums[2];*/
 }
 else 
 {
@@ -193,45 +191,39 @@ else
 
 $BucketProductsAmountNums = [];
 
-    if (isset($_COOKIE["bucketProductsAmount"]) && $_COOKIE["bucketProductsAmount"] != "[]") 
-    {
-        
-        /*$str = array_values($_COOKIE["bucketProductsId"]);*/ 
-        $BucketProductsId = $_COOKIE["bucketProductsAmount"];
-        
-        $numString = "";
-    
-        for ($i = 0; $i < strlen($BucketProductsId); $i++) 
-        { 
-            if(is_numeric($BucketProductsId[$i]) == true && is_numeric($BucketProductsId[$i + 1]) == false) 
-            {   
-                $numString .= $BucketProductsId[$i];
-                array_push($BucketProductsAmountNums, $numString);
-                $numString = "";
-                //$BucketProductsIdNums .= $BucketProductsId[$i] . ",";
-            } 
-            else if(is_numeric($BucketProductsId[$i]) == false) 
-            {
-                continue;
-            } 
-            else
-            {
-                $numString .= $BucketProductsId[$i];
-            }
+if (isset($_COOKIE["bucketProductsAmount"]) && $_COOKIE["bucketProductsAmount"] != "[]") {
+
+    /*$str = array_values($_COOKIE["bucketProductsId"]);*/
+    $BucketProductsId = $_COOKIE["bucketProductsAmount"];
+
+    $numString = "";
+
+    for ($i = 0; $i < strlen($BucketProductsId); $i++) {
+        if (is_numeric($BucketProductsId[$i]) == true && is_numeric($BucketProductsId[$i + 1]) == false) {
+            $numString .= $BucketProductsId[$i];
+            array_push($BucketProductsAmountNums, $numString);
+            $numString = "";
+        //$BucketProductsIdNums .= $BucketProductsId[$i] . ",";
         }
-
-        //echo $BucketProductsAmountNums[1];
-
-        
-        /*echo $BucketProductsIdNums[0];
-        echo $BucketProductsIdNums[1];
-        echo $BucketProductsIdNums[2];*/
+        else if (is_numeric($BucketProductsId[$i]) == false) {
+            continue;
+        }
+        else {
+            $numString .= $BucketProductsId[$i];
+        }
     }
-    else 
-    {
-        //echo $_COOKIE["bucketProductsAmount"];
-        $BucketProductsAmountNums = [];
-    }
+
+//echo $BucketProductsAmountNums[1];
+
+
+/*echo $BucketProductsIdNums[0];
+ echo $BucketProductsIdNums[1];
+ echo $BucketProductsIdNums[2];*/
+}
+else {
+    //echo $_COOKIE["bucketProductsAmount"];
+    $BucketProductsAmountNums = [];
+}
 
 
 
@@ -253,27 +245,23 @@ $WishListProductsIdNums = [];
 
 if (isset($_COOKIE["wishListProductsId"])) 
 {
-    /*$str = array_values($_COOKIE["wishListProductsId"]);*/ 
+    /*$str = array_values($_COOKIE["wishListProductsId"]);*/
     $wishListProductsId = $_COOKIE["wishListProductsId"];
-    
-    
+
+
     $numString = "";
 
-    for ($i = 0; $i < strlen($wishListProductsId); $i++) 
-    { 
-        if(is_numeric($wishListProductsId[$i]) == true && is_numeric($wishListProductsId[$i + 1]) == false) 
-        {   
+    for ($i = 0; $i < strlen($wishListProductsId); $i++) {
+        if (is_numeric($wishListProductsId[$i]) == true && is_numeric($wishListProductsId[$i + 1]) == false) {
             $numString .= $wishListProductsId[$i];
             array_push($WishListProductsIdNums, $numString);
             $numString = "";
-            //$WishListProductsIdNums .= $BucketProductsId[$i] . ",";
-        } 
-        else if(is_numeric($wishListProductsId[$i]) == false) 
-        {
+        //$WishListProductsIdNums .= $BucketProductsId[$i] . ",";
+        }
+        else if (is_numeric($wishListProductsId[$i]) == false) {
             continue;
-        } 
-        else
-        {
+        }
+        else {
             $numString .= $wishListProductsId[$i];
         }
     }
@@ -584,141 +572,136 @@ else
                                                    
 
 
-                                                    <?php 
-                                                    
-                                                    $totalPrice = 0.00;
-                                                    
+                                                    <?php
+
+$totalPrice = 0.00;
 
 
 
 
-                                                    
-                                                    if(count($BucketProductsIdNums) > 0)
-                                                    {
 
 
-                                                        SetTotalPrice();
-
-                                                        $productsAmount = count($BucketProductsIdNums);
-
-                                                        echo '<span class="cart-count">' . $productsAmount . '</span></a>';
-
-                                                        echo '<span class="cart-total-price">$' . $totalPrice . '</span>';
+if (count($BucketProductsIdNums) > 0) {
 
 
+    SetTotalPrice();
+
+    $productsAmount = count($BucketProductsIdNums);
+
+    echo '<span class="cart-count">' . $productsAmount . '</span></a>';
+
+    echo '<span class="cart-total-price">$' . $totalPrice . '</span>';
 
 
-                                                        echo '<ul class="minicart">';
-                                                        $index = 0;
 
-                                                        
-                                                            for ($i = 0; $i < count($BucketProductsIdNums); $i++) 
-                                                            { 
-                                                                $getAllProductsInfoQuery = "SELECT `Title`,
+
+    echo '<ul class="minicart">';
+    $index = 0;
+
+
+    for ($i = 0; $i < count($BucketProductsIdNums); $i++) {
+        $getAllProductsInfoQuery = "SELECT `Title`,
                                                                 `Price`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 AND $shopTable.Id = " . $BucketProductsIdNums[$i];
 
-                                                                if ($result = mysqli_query($link, $getAllProductsInfoQuery)) {
-                                                                    
-                                                                    $row = mysqli_fetch_row($result);
-                                                                    $productId = $BucketProductsIdNums[$index];
-                                                                    $index ++;
+        if ($result = mysqli_query($link, $getAllProductsInfoQuery)) {
 
-                                                                        
-
-                                                                        $title = $row[0];
-                                                                        $price = $row[1];
-                                                                        $imagePath = $row[2];
-
-                                                                        $discountPrice = 0.0;
-
-                                                                        $discountPrice = GetCurrentProductDiscount($productId, $price);
-
-
-                                                                        // if($discountPrice > 0)
-                                                                        //     $totalPrice += $discountPrice;
-                                                                        // else
-                                                                        //     $totalPrice += $price;
-                                                                        if($i < 3)
-                                                                            PrintBucketProductBlock($title, $imagePath, $price, $discountPrice, $productId);
-                                                                        else if($i >= 3)
-                                                                            echo "<a href='bucket.php'><p style='font-size: 35px; cursor: pointer;'>More ...</p></a>";
-                                                                    
-
-                                                                    mysqli_free_result($result);
-                                                                }
-                                                            }
-
-
-                                                        PrintTotalPrice($totalPrice);
+            $row = mysqli_fetch_row($result);
+            $productId = $BucketProductsIdNums[$index];
+            $index++;
 
 
 
-                                                        PrintMakePurchaseButton();
-                                                    }
-                                                    else //Bucket is empty
-                                                    {
-                                                        echo '</a>';
-                                                        echo '<span class="cart-total-price">$0.00</span>';
-                                                    }
+            $title = $row[0];
+            $price = $row[1];
+            $imagePath = $row[2];
 
-                                                    function SetTotalPrice()
-                                                    {
-                                                        global $BucketProductsIdNums;
-                                                        global $shopTable;
-                                                        global $totalPrice;
-                                                        global $link;
+            $discountPrice = 0.0;
 
-                                                        $index = 0;
+            $discountPrice = GetCurrentProductDiscount($productId, $price);
 
-                                                        for ($i = 0; $i < count($BucketProductsIdNums); $i++) 
-                                                        { 
-                                                            $getAllProductsInfoQuery = "SELECT `Title`,
+
+            // if($discountPrice > 0)
+            //     $totalPrice += $discountPrice;
+            // else
+            //     $totalPrice += $price;
+            if ($i < 3)
+                PrintBucketProductBlock($title, $imagePath, $price, $discountPrice, $productId);
+            else if ($i >= 3)
+                echo "<a href='bucket.php'><p style='font-size: 35px; cursor: pointer;'>More ...</p></a>";
+
+
+            mysqli_free_result($result);
+        }
+    }
+
+
+    PrintTotalPrice($totalPrice);
+
+
+
+    PrintMakePurchaseButton();
+}
+else //Bucket is empty
+{
+    echo '</a>';
+    echo '<span class="cart-total-price">$0.00</span>';
+}
+
+function SetTotalPrice()
+{
+    global $BucketProductsIdNums;
+    global $shopTable;
+    global $totalPrice;
+    global $link;
+
+    $index = 0;
+
+    for ($i = 0; $i < count($BucketProductsIdNums); $i++) {
+        $getAllProductsInfoQuery = "SELECT `Title`,
                                                             `Price`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 AND $shopTable.Id = " . $BucketProductsIdNums[$i];
 
-                                                            if ($result = mysqli_query($link, $getAllProductsInfoQuery)) 
-                                                            {
-                                                                
-                                                                $row = mysqli_fetch_row($result);
-                                                                $productId = $BucketProductsIdNums[$index];
-                                                                $index ++;
+        if ($result = mysqli_query($link, $getAllProductsInfoQuery)) {
 
-                                                                    
-
-                                                                    $title = $row[0];
-                                                                    $price = $row[1];
-                                                                    $imagePath = $row[2];
-
-                                                                    $discountPrice = 0.0;
-
-                                                                    $discountPrice = GetCurrentProductDiscount($productId, $price);
+            $row = mysqli_fetch_row($result);
+            $productId = $BucketProductsIdNums[$index];
+            $index++;
 
 
-                                                                    if($discountPrice > 0)
-                                                                        $totalPrice += $discountPrice;
-                                                                    else
-                                                                        $totalPrice += $price;
-                                                            }
-                                                        }
-                                                        
-                                                    }
-                                                    
-                                                    
-                                                    function PrintBucketProductBlock(string $title, string $imagePath, string $price, float $dicsountPrice, string $id)
-                                                    {
-                                                        if($dicsountPrice > 0)
-                                                        {
-                                                            $currentPrice = $price;
-                                                            
-                                                            $price = $dicsountPrice;
-                                                            $dicsountPrice = $currentPrice;
-                                                        }
-                                                            
 
-                                                        $discountPriceHTML = $dicsountPrice > 0 ? '<del>$' . $dicsountPrice . '</del>' : "";
-                                                        //echo "dicsountPrice: " . $dicsountPrice;
-                                                        $priceTextStyle = $dicsountPrice > 0 ? 'style="color: blue; font-weight: bold;"' : "";
+            $title = $row[0];
+            $price = $row[1];
+            $imagePath = $row[2];
 
-                                                        $bucketProductBlockHTML = '
+            $discountPrice = 0.0;
+
+            $discountPrice = GetCurrentProductDiscount($productId, $price);
+
+
+            if ($discountPrice > 0)
+                $totalPrice += $discountPrice;
+            else
+                $totalPrice += $price;
+        }
+    }
+
+}
+
+
+function PrintBucketProductBlock(string $title, string $imagePath, string $price, float $dicsountPrice, string $id)
+{
+    if ($dicsountPrice > 0) {
+        $currentPrice = $price;
+
+        $price = $dicsountPrice;
+        $dicsountPrice = $currentPrice;
+    }
+
+
+    $discountPriceHTML = $dicsountPrice > 0 ? '<del>$' . $dicsountPrice . '</del>' : "";
+    //echo "dicsountPrice: " . $dicsountPrice;
+    $priceTextStyle = $dicsountPrice > 0 ? 'style="color: blue; font-weight: bold;"' : "";
+
+    $bucketProductBlockHTML = '
                                                         <li class="d-flex align-items-start">
                                                             <div class="cart-img">
                                                                 <a>
@@ -743,20 +726,20 @@ else
                                                         </div> 
                                                         </li>';
 
-                                                        echo $bucketProductBlockHTML;
-                                                    }
+    echo $bucketProductBlockHTML;
+}
 
-                                                    
-                                                    
-                                                    function PrintTotalPrice(float $totalPrice)
-                                                    {   
-                                                        $totalPriceString = "";
-                                                        if($totalPrice > 0)
-                                                            $totalPriceString = $totalPrice;
-                                                        else
-                                                            $totalPriceString = "0.00";
 
-                                                        $totalPriceHTML = '
+
+function PrintTotalPrice(float $totalPrice)
+{
+    $totalPriceString = "";
+    if ($totalPrice > 0)
+        $totalPriceString = $totalPrice;
+    else
+        $totalPriceString = "0.00";
+
+    $totalPriceHTML = '
                                                         <li>
                                                             <div class="total-price">
                                                                 <span class="f-left">Total:</span>
@@ -764,22 +747,22 @@ else
                                                             </div>
                                                         </li>';
 
-                                                        echo $totalPriceHTML;
-                                                    }
+    echo $totalPriceHTML;
+}
 
-                                                    function PrintMakePurchaseButton()
-                                                    {
-                                                        $makePurchaseButtonHTML = '
+function PrintMakePurchaseButton()
+{
+    $makePurchaseButtonHTML = '
                                                         <li>
                                                             <div class="checkout-link">
                                                                 <a href="bucket.php">Make Purchase</a>
                                                             </div>
                                                         </li>';
 
-                                                        echo $makePurchaseButtonHTML . '</ul>';
-                                                    }
-                                                    
-                                                    ?>
+    echo $makePurchaseButtonHTML . '</ul>';
+}
+
+?>
 
 
 
@@ -972,125 +955,125 @@ else
 
 
 <?php //Products blocks generationg from bd
-    
-    //queries to db 
+
+//queries to db 
 
 
-    $getAllProductsInfoQueryAND = "";
-    $getAllProductsInfoQueryOREDERBY = "";
-
-
-
-
-    if ($ShowAllProductsLike != "") {
-        $getAllProductsInfoQueryAND = " AND Title LIKE '%" . $ShowAllProductsLike . "%'";
-    }
+$getAllProductsInfoQueryAND = "";
+$getAllProductsInfoQueryOREDERBY = "";
 
 
 
 
-    if ($SortAllProductsBy != "") {
-        $sortQuery = "";
-
-        if ($SortAllProductsBy == "Best Match")
-            $sortQuery = "ORDER BY $shopTable.Rating DESC";
-
-        else if ($SortAllProductsBy == "Newest Item")
-            $sortQuery = "ORDER BY $shopTable.AddedDate DESC";
-
-        else if ($SortAllProductsBy == "A - Z")
-            $sortQuery = "ORDER BY $shopTable.Title DESC";
-
-        $getAllProductsInfoQueryOREDERBY = $sortQuery;
-    }
+if ($ShowAllProductsLike != "") {
+    $getAllProductsInfoQueryAND = " AND Title LIKE '%" . $ShowAllProductsLike . "%'";
+}
 
 
 
 
-    if ($SortAllProductsByColor != "") {
-        $sortQuery = " AND $shopTable.Color LIKE '%$SortAllProductsByColor%'";
+if ($SortAllProductsBy != "") {
+    $sortQuery = "";
 
-        $getAllProductsInfoQueryAND .= $sortQuery;
-    }
+    if ($SortAllProductsBy == "Best Match")
+        $sortQuery = "ORDER BY $shopTable.Rating DESC";
 
+    else if ($SortAllProductsBy == "Newest Item")
+        $sortQuery = "ORDER BY $shopTable.AddedDate DESC";
 
+    else if ($SortAllProductsBy == "A - Z")
+        $sortQuery = "ORDER BY $shopTable.Title DESC";
 
-
-
-
-    if ($SortAllProductsByPrice["min"] != "" && $SortAllProductsByPrice["max"] != "") {
-        $min = $SortAllProductsByPrice["min"];
-        $max = $SortAllProductsByPrice["max"];
-        $sortQuery = " AND $shopTable.Price BETWEEN $min AND $max";
-
-        $getAllProductsInfoQueryAND .= $sortQuery;
-    }
+    $getAllProductsInfoQueryOREDERBY = $sortQuery;
+}
 
 
 
 
-    $getAllProductsInfoQuery = "SELECT `Id`, `Title`,
+if ($SortAllProductsByColor != "") {
+    $sortQuery = " AND $shopTable.Color LIKE '%$SortAllProductsByColor%'";
+
+    $getAllProductsInfoQueryAND .= $sortQuery;
+}
+
+
+
+
+
+
+if ($SortAllProductsByPrice["min"] != "" && $SortAllProductsByPrice["max"] != "") {
+    $min = $SortAllProductsByPrice["min"];
+    $max = $SortAllProductsByPrice["max"];
+    $sortQuery = " AND $shopTable.Price BETWEEN $min AND $max";
+
+    $getAllProductsInfoQueryAND .= $sortQuery;
+}
+
+
+
+
+$getAllProductsInfoQuery = "SELECT `Id`, `Title`,
                                             `Price`, `Rating`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 $getAllProductsInfoQueryAND $getAllProductsInfoQueryOREDERBY";
 
 
-    PrintAllAvailableProducts();
+PrintAllAvailableProducts();
 
 
-    function PrintAllAvailableProducts()
-    {
-        global $link;
-        global $getAllProductsInfoQuery;
-        
-        if ($result = mysqli_query($link, $getAllProductsInfoQuery)) {
-            while ($row = mysqli_fetch_row($result)) {
-                $id = $row[0];
-                $title = $row[1];
-                $price = $row[2];
-                $rating = $row[3];
-                $imagePath = $row[4];
+function PrintAllAvailableProducts()
+{
+    global $link;
+    global $getAllProductsInfoQuery;
 
-                $discountPrice = GetCurrentProductDiscount($id, $price);
+    if ($result = mysqli_query($link, $getAllProductsInfoQuery)) {
+        while ($row = mysqli_fetch_row($result)) {
+            $id = $row[0];
+            $title = $row[1];
+            $price = $row[2];
+            $rating = $row[3];
+            $imagePath = $row[4];
 
-                PrintNewsBlock($title, $price, $discountPrice, $rating, $imagePath, $id);
-            }
+            $discountPrice = GetCurrentProductDiscount($id, $price);
 
-            mysqli_free_result($result);
+            PrintNewsBlock($title, $price, $discountPrice, $rating, $imagePath, $id);
         }
-    }
 
-    function GetCurrentProductDiscount(int $id, float $price)
-    {
-        global $shopDiscountsTable;
-        global $shopTable;
-        $getAllProductsDiscountInfoQuery = "SELECT `Discount` FROM $shopDiscountsTable
+        mysqli_free_result($result);
+    }
+}
+
+function GetCurrentProductDiscount(int $id, float $price)
+{
+    global $shopDiscountsTable;
+    global $shopTable;
+    $getAllProductsDiscountInfoQuery = "SELECT `Discount` FROM $shopDiscountsTable
                                             INNER JOIN $shopTable ON $shopDiscountsTable.ShopProductID = $id";
 
-        global $link;
-        if ($result = mysqli_query($link, $getAllProductsDiscountInfoQuery)) {
-            if ($row = mysqli_fetch_row($result)) {
+    global $link;
+    if ($result = mysqli_query($link, $getAllProductsDiscountInfoQuery)) {
+        if ($row = mysqli_fetch_row($result)) {
 
-                return GetCalculatedDiscount($price, $row[0]);
-            }
-
-            mysqli_free_result($result);
+            return GetCalculatedDiscount($price, $row[0]);
         }
- 
-        return 0.0;
+
+        mysqli_free_result($result);
     }
 
-    function GetCalculatedDiscount(float $price, float $discount)
-    {
-        return $price - (($discount * $price) / 100.0);
-    }
+    return 0.0;
+}
+
+function GetCalculatedDiscount(float $price, float $discount)
+{
+    return $price - (($discount * $price) / 100.0);
+}
 
 
-    function PrintNewsBlock(string $title, float $price, float $discountPrice, float $rating, string $imagePath, string $id)
-    {
-        $discountPriceHTML = $discountPrice == 0.0 ? '<span class="new-price"></span>' : '<span class="new-price">$' . $discountPrice . '</span>';
-        $pricericeHTML = $discountPrice == 0.0 ? '<div class="old-price">$' . $price . '</div>' : '<del class="old-price">$' . $price . '</del>';
-        $ratingHTML = GetRatingHTML($rating);
+function PrintNewsBlock(string $title, float $price, float $discountPrice, float $rating, string $imagePath, string $id)
+{
+    $discountPriceHTML = $discountPrice == 0.0 ? '<span class="new-price"></span>' : '<span class="new-price">$' . $discountPrice . '</span>';
+    $pricericeHTML = $discountPrice == 0.0 ? '<div class="old-price">$' . $price . '</div>' : '<del class="old-price">$' . $price . '</del>';
+    $ratingHTML = GetRatingHTML($rating);
 
-        $productBlockHTML = '
+    $productBlockHTML = '
                                                 <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
                                                     <div class="exclusive-item exclusive-item-three text-center mb-50">
                                                         <div class="exclusive-item-thumb">
@@ -1119,24 +1102,24 @@ else
                                                     </div>
                                                 </div>';
 
-        echo $productBlockHTML;
+    echo $productBlockHTML;
+}
+
+
+function GetRatingHTML(int $rating)
+{
+    $ratingHTML = "";
+    for ($i = 0; $i < $rating; $i++) {
+        $ratingHTML .= "<i class='fas fa-star'></i>";
     }
 
-
-    function GetRatingHTML(int $rating)
-    {
-        $ratingHTML = "";
-        for ($i = 0; $i < $rating; $i++) {
-            $ratingHTML .= "<i class='fas fa-star'></i>";
-        }
-
-        return $ratingHTML;
-    }
+    return $ratingHTML;
+}
 
 
 
 
-    $_SESSION["showAllProductsLike"] = "";
+$_SESSION["showAllProductsLike"] = "";
 
 
 
@@ -1261,90 +1244,85 @@ else
 
 
 
-                                                    <?php 
-                                                    
-                                                        PrintNewProducts();
+                                                    <?php
 
-                                                        function PrintNewProducts()
-                                                        {
-                                                            global $link;
-                                                            global $shopTable;
-                                                            global $BucketProductsIdNums;
-                                                            $getAllProductsInfoQuery = "SELECT `Id`, `Title`,
+PrintNewProducts();
+
+function PrintNewProducts()
+{
+    global $link;
+    global $shopTable;
+    global $BucketProductsIdNums;
+    $getAllProductsInfoQuery = "SELECT `Id`, `Title`,
                                                             `Price`, `Rating`, `ImagePath` FROM $shopTable WHERE $shopTable.Amount > 0 ORDER BY $shopTable.AddedDate DESC";
 
-                                                            $counter = 0;
+    $counter = 0;
 
-                                                            if ($result = mysqli_query($link, $getAllProductsInfoQuery)) 
-                                                            {
-                                                                while ($row = mysqli_fetch_row($result)) 
-                                                                {
-                                                                    if($counter <= 5)
-                                                                    {
-                                                                        $id = $row[0];
-                                                                        $title = $row[1];
-                                                                        $price = $row[2];
-                                                                        $rating = $row[3];
-                                                                        $imagePath = $row[4];
-                                                                        $imagePath = str_replace("327x358", "103x129", $imagePath);
+    if ($result = mysqli_query($link, $getAllProductsInfoQuery)) {
+        while ($row = mysqli_fetch_row($result)) {
+            if ($counter <= 5) {
+                $id = $row[0];
+                $title = $row[1];
+                $price = $row[2];
+                $rating = $row[3];
+                $imagePath = $row[4];
+                $imagePath = str_replace("327x358", "103x129", $imagePath);
 
 
-                                                                        $discountPrice = GetCurrentProductDiscount($id, $price);
+                $discountPrice = GetCurrentProductDiscount($id, $price);
 
-                                                                        PrintSliderBlock($title, $price, $discountPrice, $rating, $imagePath, $id);
+                PrintSliderBlock($title, $price, $discountPrice, $rating, $imagePath, $id);
 
-                                                                        if($counter == 2)
-                                                                        {
-                                                                            echo '
+                if ($counter == 2) {
+                    echo '
                                                                             </div>
                                                                             <div class="sidebar-product-list">
                                                                             <ul>';
-                                                                        }   
+                }
 
-                                                                        $counter ++;
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        mysqli_free_result($result);
-                                                                        break;
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-
+                $counter++;
+            }
+            else {
+                mysqli_free_result($result);
+                break;
+            }
+        }
+    }
+}
 
 
 
-                                                    
-                                                        function PrintSliderBlock(string $title, float $price, float $discountPrice, float $rating, string $imagePath, string $id)
-                                                        {
-                                                            $discountPriceHTML = $discountPrice == 0.0 ? '<span class="new-price"></span>' : '<span class="new-price">$' . $discountPrice . '</span>';
-                                                            $pricericeHTML = $discountPrice == 0.0 ? '<span>$' . $price . '</span>' : '<del class="old-price">$' . $price . '</del>';
-                                                            if($discountPrice != 0.0)
-                                                                $pricericeHTML = $discountPriceHTML;
-                                                            
-                                                            $ratingHTML = GetRatingHTML($rating);
 
-                                                            $productBlockHTML = '
+
+function PrintSliderBlock(string $title, float $price, float $discountPrice, float $rating, string $imagePath, string $id)
+{
+    $discountPriceHTML = $discountPrice == 0.0 ? '<span class="new-price"></span>' : '<span class="new-price">$' . $discountPrice . '</span>';
+    $pricericeHTML = $discountPrice == 0.0 ? '<span>$' . $price . '</span>' : '<del class="old-price">$' . $price . '</del>';
+    if ($discountPrice != 0.0)
+        $pricericeHTML = $discountPriceHTML;
+
+    $ratingHTML = GetRatingHTML($rating);
+
+    $productBlockHTML = '
                                                             <li>
                                                                 <div class="sidebar-product-thumb">
-                                                                    <a><img src="'.$imagePath.'" alt=""></a>
+                                                                    <a><img src="' . $imagePath . '" alt=""></a>
                                                                 </div>
                                                                 <div class="sidebar-product-content">
                                                                     <div class="rating">
-                                                                        '.$ratingHTML.'
+                                                                        ' . $ratingHTML . '
                                                                     </div>
-                                                                    <h5><a>'.$title.'</a></h5>
-                                                                    '.$pricericeHTML.'
+                                                                    <h5><a>' . $title . '</a></h5>
+                                                                    ' . $pricericeHTML . '
                                                                 </div>
                                                             </li>';
 
-                                                            echo $productBlockHTML;
-                                                        }
-                                                    
-                                                    
-        
-                                                    ?>
+    echo $productBlockHTML;
+}
+
+
+
+?>
 
 
 
@@ -1685,17 +1663,17 @@ else
 
                 
                 SortingBySelectedId = "<?php if (isset($_COOKIE["sortAllProductsBySelectedId"]))
-                    echo $_COOKIE["sortAllProductsBySelectedId"];
-                else
-                    echo ""; ?>";
+    echo $_COOKIE["sortAllProductsBySelectedId"];
+else
+    echo ""; ?>";
                 SortingByTypeId = "<?php if (isset($_COOKIE["showAllProductsByTypeId"]))
-                    echo $_COOKIE["showAllProductsByTypeId"];
-                else
-                    echo ""; ?>";
+    echo $_COOKIE["showAllProductsByTypeId"];
+else
+    echo ""; ?>";
                 SortingByColorId = "<?php if (isset($_COOKIE["sortAllProductsByColorId"]))
-                    echo $_COOKIE["sortAllProductsByColorId"];
-                else
-                    echo ""; ?>";
+    echo $_COOKIE["sortAllProductsByColorId"];
+else
+    echo ""; ?>";
 
 
                 if(SortingBySelectedId != "")

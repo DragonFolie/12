@@ -3,7 +3,7 @@ $newsDB = "thelongdark";
 $newsTable = "news";
 $commentsTable = "newscomments";
 
-$link = mysqli_connect("localhost", "root", "123mnbzzZ01p", $newsDB);
+$link = mysqli_connect("localhost", "DragonFolie", "nair6455", $newsDB);
 
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
@@ -23,7 +23,8 @@ $commentsInfoQuerySortedByOlder = "SELECT `Id`, `Name`, `Comment`, `Date`, `Like
                             FROM $commentsTable 
                             INNER JOIN $newsTable ON $commentsTable.NewsID = $newsTable.Id 
                             ORDER BY `Date` ASC";
- 
+
+
 
 
 
@@ -46,7 +47,7 @@ else {
 
 
 
-if(isset($_COOKIE["commentIdLike"]) && $_COOKIE["commentIdLike"] != "")
+if (isset($_COOKIE["commentIdLike"]) && $_COOKIE["commentIdLike"] != "") 
 {
     $id = intval($_COOKIE["commentIdLike"]);
 
@@ -55,13 +56,13 @@ if(isset($_COOKIE["commentIdLike"]) && $_COOKIE["commentIdLike"] != "")
 
     if ($result = mysqli_query($link, $currentAmountQuery)) {
         while ($row = mysqli_fetch_row($result)) {
-            $currentAmount = intval($row[0]); 
-            
+            $currentAmount = intval($row[0]);
+
         }
         mysqli_free_result($result);
     }
 
-    $currentAmount ++;
+    $currentAmount++;
 
 
     $query = "UPDATE $commentsTable 
@@ -75,7 +76,7 @@ if(isset($_COOKIE["commentIdLike"]) && $_COOKIE["commentIdLike"] != "")
     setcookie("commentIdLike", "", time() - 3600);
 }
 
-if(isset($_COOKIE["commentIdDislike"]) && $_COOKIE["commentIdDislike"] != "")
+if (isset($_COOKIE["commentIdDislike"]) && $_COOKIE["commentIdDislike"] != "") 
 {
     $id = intval($_COOKIE["commentIdDislike"]);
 
@@ -84,13 +85,13 @@ if(isset($_COOKIE["commentIdDislike"]) && $_COOKIE["commentIdDislike"] != "")
 
     if ($result = mysqli_query($link, $currentAmountQuery)) {
         while ($row = mysqli_fetch_row($result)) {
-            $currentAmount = intval($row[0]); 
-            
+            $currentAmount = intval($row[0]);
+
         }
         mysqli_free_result($result);
     }
 
-    $currentAmount ++;
+    $currentAmount++;
 
 
     $query = "UPDATE $commentsTable 
@@ -115,7 +116,7 @@ if(isset($_COOKIE["commentIdDislike"]) && $_COOKIE["commentIdDislike"] != "")
 
 
 
-if(isset($_COOKIE["nickNameField"]) && $_COOKIE["nickNameField"] != "" && isset($_COOKIE["commentArea"]) && $_COOKIE["commentArea"] != "")
+if (isset($_COOKIE["nickNameField"]) && $_COOKIE["nickNameField"] != "" && isset($_COOKIE["commentArea"]) && $_COOKIE["commentArea"] != "") 
 {
     $name = $_COOKIE["nickNameField"];
     $comment = $_COOKIE["commentArea"];
@@ -1466,66 +1467,66 @@ transition: 1s;
 
          <?php
 
-                    $likesId = 100000;
-                    $dislikesId = 1100000;
+$likesId = 100000;
+$dislikesId = 1100000;
 
-                    CreateCommentsBlock($commentsInfoQuerySortedByNewer);
-                    //`Id`, `Name`, `Comment`, `Date`, `Likes, `Dislikes`
+CreateCommentsBlock($commentsInfoQuerySortedByNewer);
+//`Id`, `Name`, `Comment`, `Date`, `Likes, `Dislikes`
 
-                    function CreateCommentsBlock(string $newsInfoQuery)
-                    {
-                        global $link;
-                        if ($result = mysqli_query($link, $newsInfoQuery)) {
-                            while ($row = mysqli_fetch_row($result)) {
-                                //printf(count($row));
-                                $id = $row[0];
-                                $name = $row[1];
-                                $comment = $row[2];
-                                $date = $row[3];
-                                $likes = $row[4];
-                                $dislikes = $row[5];
+function CreateCommentsBlock(string $newsInfoQuery)
+{
+    global $link;
+    if ($result = mysqli_query($link, $newsInfoQuery)) {
+        while ($row = mysqli_fetch_row($result)) {
+            //printf(count($row));
+            $id = $row[0];
+            $name = $row[1];
+            $comment = $row[2];
+            $date = $row[3];
+            $likes = $row[4];
+            $dislikes = $row[5];
 
-                                //echo $id . "  " . $name . "  " . $comment . "  " . $date . "  " . $likes . "  " . $dislikes;
+            //echo $id . "  " . $name . "  " . $comment . "  " . $date . "  " . $likes . "  " . $dislikes;
 
-                                PrintCommentsBlock($id, $name, $comment, $date, $likes, $dislikes);
-                            }
-                        }
+            PrintCommentsBlock($id, $name, $comment, $date, $likes, $dislikes);
+        }
+    }
 
-                        mysqli_free_result($result);
-                    }
-
-
+    mysqli_free_result($result);
+}
 
 
-                    function PrintCommentsBlock(string $id, string $name, string $comment, string $date, string $likes, string $dislikes)
-                    {
-                        global $likesId;
-                        global $dislikesId;
 
-                        $likesId ++;
-                        $dislikesId ++;
 
-                        $commentBlockHTML = '
+function PrintCommentsBlock(string $id, string $name, string $comment, string $date, string $likes, string $dislikes)
+{
+    global $likesId;
+    global $dislikesId;
+
+    $likesId++;
+    $dislikesId++;
+
+    $commentBlockHTML = '
                         <div class="comment_list">
                             <div class="comment_list_left">
-                                <p>'.htmlspecialchars($name).'</p>
+                                <p>' . htmlspecialchars($name) . '</p>
                                 <img src="img/wolf.png" alt="" srcset=""><br>
-                                <p id="'.$likesId.'">'.$likes.'</p><button onClick="OnLikeClick('.$id.', '.$likesId.')">Like</button>
-                                <p id="'.$dislikesId.'">'.$dislikes.'</p><button onClick="OnDislikeClick('.$id.', '.$dislikesId.')">Disike</button>
+                                <p id="' . $likesId . '">' . $likes . '</p><button onClick="OnLikeClick(' . $id . ', ' . $likesId . ')">Like</button>
+                                <p id="' . $dislikesId . '">' . $dislikes . '</p><button onClick="OnDislikeClick(' . $id . ', ' . $dislikesId . ')">Disike</button>
                             </div>
                             <div class="comment_list_right">
                                 <div class="comment_list_right_posted">
-                                    <p>Posted '.$date.'</p>
+                                    <p>Posted ' . $date . '</p>
                                 </div>
                                 <p>
-                                '.htmlspecialchars($comment).'
+                                ' . htmlspecialchars($comment) . '
                                 </p>
                             </div>
                         </div>';
 
-                        echo $commentBlockHTML;
-                    }
-            ?>
+    echo $commentBlockHTML;
+}
+?>
 
 
 

@@ -1,139 +1,3 @@
-<?php
-$newsDB = "thelongdark";
-$newsTable = "news";
-$commentsTable = "newscomments";
-
-$link = mysqli_connect("localhost", "DragonFolie", "nair6455", $newsDB);
-
-if (mysqli_connect_errno()) {
-    printf("Connect failed: %s\n", mysqli_connect_error());
-    exit();
-}
-
-//queries to db 
-$commentsInfoQuerySortedByNewer = "SELECT `Id`, `Name`, `Comment`, `Date`, `Likes`, `Dislikes` 
-FROM $commentsTable 
-WHERE NewsID = 3";
-
-
-//FROM $commentsTable 
-//INNER JOIN $newsTable ON $commentsTable.NewsID = $newsTable.Id
-
-$commentsInfoQuerySortedByOlder = "SELECT `Id`, `Name`, `Comment`, `Date`, `Likes, `Dislikes`
-                            FROM $commentsTable 
-                            INNER JOIN $newsTable ON $commentsTable.NewsID = $newsTable.Id 
-                            ORDER BY `Date` ASC";
-
-
-
-
-
-
-
-
-$IsAllNewsSortedByOlder = false;
-
-if (isset($_COOKIE["IsAllNewsSortedByOlder"])) {
-    $IsAllNewsSortedByOlder = $_COOKIE["IsAllNewsSortedByOlder"];
-//echo "IsAllNewsSortedByOlder setted <br>";
-}
-else {
-    $IsAllNewsSortedByOlder = false;
-//echo "IsAllNewsSortedByOlder not setted <br>";
-}
-
-
-
-
-
-
-if (isset($_COOKIE["commentIdLike"]) && $_COOKIE["commentIdLike"] != "") 
-{
-    $id = intval($_COOKIE["commentIdLike"]);
-
-    $currentAmountQuery = "SELECT $commentsTable.Likes FROM $commentsTable WHERE $commentsTable.Id = $id";
-    $currentAmount;
-
-    if ($result = mysqli_query($link, $currentAmountQuery)) {
-        while ($row = mysqli_fetch_row($result)) {
-            $currentAmount = intval($row[0]);
-
-        }
-        mysqli_free_result($result);
-    }
-
-    $currentAmount++;
-
-
-    $query = "UPDATE $commentsTable 
-        SET 
-            $commentsTable.Likes = '$currentAmount'
-        WHERE
-            $commentsTable.Id = $id";
-
-    mysqli_query($link, $query);
-
-    setcookie("commentIdLike", "", time() - 3600);
-}
-
-if (isset($_COOKIE["commentIdDislike"]) && $_COOKIE["commentIdDislike"] != "") 
-{
-    $id = intval($_COOKIE["commentIdDislike"]);
-
-    $currentAmountQuery = "SELECT $commentsTable.Dislikes FROM $commentsTable WHERE $commentsTable.Id = $id";
-    $currentAmount;
-
-    if ($result = mysqli_query($link, $currentAmountQuery)) {
-        while ($row = mysqli_fetch_row($result)) {
-            $currentAmount = intval($row[0]);
-
-        }
-        mysqli_free_result($result);
-    }
-
-    $currentAmount++;
-
-
-    $query = "UPDATE $commentsTable 
-        SET 
-            $commentsTable.Dislikes = '$currentAmount'
-        WHERE
-            $commentsTable.Id = $id";
-
-    mysqli_query($link, $query);
-
-    setcookie("commentIdDislike", "", time() - 3600);
-}
-
-
-
-
-
-
-
-
-//echo date("Y-m-d");
-
-
-
-if (isset($_COOKIE["nickNameField"]) && $_COOKIE["nickNameField"] != "" && isset($_COOKIE["commentArea"]) && $_COOKIE["commentArea"] != "") 
-{
-    $name = $_COOKIE["nickNameField"];
-    $comment = $_COOKIE["commentArea"];
-    $date = date("Y-m-d H:i:s");
-
-    $query = "INSERT $commentsTable(Name, Comment, Date, Likes, Dislikes, NewsID) 
-    VALUES ('$name', '$comment', '$date', '0', '0', '3');";
-
-    mysqli_query($link, $query);
-
-    setcookie("nickNameField", "", time() - 3600);
-    setcookie("commentArea", "", time() - 3600);
-}
-?>
-
-
-
 
 <!DOCTYPE html>
 <html>
@@ -169,6 +33,7 @@ body{
    }
 
     .content_inner_text_hr{
+        
     margin: 50px auto;
     width: 650px;
     padding-left:auto ;
@@ -186,8 +51,10 @@ body{
 
      }
      .header_container{
+        
+        
         border-bottom: .5px solid #666;
-        width: 100%;
+        
         height: 63px;
         background-color: black;
         display: grid;
@@ -204,9 +71,11 @@ body{
      }
      @media  (max-width:1100px){
         .header_container_empty{
+           
             display: none;
         }
         .header_container{
+            
             display: grid;
             grid-template-columns: 25%  75%;
         }
@@ -266,6 +135,8 @@ body{
    .main{
         background-color: #000000;
         
+       
+        
     }
 
     .main_inner{
@@ -276,7 +147,11 @@ body{
     margin-left: auto;
     text-align: center;
     width: 1170px;
+
+    
     }
+    
+
 .main_inner_title_photo{
     
     padding-top: 74px;
@@ -336,10 +211,6 @@ body{
     max-width: 915px;
     margin: 45px auto;
     line-height: 1.65em;
-    
-}
-.main_text p{
-    font-weight:400;
     
 }
 
@@ -436,7 +307,6 @@ body{
     color: #757575;
     text-align: center;
     font-family: 'Yusei Magic', sans-serif;
-    
     font-weight: 300;
     font-size: 24px;
     line-height: 2em;
@@ -802,7 +672,6 @@ body{
 }
 
 
-
 /* Comment List *//* Comment List *//* Comment List *//* Comment List *//* Comment List *//* Comment List */
 
 .comment_list{
@@ -898,6 +767,33 @@ body{
     border-bottom: .5px solid white ;
 
 }
+.photo{
+    width: 800px;
+    margin: 50px auto;
+    padding-left: 20px;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-gap: 150px;
+
+    
+    height: auto;
+
+}
+.photo>div.photo_2{
+    
+
+    width: 250px;
+    height: auto;
+
+}
+.photo>div.photo_1{
+   
+
+    width: 250px;
+    height: auto;
+
+}
+
 
   /* Footer */ /* Footer */ /* Footer */ /* Footer */ /* Footer */ /* Footer */
 
@@ -1024,6 +920,8 @@ letter-spacing: 0.03em;
 text-decoration: underline;
 color: #757575;
 }
+
+
 /* Email Sender */ /* Email Sender */ /* Email Sender */ /* Email Sender */ /* Email Sender */ /* Email Sender */ /* Email Sender */ 
     
 .email_sender{
@@ -1129,10 +1027,12 @@ transition: 1s;
 
 }
 
+
+
 </style>
      
 <body>
-<nav class="header">
+<div class="header">
     <div class="header_container">
         <div class="header_logo">
             <a href="long_dark_index.html"><img class="header_logo_image" src="img/the_long_dark_logo.png"  alt="the_long_dark_logo" srcset=""></a>
@@ -1170,14 +1070,14 @@ transition: 1s;
 
     </div>
 
-</nav>
+</div>
 
-<main class="main">
+<div class="main">
     <div class="main_inner">
         <div class="main_inner_title_content">
-            <img src="img/Fearless-Navigator_Blog_Post_Cover_1360x566-comp-1024x426-1.jpg" class="main_inner_title_photo" alt="season's greetings" srcset="">
-            <h1 class="main_inner_title">THE LONG DARK RETURNS TO GEFORCE NOW</h1>
-            <span class="main_inner_date">28.05.2020.</span>
+            <img src="img/Winters-Embrace_Post-Cover_1366x566-comp.jpg" class="main_inner_title_photo" alt="season's greetings" srcset="">
+            <h1 class="main_inner_title">WILL YOU SURVIVE WINTER’S EMBRACE?</h1>
+            <span class="main_inner_date">01.04.2020.</span>
 
         </div>
 
@@ -1185,203 +1085,109 @@ transition: 1s;
             
             <br>
             <div class="main_text">
+                <p >Hello players,</p><br>
                 <p >
-                    Hello Community,
+                    We’re excited to share our new month-long event in The Long Dark. Running from 10am Pacific on Monday June 29th, and lasting until July 31st at 10am PST, WINTER’S EMBRACE makes the harsh Winter environment of Great Bear Island even harsher, with:
+                    
                 </p><br>
+                <ul  style="margin-left: 50px;" type="disc">
+
+                    <li>Average world temperature is reduced by 10 degrees Celsius</li>
+                    <li>Interior temperatures are reduced by 10 degrees Celsius</li>
+                    <li>More frequent, and longer-lasting Blizzards</li>
+                    
+                    
+
+
+
+                </ul>
+                <br><br>
                 <p >
-                    We’ve just updated The Long Dark to v1.76 (62505) — FEARLESS NAVIGATOR
+                    And since Canada Day occurs during this Event (on July 1st) we’re also adding two new Canadian-themed Food items:
+                </p><br>
+                <ul  style="margin-left: 50px;" type="disc">
+
+                    <li>Maple Syrup</li>
+                    <li>Ketchup Chips</li>
+                    
+                    
+                    
+
+
+
+                </ul><br><br>
+                <img style="margin: 50px auto; display: flex;
+                align-items: center;" src="img/ketchup-chips-maple-sirup-comp.jpg" alt="">
+                <br><br>
+
+
+                
+                <p>
+                    To celebrate your time in WINTER’S EMBRACE, we’ll unlock two badges for you if you accomplish the following tasks:
+                </p><br><br>
+                <ul  style="margin-left: 50px;" type="disc">
+
+                    <li>Canadian Feast: Find and consume 25 bottles of Maple Syrup and 25 bags of Ketchup Chips across multiple saves while WINTER’S EMBRACE is active.</li>
+                    <li>Winter in July: Survive 25 consecutive days across a single WINTER’s EMBRACE save, while the event is active.</li>
+                    
+                </ul>
+
+                <div class="photo">
+                    <div class="photo_1">
+                        <img src="img/badge_challenge_WintersEmbrace2020CanadianFeast.png" class="photo_1" width="250px"  alt="">
+                    </div>
+                    <div class="photo_2">
+                        <img src="img/badge_challenge_WintersEmbrace2020WinterInJuly.png" class="photo_2"width="250px"   alt="">
+                    </div>
+
+                    
+                   
+
+                </div>
+                <br><br>
+                
+                <p>
+                    Please note that you don’t have to accomplish both these tasks in the same game!
                 </p>
-                <br>
-                <p>
-                    For a detailed breakdown of the new features and changes, please review the latest Update video
-                <br>
-                <p >
-
-                    <div style="margin: 60px auto;">
-                    <iframe width="940" height="519" src="https://www.youtube.com/embed/WBpMFegfykw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div></p>
-                <br>
-                <h2>
-
-                    SURVIVAL MARKERS
-
-                </h2>
+                
                 <br><br>
                 
                 <p>
-
-                    Find Spray Cans in the world. Leave markers identifying important survival information such as the location of supplies or dangerous places to avoid. These in-world indicators appear on your map so that you can find things back even days or weeks after you’ve left a region.
-
-                </p><br><br>
-                <h2>
-                    
-                    ROCK CACHES
-
-                </h2>
-                <br><br>
-                
-                <p>
-
-                    Build a landmark to help you navigate, and create emergency supply caches along commonly travelled routes. Review your Caches in the Journal, and leave notes on what you’ve stored in them so you can find vital tools or resources in the future.
-                </p><br><br>
-                <h2>
-                    
-                    VISTA SURVEYS
-
-                </h2>
-                <br><br>
-                
-                <p>
-
-                    Hard to find Polaroids in the world indicate locations that offer sweeping Vista views of a region. Get to those locations and Survey them to reveal the majority of a region’s map!
-                </p><br><br>
-                <h2>
-                    
-                    MPROVED CHARCOAL SURVEY
-
-                </h2>
-                <br><br>
-                
-                <p>
-
-                    The Charcoal Survey action now reveals an enhanced radius on the Map. Surveying from higher altitudes now increases how much of the Map is revealed.
-
-                </p><br><br>
-                <h2>
-                    
-                    MAP & JOURNAL IMPROVEMENTS
-
-                </h2>
-                <br><br>
-                
-                <p>
-
-                    Turn layers of information on and off in the Map. Locate and rename Rock Caches. Keep track of all Surveyed locations to know if you’ve found them all. Especially useful if you are hunting locations for the Faithful Cartographer achievement.
-                </p><br><br><h2>
-                    
-                    TELEMETRY & QUALITY OF LIFE
-
-                </h2>
-                <br><br>
-                
-                <p>
-
-                    New Autowalk accessibility feature ensures comfort for players with hand or wrist issues. New Opt-in Telemetry gathers gameplay data the development team will use to inform future balance and feature development efforts (Note: Telemetry is defaulted to OFF and needs to be turned on in the Options>Privacy settings.)
-                </p><br><br><h2>
-                    
-                    THE LONG DARK v1.76 (62505) CHANGELIST
-
-                </h2>
-                <br><br>
-                <h2>
-                    
-                    KNOWN ISSUES
-
-                </h2>
-                <br><br>
-                <p>
-                    
-                    These are issues we’re currently tracking and will be addressing in an upcoming hotfix:
-
+                    As another nod to Canada Day, we’re also adding a Heritage Filter mode, inspired by old National Film Board TV and film content we grew up with in the 1970s and 1980s. This mode adds an old-school TV filter to the game world (but it does not affect the in-game user interface). And for film buffs out there, we’ve also added a Noir mode, which lets you experience The Long Dark or WINTERMUTE in a classic monochromatic filter. Both Filters can be applied from the Display settings.
                 </p>
+
+
                 <br><br>
                 
-                <ul  type="disc">
-
-                    <li>[UI] When viewing the Rock Cache Notes in your Journal, the scroll bar will not scroll.</li>
-                    <li>[UI] When viewing the Rock Cache Notes in your Journal, the edit button will appear, even if there are no notes to edit.</li>
-                    <li>[Audio] Sometimes during a blizzard, ambient wind sounds may become muted.</li>
-                    <li>Players on Mac may not be able to see Spray Paint markers on the map, when sprayed on the ground</li>
-                    <li>Players are unable to edit Rock Cache notes when playing with a controller</li>
-                    
-
-
-
-                </ul>
-                <br><br>
-                <h2>
-                    
-                    GENERAL FIXES
-
-                </h2>
-                <br><br>
-                <ul  type="disc">
-
-                    <li>[General] Fixed stuttering when looking towards Wolves, while in Milton.</li>
-                    <li>[General] Fixed null exception that would occur when lighting the Pot Belly Stove.</li>
-                    <li>[General] Bear sound effects no longer play when a carcass is removed from the world.</li>
-                    <li>[General] Updated Steam Controller profile. </li>
-                    <li>[General] Fixed an issue that prevented Players from being able to save or load their game if the save contained invalid data.</li>
-                    
-
-                    
-
-                </ul>
-                <br><br>
-                <h2>
-                    
-                    GENERAL ART FIXES
-
-                </h2>
-                <br><br>
-
-                <ul type="disc">
-                    <li>[Enviro] Numerous optimizations to improve performance.</li>
-                    <li>[Enviro] Fixed numerous areas the player could become stuck in.</li>
-                    <li>[Enviro] Fixed numerous areas the player could get outside of the intended play area.</li>
-                    <li>[Enviro] Fixed numerous clipping and floating objects.</li>
-                    <li>[Enviro] Performed various optimizations to avoid texture popping.</li>
-                    <li>[Enviro] Added casting shadows to numerous trees.</li>
-                    <li>[Enviro] Improvements to item placement system to reduce frequency of out of reach items.</li>
-                    <li>[Enviro] Fixed many minor art bugs to improve general polish in Bleak Inlet region.</li>
-
-                </ul>
-
-                <br><br>
-                <h2>
-                    
-                    WINTERMUTE FIXES
-
-                </h2>
-                <br><br>
-
-                <ul type="disc">
-                    <li>[WINTERMUTE] Completing an Episode 1 or Episode 2 Side Missions now displays a completion message. </li>
-                    <li>[EPISODE THREE] Fixed an issue in the Mine exiting Pleasant Valley, where players would be repositioned after reloading a saved game.</li>
-                    <li>[EPISODE THREE] Added missing foley to the second part of the Mine Tremor cinematic.</li>
-                    <li>[EPISODE THREE] IDs are now removed from the Players inventory when completing the Fallen Star mission in Episode Three .</li>
-                    <li>[EPISODE THREE] Removed access to Timberwolf Mountain from Pleasant Valley.</li>
-                    <li>[EPISODE THREE] Fixed the spawn condition of the Revolver found in Molly’s basement.</li>
-
-                </ul>
-
-                <br><br>
-                <h2>
-                    
-                    SURVIVAL MODE
-
-                </h2>
-                <br><br>
-
-                <ul type="disc">
-                   <li>[Survival] Fixed incorrect spawn rate for the Prepper Cache found in Pleasant Valley.</li>
-                   <li>[Survival] All cabins now display smoke coming out of their chimney, when a fire is lit inside. </li>
-                   <li>[Survival] When sleeping, the save file screenshot will now occur after the player transitions from sleep, instead of during the transition.</li>
-                   <li>[Survival] Players can now place a Rifle on the gun rack found in the Hunting Lodge.</li>
-                   <li>[Survival] Cancelling while drinking Coffee will now award the appropriate amount of progress to the “Straight to the Heart” Feat.</li>
-                   <li>[Survival] Pre-Spawned campfires will no longer respawn, when loading a save where they were previously broken down.</li>
-                   <li>[Saves] Implemented a check to force the Aurora to be enabled on Survival Mode save files created prior to the Aurora being enabled.</li>
-
-
-                </ul>
-                <br><br>
                 <p>
+                    Maple Syrup, Ketchup Chips, and the new view filters (Heritage & Noir) will persist in the game after WINTER’S EMBRACE ends, but you won’t be able to get the badges after July 31st at 10am PST, so we hope you’ll jump into the event and test your survival skills in the coldest The Long Dark has ever been!
+                </p>
 
-                    ### END OF CHANGELIST ###
-                </p><br><br>
+                <br><br>
                 
+                <p>
+                    As another nod to Canada Day, we’re also adding a Heritage Filter mode, inspired by old National Film Board TV and film content we grew up with in the 1970s and 1980s. This mode adds an old-school TV filter to the game world (but it does not affect the in-game user interface). And for film buffs out there, we’ve also added a Noir mode, which lets you experience The Long Dark or WINTERMUTE in a classic monochromatic filter. Both Filters can be applied from the Display settings.
+                
+                </p>
+
+                <img src="img/in-game-menu-comp.jpg" style="margin: 50px auto; display: flex;
+                align-items: center;" alt="">
+
+                <br><br>
+                
+                <p>
+                    We hope you enjoy WINTER’S EMBRACE, and please feel free to share your survival stories with us in the Official Community, or on social media using the tags #thelongdark and #wintersembrace.
+                </p>
+
+                <br><br>
+                
+                <p>
+                    – The Hinterland Team
+                </p>
+
                 
 
+                
             </div>
 
 
@@ -1436,177 +1242,204 @@ transition: 1s;
         <div class="comment_area">
             <div class="name">
                 <div class="page">
+            
                     <label class="field field_v2">
-
-
-
-                      <input id="nickNameField" type="text" class="field__input" placeholder="e.g. Hinterland">
-
-
-
+                      <input type="text" class="field__input" placeholder="e.g. Hinterland">
                       <span class="field__label-wrap">
-                        <span class="field__label"> Nick name </span>
+                        <span class="field__label"> Last name </span>
                       </span>
-                    </label>  
+                    </label>    
+                    
                   </div>
+
+
+
             </div>
+            
          </div>
          <br><br>
          <div class="text">
 
             
 
-            <textarea id="commentArea" class="text_inner" cols="85  " maxlength="909" rows="10"></textarea>
-
-
+            <textarea class="text_inner" cols="85  " maxlength="909" rows="10"></textarea>
 
          </div>
          <div class="button_send">
 
+            <div id="btn"><span class="noselect">Send</span><div id="circle"></div></div>
+         </div>
+
+         <h1 class="just_nicho"> YOUR COMMENT
 
 
-            <div id="btn" onclick="OnButtonCommentSendClick()"><span class="noselect">Send</span><div id="circle"></div></div>
+            <button class="sort_button">
+                <img class="sort_button" src="img/sort-down.png" alt="">
+            </button>
 
+
+         </h1><br>
+         <div class="comment_list">
+             
+            <div class="comment_list_left">
+                <p>VLAD</p>
+                
+
+                <img src="img/wolf.png" alt="" srcset=""><br>
+                
+
+
+
+            </div>
+            <div class="comment_list_right">
+                <div class="comment_list_right_posted">
+                    <p >Posted Monday at 01:17 AM</p>
+                </div>
+                <p >I have had a number of runs over 1,000 days at Stalker or Voyager level without a major problem.  On one occasion I was running low on matches, another time cured leather and birch saplings for arrows.  I presume that was on a Stalker run not a Voyager run.  It is possible to survive without most resources by adapting  your life style and using alternative resources.  I have not tried beach combing but I assume that could provide some hard to find resources.</p>
+
+
+            </div>
 
 
          </div>
 
-         <h1 class="just_nicho">COMMENTS
-         </h1><br>
-         
+
+         <div class="comment_list">
              
+            <div class="comment_list_left">
+                <p>VLAD</p>
+                
 
+                <img src="img/wolf.png" alt="" srcset=""><br>
+                
 
 
 
+            </div>
+            <div class="comment_list_right">
+                <div class="comment_list_right_posted">
+                    <p >Posted Monday at 01:17 AM</p>
+                </div>
+                <p >I have had a number of runs over 1,000 days at Stalker or Voyager level without a major problem.  On one occasion I was running low on matches, another time cured leather and birch saplings for arrows.  I presume that was on a Stalker run not a Voyager run.  It is possible to survive without most resources by adapting  your life style and using alternative resources.  I have not tried beach combing but I assume that could provide some hard to find resources.</p>
 
 
+            </div>
 
 
+         </div>
+         
+        
+          
 
 
+        
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-         <?php
-
-$likesId = 100000;
-$dislikesId = 1100000;
-
-CreateCommentsBlock($commentsInfoQuerySortedByNewer);
-//`Id`, `Name`, `Comment`, `Date`, `Likes, `Dislikes`
-
-function CreateCommentsBlock(string $newsInfoQuery)
-{
-    global $link;
-    if ($result = mysqli_query($link, $newsInfoQuery)) {
-        while ($row = mysqli_fetch_row($result)) {
-            //printf(count($row));
-            $id = $row[0];
-            $name = $row[1];
-            $comment = $row[2];
-            $date = $row[3];
-            $likes = $row[4];
-            $dislikes = $row[5];
-
-            //echo $id . "  " . $name . "  " . $comment . "  " . $date . "  " . $likes . "  " . $dislikes;
-
-            PrintCommentsBlock($id, $name, $comment, $date, $likes, $dislikes);
-        }
-    }
-
-    mysqli_free_result($result);
-}
-
-
-
-
-function PrintCommentsBlock(string $id, string $name, string $comment, string $date, string $likes, string $dislikes)
-{
-    global $likesId;
-    global $dislikesId;
-
-    $likesId++;
-    $dislikesId++;
-
-    $commentBlockHTML = '
-                        <div class="comment_list">
-                            <div class="comment_list_left">
-                                <p>' . htmlspecialchars($name) . '</p>
-                                <img src="img/wolf.png" alt="" srcset=""><br>
-                                <p id="' . $likesId . '">' . $likes . '</p><button onClick="OnLikeClick(' . $id . ', ' . $likesId . ')">Like</button>
-                                <p id="' . $dislikesId . '">' . $dislikes . '</p><button onClick="OnDislikeClick(' . $id . ', ' . $dislikesId . ')">Disike</button>
-                            </div>
-                            <div class="comment_list_right">
-                                <div class="comment_list_right_posted">
-                                    <p>Posted ' . $date . '</p>
-                                </div>
-                                <p>
-                                ' . htmlspecialchars($comment) . '
-                                </p>
-                            </div>
-                        </div>';
-
-    echo $commentBlockHTML;
-}
-?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
     </div>
 </div>
 
+<!-- Блоки новин назив news_list  news_list_inner_text-текст справа  news_list_inner_photo - фото    --> 
+        <div class="news_list">
+
+            <span class="news_list_date">07.12.2020.</span>
+
+
+            <div class="news_list_inner">
+
+                
+                <div class="news_list_inner_photo">
+
+                    <a href="#">
+                        <img src="img/HP-Blog-Featured-Img.png" width="329px" height="auto" alt="" srcset="">
+                    </a>
+
+                </div>
+                
+
+                <div class="news_list_inner_text">
+                    HESITANT PROSPECT Update Now Live
+                </div>
+                
+
+            </div>
+
+        </div>
+
+<!-- Блоки новин назив news_list  news_list_inner_text-текст справа  news_list_inner_photo - фото    --> 
+
+
+        <div class="news_list">
+
+            <span class="news_list_date">07.12.2020.</span>
+
+
+            <div class="news_list_inner">
+
+                
+                <div class="news_list_inner_photo">
+
+                    <a href="#">
+                        <img src="img/HP-Blog-Featured-Img.png" width="329px" height="auto" alt="" srcset="">
+                    </a>
+
+                </div>
+                
+
+                <div class="news_list_inner_text">
+                    HESITANT PROSPECT Update Now Live
+                </div>
+                
+
+            </div>
+
+        </div>
+
+
+<!-- Блоки новин назив news_list  news_list_inner_text-текст справа  news_list_inner_photo - фото    --> 
+
+        <div class="news_list">
+
+            <span class="news_list_date">07.12.2020.</span>
+
+
+            <div class="news_list_inner">
+
+                
+                <div class="news_list_inner_photo">
+
+                    <a href="#">
+                        <img src="img/HP-Blog-Featured-Img.png" width="329px" height="auto" alt="" srcset="">
+                    </a>
+
+                </div>
+                
+
+                <div class="news_list_inner_text">
+                    HESITANT PROSPECT Update Now Live
+                </div>
+                
+
+            </div>
+
+        </div>
+
+        <div class="about_game_forum">
+            <a class="email_sender_forum" href="#">NEWS & UPDATES <img class="about_game_forum_padding" src="img/icon-promo.png" alt="" srcset=""></a>
+    
+        
+    
+    
+        </div>
+        
+
+        
+
+
+    </div>
+
     
 
-</main>
+</div>
+
 
 <footer class="footer">
 
@@ -1715,57 +1548,5 @@ function PrintCommentsBlock(string $id, string $name, string $comment, string $d
 
 </footer>
 
-
 </body>
-
-
-
-
-<script>
-
-                function OnButtonCommentSendClick()
-                {
-                    var nickName = document.getElementById("nickNameField").value;
-                    var comment = document.getElementById("commentArea").value;
-
-                    document.cookie="nickNameField="+nickName;
-                    document.cookie="commentArea="+comment;
-                    document.location.reload(true);
-                }
-
-
-
-
-
-
-
-
-                function OnLikeClick(id, likeId)
-                {
-                    var elementint = parseInt(document.getElementById(likeId).innerText);
-                    elementint ++;
-                    document.getElementById(likeId).innerText = elementint;
-
-                    document.cookie="commentIdLike="+id;
-                    document.location.reload(true);
-                }
-                
-                function OnDislikeClick(id, dislikeId)
-                {
-                    var elementint = parseInt(document.getElementById(dislikeId).innerText);
-                    elementint ++;
-                    document.getElementById(dislikeId).innerText = elementint;
-
-                    document.cookie="commentIdDislike="+id;
-                    document.location.reload(true);
-                }
-
-
-            </script>
-
-
-
-
-
-
 </html>
